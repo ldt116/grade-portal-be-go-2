@@ -1,4 +1,4 @@
-# Hệ thống tra cứu điểm
+﻿# Hệ thống tra cứu điểm
 Một hệ thống giúp sinh viên tra cứu điểm của mình một cách dễ dàng và thuận tiện thông qua giao diện web.
 
 ## Team grade-portal-web-2
@@ -27,6 +27,5 @@ npm install
 
 
 ## Báo cáo môn học
-
 
 
