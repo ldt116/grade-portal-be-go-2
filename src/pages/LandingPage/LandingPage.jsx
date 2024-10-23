@@ -1,6 +1,6 @@
 ﻿import { Link } from 'react-router-dom';
 
-import landingImg from '../../assets/img/landingPic.png';
+import landingImg from '../../assets/img/landingPic.jpg';
 
 
 function LandingPage() {
