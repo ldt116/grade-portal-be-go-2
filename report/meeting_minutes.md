@@ -52,7 +52,7 @@
 
 **Nội dung bàn luận**:
 
-1.Check Design Progress và bắt đầu code
+1. Check Design Progress và bắt đầu code
 
 **Đánh giá tiến độ từng thành viên**
 | MSSV    | Tên SV                     | Vai trò  |        |
