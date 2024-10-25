@@ -1,6 +1,6 @@
 ## Mock up design for grade portal web
 **Use-case diagram**:
-![Use-case diagram](Use-Case_Diagram.png)
+![Use-case diagram](Use-Case-Diagram.png)
 
 **Design và mô phỏng bằng Figma**:
 
