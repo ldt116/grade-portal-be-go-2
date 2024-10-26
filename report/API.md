@@ -2,20 +2,6 @@
 
 ## Admin
 
-### Đăng nhập - Đăng xuất
-
-- **POST** 
-  - **Đăng Nhập**: `admin/api/login`  
-    - Mô tả: Tính năng đăng nhập, cookie sẽ được ghi vào cookie trên máy người dùng trong vòng 24h
-    - Yêu cầu gửi lên :
-    ```bash
-      {
-        "idToken": idToken
-      }
-    ```
-  - **Đăng Xuất**: `admin/api/logout`  
-    - Mô tả: Tính năng đăng xuất, xóa cookie trên máy người dùng
-
 ### Quản lí thành viên
 
  - **Tạo Tài Khoản**: `admin/api/account/create`  
@@ -37,3 +23,35 @@
     ```
 - **Xóa Tài Khoản**: `admin/api/account/delete`
    - Mô tả: Xóa tài khoản của giảng viên / sinh viên ra khỏi hệ thống
+ 
+- **Tìm thông tin tài khoản**: `admin/api/account/:ms`
+    - Mô tả: Tìm một tài khoản theo mã số ms
+    - Yêu cầu: Mã số ms cần tồn tại trong hệ thống
+
+- **Tạo khóa học**: `admin/api/course/create`
+    - Mô tả: Tạo thêm một khóa học mới
+    - Yêu cầu: 
+   ```bash
+   {
+     "name": name,
+    "credit": credit,
+    "ms": ms,
+    "number": number,
+    "desc": desc
+   }
+    ```
+- **Tạo lớp học**: `admin/api/class/create`
+    - Mô tả: Tạo thêm một lớp học mới trong khóa học đã có
+    - Yêu cầu:
+  ```bash
+   {
+     "courseID": courseID,
+      "classID": classID,
+      "className": className,
+      "teacherID": teacherID,
+      "listStudent_id": [ // Danh sách các mssv
+          mssv_1, mssv_2, ...
+        ]
+   }
+    ```
+  
