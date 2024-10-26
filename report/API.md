@@ -36,6 +36,7 @@
      "name": name,
     "credit": credit,
     "ms": ms,
+    "semester": semester
     "number": number,
     "desc": desc
    }
@@ -49,9 +50,40 @@
       "classID": classID,
       "className": className,
       "teacherID": teacherID,
-      "listStudent_id": [ // Danh sách các mssv
-          mssv_1, mssv_2, ...
-        ]
+      "listStudentID": [ mssv1, mssv2, ...]
    }
     ```
-  
+## Giảng viên
+  - **Nhập bảng điểm**: `teacher/api/class/score`
+    - Mô tả: Cập nhật bảng điểm cho các sinh viên trong lớp
+    - Yêu cầu:
+  ```bash
+   {
+     "courseID": courseID,
+      "classID": classID,
+      "semester": semester,
+      "score": [
+      "MSSV": MSSV,
+      "Data": {
+        "BT": []float // Điểm thành phần cột điểm BT,
+        "TN": []float // Điểm thành phần cột điểm TN,
+        "BTL": []float // Điểm thành phần cột điểm BTL,
+        "GK": float // điểm giữa kỳ
+        "CK": float // điểm cuối kỳ
+              }
+               ],
+   }
+
+```
+
+ - **Thêm thành viên**: `teacher/api/class/addMem`
+    - Mô tả: Thêm thành viên mới vào lớp
+    - Yêu cầu:
+    ```bash
+   {
+     "courseID": courseID,
+      "classID": classID,
+      "semester": semester,
+      "newStudent": [ mssv1, mssv2, ...]
+   }
+    ```
