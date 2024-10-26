@@ -87,3 +87,15 @@
       "newStudent": [ mssv1, mssv2, ...]
    }
     ```
+
+   ## Sinh viên
+- **Tra cứu điểm**: `student/api/score`
+    - Mô tả: Tra cứu điểm của một sinh viên
+    - Yêu cầu:
+    ```bash
+   {
+     "studentID": studentID,
+     "courseID": courseID,
+      "semester": semester
+   }
+    ```
