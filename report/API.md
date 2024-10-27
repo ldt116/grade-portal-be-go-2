@@ -64,6 +64,7 @@
       "classID": classID,
       "className": className,
       "teacherID": teacherID,
+      "semester": semester,
       "listStudentID": [ mssv1, mssv2, ...]
    }
     ```
@@ -82,11 +83,27 @@
    - Mô tả: Tính năng đăng xuất, xóa cookie trên máy người dùng
 ### Lấy thông tin lớp học
 - **Lấy ra tất cả các lớp học cho account**: `api/class/account`
-    - Mô tả: Tính năng lấy ra tất cả các lớp học của account đó đang học
+    - Mô tả: Tính năng lấy ra tất cả các lớp học của account đó đang học | dạy
     - Yêu cầu gửi lên: Không cần gửi lên gì cả, chỉ cần đăng nhập bằng account có role student | teacher
 
 - **Lấy ra chi tiết lớp học**: `api/class/:id`
    - Mô tả: Tính năng lấy ra chi tiết lớp học đó
+    ```bash
+    { 
+      "status":  "success",
+      "message": "Lấy lớp học thành công",
+      "class":{
+                "id": id,           
+                "semester": semester,        
+                "name": name             
+                "courseID": courseid         
+                "listStudentID": [mssv1, mssv2]     
+                "teacherID": teacher id     
+                "createdBy": adminid     
+                "updatedBy": adminid     
+              }
+      }
+    ```     
    - Yêu cầu gửi lên: ID nhập vào cần chính xác và có trên hệ thống
 
 ### Giảng viên
