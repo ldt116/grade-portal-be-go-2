@@ -93,19 +93,14 @@
       "status":  "success",
       "message": "Lấy lớp học thành công",
       "class":{
-                "id": id           
-                "semester": semester        
-                "name": ""             
-                "courseID": ""         
-                "listStudentID": [
-                  ""
-                  ""
-                  ...
-                  ""
-                ]                   []    
-                "teacherID": ""     
-                "createdBy": ""     
-                "updatedBy": ""     
+                "id": id,           
+                "semester": semester,        
+                "name": name             
+                "courseID": courseid         
+                "listStudentID": [mssv1, mssv2]     
+                "teacherID": teacher id     
+                "createdBy": adminid     
+                "updatedBy": adminid     
               }
       }
     ```     
