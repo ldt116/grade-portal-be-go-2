@@ -36,10 +36,15 @@
 - **Xóa Tài Khoản**: `admin/api/account/delete`
    - Mô tả: Xóa tài khoản của giảng viên / sinh viên ra khỏi hệ thống
  
-- **Tìm thông tin tài khoản**: `admin/api/account/:ms`
-    - Mô tả: Tìm một tài khoản theo mã số ms
-    - Yêu cầu: Mã số ms cần tồn tại trong hệ thống
+- **Tìm thông tin tài khoản**: `admin/api/account/:id`
+    - Mô tả: Tìm một tài khoản theo mã số id
+    - Yêu cầu: Mã số id cần tồn tại trong hệ thống
 
+- **Lấy Tất Cả Tài Khoản có role là Teacher**: `admin/api/account/teacher` 
+    - Mô tả: Lấy tất cả tài khoản có role là teacher.
+
+- **Lấy Tất Cả Tài Khoản có role là Student**: `admin/api/account/student` 
+    - Mô tả: Lấy tất cả tài khoản có role là student.
 ### Quản lí môn học
 
 - **Tạo khóa học**: `admin/api/course/create`
@@ -81,6 +86,8 @@
     ```
 - **Đăng Xuất**: `api/logout`  
    - Mô tả: Tính năng đăng xuất, xóa cookie trên máy người dùng
+- **Lấy Thông tin**: `api/info`
+    -Mô tả: Tính năng lấy ra dữ liệu của account đang đăng nhập
 ### Lấy thông tin lớp học
 - **Lấy ra tất cả các lớp học cho account**: `api/class/account`
     - Mô tả: Tính năng lấy ra tất cả các lớp học của account đó đang học | dạy
@@ -123,6 +130,7 @@
         "BTL": []float // Điểm thành phần cột điểm BTL,
         "GK": float // điểm giữa kỳ
         "CK": float // điểm cuối kỳ
+        "TK": float // điểm tổng kết
               }
                ],
    }
