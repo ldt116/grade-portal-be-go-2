@@ -21,6 +21,7 @@ const routes = [
     {
         path: '/',
         page: LandingPage,
+        layout: DefaultLayout,
     },
     {
         path: '/home',
@@ -77,6 +78,7 @@ const routes = [
     {
         path: '/login',
         page: Login,
+        layout: DefaultLayout,
     },
     {
         path: '/login/user',
