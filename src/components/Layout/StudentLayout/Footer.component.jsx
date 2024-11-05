@@ -1,8 +1,8 @@
 function Footer() {
     return (
-        <footer className="-mb-20 flex h-20 items-center justify-center bg-primary text-white">
-            <p className="text-center">© 2021 BK Tra cứu. All rights reserved.</p>
-        </footer>
+        <div className="h-[240px] bg-[#495057] px-16 py-3">
+            <p className="text-gray-50">© 2024 BK Tra cứu. All rights reserved.</p>
+        </div>
     );
 }
 export default Footer;
