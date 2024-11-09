@@ -16,7 +16,7 @@ function UserInfo() {
       </div>
       <div className="flex flex-col items-end mr-32">
         <div className="text-2xl font-bold text-center py-3 mr-10">Chữ ký</div>
-        <img src={UserSign} alt="sign" className="w-[150px]"></img>
+        <img src={UserSign} alt="sign" className="w-[9.375rem]"></img>
       </div>
     </div>
   );
