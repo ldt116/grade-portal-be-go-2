@@ -4,8 +4,8 @@ import Navbar from '../../components/Navbar/Navbar';
 
 const GradeInput: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [inputValue, setInputValue] = useState<string>('');
-    const options = ['HK 241', 'HK 242'];
+    const [inputValue, setInputValue] = useState<string>();
+    const options = ['HK 241', 'HK 242', 'HK 111', 'HK 112', '1', '2', '3', '4', '5', '6'];
 
     const handleOptionClick = (option: string) => {
         setInputValue(option); // Đặt giá trị input là option được chọn
@@ -20,18 +20,33 @@ const GradeInput: React.FC = () => {
         }
     }
 
+    const prevent_submit_KeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+        if(event.key === "Enter") event.preventDefault();
+    }
+
+    const exit_input = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if(event.key === "Enter") {
+            event.currentTarget.blur();
+        }
+    }
+
 
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
             <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header>
+            <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav>
+            {/* <div className='relative top-10'>
             <Navbar/>
+            </div> */}
+            
 
             {/* Nhập điểm */}
             <div className='w-full flex flex-col items-center max-w-5xl mt-0 rounded-lg h-[70vh] border border-black my-2'>
 
                 <h2 className='text-5xl mt-5 mb-5'>Nhập điểm</h2>
 
-                <form className='h-[55vh] w-3/4 border bg-gray-200 border-t-4 border-t-blue-500'>
+                <form className='h-[55vh] w-3/4 border bg-gray-200 border-t-4 border-t-blue-500'
+                        onKeyDown={prevent_submit_KeyDown}>
 
                     <div className='flex flex-row justify-center items-center w-1/4 h-[7vh] bg-blue-500 mt-4 ml-4 mb-10 text-white text-xl'>Cập nhật điểm</div>
 
@@ -43,6 +58,7 @@ const GradeInput: React.FC = () => {
                             <div className='w-[40%] flex flex-col items-center'>Mã môn học</div>
                             <input type="text"
                                 placeholder='Nhập mã môn học'
+                                onKeyDown={exit_input}
                                 className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
                             />
                         </div>
@@ -52,6 +68,7 @@ const GradeInput: React.FC = () => {
                             <div className='w-[40%] flex flex-col items-center'>Mã lớp</div>
                             <input type="text"
                                 placeholder='Nhập mã lớp'
+                                onKeyDown={exit_input}
                                 className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2' />
                         </div>
 
@@ -61,29 +78,30 @@ const GradeInput: React.FC = () => {
                             <div className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl border border-l-black'>
                                 <input type="text"
                                     placeholder='Chọn học kì'
+                                    onKeyDown={exit_input}
                                     onFocus={() => setIsOpen(true)}
-                                    onBlur={() => setTimeout(() => setIsOpen(false), 50)}
-                                    value={inputValue}
+                                    value={inputValue || ""}
                                     className='w-[100%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none text-center'
                                     readOnly
                                 />
                                 {isOpen && (
-                                    <div className="absolute bg-white border mt-1 w-[7%] rounded-xl text-center">
+                                    <ul className="absolute bg-white border mt-1 w-[7%] rounded-xl text-center max-h-40 overflow-y-auto z-10">
                                         {options.map((option, index) => (
-                                            <div
+                                            <li
                                                 key={index}
                                                 className="p-2 hover:bg-gray-100 cursor-pointer w-full border border-gray-100"
                                                 onClick={() => handleOptionClick(option)} // Xử lý chọn option
                                             >
                                                 {option}
-                                            </div>
+                                            </li>
                                         ))}
-                                    </div>
+                                    </ul>
                                 )
                                 }
                             </div>
 
                         </div>
+                        
                     </div>
 
                     <div className='flex flex-col items-center h-[15vh] mt-[7%]'>
@@ -107,6 +125,7 @@ const GradeInput: React.FC = () => {
                     <div className='flex flex-col items-center justify-center h-14 mt-5'>
                         <button className='w-[20%] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
                     </div>
+
                 </form>
 
             </div>
