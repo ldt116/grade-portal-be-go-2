@@ -1,7 +1,7 @@
 function Button({ text }) {
   return (
     <div>
-      <button className="p-4 bg-[#0388B4] text-white rounded-[36px] min-w-[160px] text-center text-[28px] font-semibold">{text}</button>
+      <button className="p-4 bg-[#0388B4] text-white rounded-[2.25rem] min-w-40 text-center text-[1.75rem] font-semibold">{text}</button>
     </div>
   )
 }

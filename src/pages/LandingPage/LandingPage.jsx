@@ -3,7 +3,7 @@
 
 function LandingPage() {
     return (
-        <div className="mt-[109px]">
+        <div className="mt-[7rem]">
             <img src={landingImg} alt='landing-img' className='w-full'></img>
         </div>
     );
