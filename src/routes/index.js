@@ -62,6 +62,7 @@ const routes = [
     {
         path: '/teacher/home',
         page: TeacherHomePage,
+        layout: StudentLayout,
     },
     {
         path: '/teacher/course',
@@ -74,6 +75,7 @@ const routes = [
     {
         path: 'teacher/course/:id/grade',
         page: TeacherGradeInfo,
+        layout: StudentLayout,
     },
     {
         path: '/login',
