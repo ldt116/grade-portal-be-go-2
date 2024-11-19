@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar';
 import AddSuccess from '../../components/PopUp/AddSuccess';
+import Header from '../../components/HeaderFooter/Header';
+import Footer from '../../components/HeaderFooter/Footer';
 
 
 const GradeInput: React.FC = () => {
@@ -79,12 +81,16 @@ const GradeInput: React.FC = () => {
             newError.class = 'Hãy nhập mã lớp học!';
             valid = false;
         }
-        else if (formValue.class.length != 4) {
-            newError.class = 'Mã lớp học không hợp lệ!';
+        else if (formValue.class.length == 4 && (!checkLetter(formValue.class[0]) || !checkLetter(formValue.class[1]) || !checkDigit(formValue.class[2]) || !checkDigit(formValue.class[3]))) {
+            newError.class = 'Mã lớp không hợp lệ!';
             valid = false;
         }
-        else if (!checkLetter(formValue.class[0]) || !checkLetter(formValue.class[1]) || !checkDigit(formValue.class[2]) || !checkDigit(formValue.class[3])) {
-            newError.class = 'Mã lớp học không hợp lệ!';
+        else if (formValue.class.length == 3 && (!checkLetter(formValue.class[0]) || !checkDigit(formValue.class[1]) || !checkDigit(formValue.class[2]))) {
+            newError.class = 'Mã lớp không hợp lệ!';
+            valid = false;
+        }
+        else if (formValue.class.length < 3 || formValue.class.length > 4) {
+            newError.class = 'Mã lớp không hợp lệ!';
             valid = false;
         }
 
@@ -134,31 +140,17 @@ const GradeInput: React.FC = () => {
         }
     };
 
-    // useEffect(() => {
-    //     console.log(error);
-    //     if (Object.keys(error).length === 0 && validateForm()) {
-    //       console.log(formValue);
-    //     }
-    //   }, [error]);
-
-    // const [fileName, setFileName] = useState<string>('');
-    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = event.target.files?.[0];
-    //     if (file) {
-    //         setFileName(file.name);
-    //     }
-    // }
-
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
-            <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header>
-            <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav>
+            {/* <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header> */}
+            {/* <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav> */}
             {/* <div className='relative top-10'>
             <Navbar/>
             </div> */}
-
+            <Header/>
+            <Navbar/>
             {/* Nhập điểm */}
-            <div className='w-full flex flex-col items-center max-w-5xl mt-0 rounded-lg h-[70vh] border border-black my-2'>
+            <div className='w-full flex flex-col items-center max-w-5xl mt-5 mb-5 rounded-lg h-[70vh] border border-black my-2'>
 
                 <h2 className='text-5xl mt-5 mb-5'>Nhập điểm</h2>
 
@@ -276,10 +268,10 @@ const GradeInput: React.FC = () => {
 
             </div>
 
-            <footer className='h-[15vh] w-full bg-gray-500'>
+            {/* <footer className='h-[15vh] w-full bg-gray-500'>
 
-            </footer>
-
+            </footer> */}
+            <Footer/>
         </div>
 
     );

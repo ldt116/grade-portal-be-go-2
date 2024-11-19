@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar';
 import AddSuccess from '../../components/PopUp/AddSuccess';
+import Header from '../../components/HeaderFooter/Header';
+import Footer from '../../components/HeaderFooter/Footer';
 
 const GradeInput: React.FC = () => {
 
@@ -133,12 +135,14 @@ const GradeInput: React.FC = () => {
 
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
-            <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header>
-            <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav>
+            {/* <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header>
+            <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav> */}
             {/* <Navbar /> */}
+            <Header/>
+            <Navbar/>
 
             {/* Nhập thông tin */}
-            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-0 rounded-lg h-[85vh] border border-black my-2'>
+            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-5 mb-5 rounded-lg h-[85vh] border border-black my-2'>
 
                 <h2 className='text-5xl mt-5 mb-5 h-[10%]'>Thêm thành viên</h2>
 
@@ -250,9 +254,11 @@ const GradeInput: React.FC = () => {
 
             </div>
 
-            <footer className='h-[15vh] w-full bg-gray-500'>
+            <Footer/>
 
-            </footer>
+            {/* <footer className='h-[15vh] w-full bg-gray-500'>
+
+            </footer> */}
 
         </div>
 
