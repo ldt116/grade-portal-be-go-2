@@ -3,6 +3,7 @@ import GradeSearch from "../../components/GradeSearch/GradeSearch";
 import HallOfFame from "../../components/HallOfFame/HallOfFame";
 import GradeTable from "../../components/GradeTable/GradeTable";
 
+
 function GradeInfo() {
   return (
     <div className="mt-40 w-full px-9">
@@ -19,7 +20,7 @@ function GradeInfo() {
         <GradeTable />
       </div>
       <div className="flex gap-8 justify-center my-7">
-        <Button text="Thông tin lớp học" border border-black/>
+        <Button text="Thông tin lớp học"/>
         <Button text="Gửi phản hồi" />
       </div>
     </div>
