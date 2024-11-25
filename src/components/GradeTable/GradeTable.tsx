@@ -1,5 +1,25 @@
+import { useParams } from 'react-router-dom';
+import { fetchGradeByIdApi } from '../../apis/classInfo.api';
+import { useState, useEffect,  } from 'react';
+
 function GradeTable() {
+    const { id } = useParams();
+    console.log(id);
+    const [gradeInfo, setGradeInfo] = useState(null); // Initialize state to store course data
+    useEffect(() => {
+        fetchGradeByIdApi(id)
+            .then((scoreInfo) => {
+                setGradeInfo(scoreInfo); // Update state once data is fetched
+            })
+            .catch((error) => console.error('Error fetching data:', error));
+    }, [id]);
+
+    if (!gradeInfo) {
+        return <div></div>;
+    }
   return (
+
+    
     <div>
       <table className="bg-[#ECE8E8] w-full">
         <tr className="bg-[#0388B4]">

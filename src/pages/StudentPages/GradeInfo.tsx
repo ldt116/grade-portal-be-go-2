@@ -5,6 +5,7 @@ import GradeTable from "../../components/GradeTable/GradeTable";
 
 
 function GradeInfo() {
+   
   return (
     <div className="mt-40 w-full px-9">
       <div className="text-[5rem] py-4 px-20 text-center">Tra cứu điểm</div>
