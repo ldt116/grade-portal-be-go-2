@@ -1,8 +1,59 @@
 import logo from '../../assets/img/logo-notext.svg';
-import { ADMIN_LOGIN } from '../../constants/api.js'
+import { ADMIN_LOGIN,ADMIN_API_URL } from '../../constants/api.js'
+import React, { useEffect, useState } from "react";
+
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+
+const clientId = "86683415797-aq6n74j9gdkrd7pd3u6a2d55fh587cd3.apps.googleusercontent.com";
+var token = '';
+
 function Login() {
+const [data, setData] = useState(null); // Trạng thái để lưu dữ liệu từ API
+  const [error, setError] = useState(null); // Trạng thái để lưu lỗi (nếu có)
+  const [loading, setLoading] = useState(true); // Trạng thái để hiển thị tải
+
+    // Hàm gọi API
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://dacnpm.thaily.id.vn/api/info", {
+  method: "GET",
+  headers: {
+    "Authorization": token, // Nếu cần token
+    "Content-Type": "application/json", // Headers khác nếu cần
+  },
+}); // Gửi yêu cầu GET đến API
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json(); // Parse JSON từ API
+        
+        setData(result); // Lưu dữ liệu vào state
+      } catch (err) {
+        setError(err.message); // Lưu lỗi vào state
+      } finally {
+        setLoading(false); // Dừng hiển thị tải
+      }
+    console.log(data);
+    };
+
+
+const handleSuccess = (response) => {
+    console.log("Login Successful:", response);
+    token = response.credential;
+    // You can send response.credential to your backend for verification
+  };
+
+  const handleError = () => {
+    console.error("Login Failed");
+  };
     const handleLogin = () => {
-        fetch(ADMIN_LOGIN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({idToken: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjM2MjgyNTg2MDExMTNlNjU3NmE0NTMzNzM2NWZlOGI4OTczZDE2NzEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI4NjY4MzQxNTc5Ny1hcTZuNzRqOWdka3JkN3BkM3U2YTJkNTVmaDU4N2NkMy5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6Ijg2NjgzNDE1Nzk3LWFxNm43NGo5Z2RrcmQ3cGQzdTZhMmQ1NWZoNTg3Y2QzLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE2MjI1OTI1ODY1NjM1NjgzNTUwIiwiaGQiOiJoY211dC5lZHUudm4iLCJlbWFpbCI6ImRhbmcubmd1eWVuMjIxMDczN2NzQGhjbXV0LmVkdS52biIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYmYiOjE3MzI1NTAyOTgsIm5hbWUiOiLEkMSCTkcgTkdVWeG7hE4gSFXhu7JOSCBI4bqiSSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NJSnFDNTV3a3JadWx1amhzWldhdlA4eE5xaFRYTUltSVhEZTEyNTRkVmJZd3U4UFV3PXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IsSQxIJORyIsImZhbWlseV9uYW1lIjoiTkdVWeG7hE4gSFXhu7JOSCBI4bqiSSIsImlhdCI6MTczMjU1MDU5OCwiZXhwIjoxNzMyNTU0MTk4LCJqdGkiOiI3MmFjMzAwMWMxMzJhYTE5YzMzZjhkNzBlZmRmOGNkYTNiZjJmYTZlIn0.cdHC2U6uqyWK0Vx2u-AwDR1ohrowMw7t6xABmo-O3xab1p5obO2MD6n7K6U34nH2fmwL4Nibo28f0ZMupu3QQK9cwrgn479RF0dMvI6AQdSmSo55Vpr1vW49JTqAt2JvReY--pUsQCO1Hu2U48-fI-62RHe1m_pIeILv44fkb_XAT5LW6N4yiTzRRr1dhZOIi4q6445f1TWM0UisREn_rWhZMLhjIpiF0yxAca6xhBh2vsha1g-dq80pyQW8_Qg43Bq5X4-dSFtilNAImdoByoSldXa27dalEjczbpGWjPnFwhVI2C-LNSpHLYabL-VzM4g9NeAomY45yn0O9Aeh8Q'}) })
+        fetch(ADMIN_LOGIN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({idToken: token}) })
+        .then(response => console.log(response))
+       
+    }
+        
+    const getInfo = () =>{
+        fetch("https://dacnpm.thaily.id.vn/api/info", { method: 'GET'})
         .then(response => console.log(response))
 }
     return (
@@ -13,7 +64,16 @@ function Login() {
                     <div className='text-[#044CC8]'>Login Using your account on:</div>
                     <div className='flex flex-col gap-5 text-center'>
                         <div className='py-2 px-5 bg-[#0388B4] rounded-3xl text-white cursor-pointer' onClick={handleLogin}>Sinh viên/Giảng viên</div>
-                        <div className='py-2 px-5 bg-[#0388B4] rounded-3xl text-white cursor-pointer'>Quản trị viên</div>
+                        <div className='py-2 px-5 bg-[#0388B4] rounded-3xl text-white cursor-pointer' onClick = {fetchData}>Quản trị viên</div>
+                        <GoogleOAuthProvider clientId={clientId}>
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <h1>React Google Login</h1>
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={handleError}
+        />
+      </div>
+    </GoogleOAuthProvider>
                     </div>
                 </div>
                 <div className='text-[#044CC8] underline decoration-solid cursor-pointer'>

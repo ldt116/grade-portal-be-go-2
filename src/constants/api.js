@@ -1,5 +1,5 @@
 //List all api in this project
-const ADMIN_API_URL = 'https://dacnpm.thaily.id.vn/admin/api';
+export const ADMIN_API_URL = 'https://dacnpm.thaily.id.vn/admin/api';
 const CLIENT_API_URL = 'https://dacnpm.thaily.id.vn/api';
 
 
