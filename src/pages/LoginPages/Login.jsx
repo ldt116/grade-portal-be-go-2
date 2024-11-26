@@ -13,7 +13,8 @@ function Login() {
 
     // Lấy thông tin từ API
     const fetchData = async () => {
-        const storedToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
+        const storedToken = localStorage.getItem('login'); // Lấy token từ localStorage
+        console.log(storedToken);
         if (!storedToken) {
             setError("No token found. Please log in.");
             setLoading(false);
@@ -25,7 +26,6 @@ function Login() {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${storedToken}`, // Thêm token vào header
-                    "Content-Type": "application/json",
                 },
             });
 
@@ -35,6 +35,7 @@ function Login() {
 
             const result = await response.json(); // Chuyển đổi JSON từ API
             setData(result); // Lưu dữ liệu
+            console.log(result);
         } catch (err) {
             setError(err.message); // Lưu lỗi nếu xảy ra
         } finally {
@@ -60,22 +61,39 @@ function Login() {
 
     // Đăng nhập cho quản trị viên
     const handleLogin = () => {
-        const storedToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
-        if (storedToken) {
-            fetch(ADMIN_LOGIN, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${storedToken}`
-                },
-                body: JSON.stringify({ idToken: storedToken })
-            })
-                .then(response => response.json())
-                .then(data => console.log("Login API Response:", data))
-                .catch(error => console.error("Login API Error:", error));
-        } else {
+        const idToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
+        if (!idToken) {
             console.error("No token found in localStorage");
+            return;
         }
+
+        fetch(ADMIN_LOGIN, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idToken }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Login API error! status: ${response.status}`);
+                }
+                return response.json(); // Parse JSON
+            })
+            .then((data) => {
+                console.log("Login API Response:", data);
+
+                // Lưu token từ phản hồi vào localStorage
+                if (data.token) {
+                    localStorage.setItem('login', data.token);
+                    console.log("Admin token stored in localStorage");
+                } else {
+                    console.error("Token not found in response data");
+                }
+            })
+            .catch((error) => {
+                console.error("Login API Error:", error);
+            });
     };
 
     return (
