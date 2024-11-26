@@ -135,9 +135,7 @@ const GradeInput: React.FC = () => {
 
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
-            {/* <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header>
-            <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav> */}
-            {/* <Navbar /> */}
+        
             <Header/>
             <Navbar/>
 
@@ -160,7 +158,7 @@ const GradeInput: React.FC = () => {
                                     placeholder='Nhập họ và tên'
                                     value={formValue.fullName}
                                     onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
+                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
                                 <div className='w-[30%]'></div>
                             </div>
                             {error.fullName && (
@@ -177,7 +175,7 @@ const GradeInput: React.FC = () => {
                                     name='mail'
                                     value={formValue.mail}
                                     onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
+                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
                                 <div className='w-[30%]'></div>
                             </div>
                             {error.mail && (
@@ -194,7 +192,7 @@ const GradeInput: React.FC = () => {
                                     name='mssv'
                                     value={formValue.mssv}
                                     onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
+                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
                                 <div className='w-[30%]'></div>
                             </div>
 
@@ -213,7 +211,7 @@ const GradeInput: React.FC = () => {
                                     name='subject'
                                     value={formValue.subject}
                                     onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
+                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
                                 <div className='w-[30%]'></div>
                             </div>
                             {error.subject && (
@@ -230,7 +228,7 @@ const GradeInput: React.FC = () => {
                                     name='class'
                                     value={formValue.class}
                                     onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
+                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
                                 <div className='w-[30%]'></div>
                             </div>
                             {error.class && (
@@ -240,7 +238,7 @@ const GradeInput: React.FC = () => {
                     </div>
 
                     <div className='flex flex-col items-center justify-center h-[12%] mt-5 mb-5'>
-                        <button className='w-[20%] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
+                        <button className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
                     </div>
 
                     {popUp && (
