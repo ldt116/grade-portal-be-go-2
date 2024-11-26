@@ -4,7 +4,7 @@ import AddSuccess from '../../components/PopUp/AddSuccess';
 import Header from '../../components/HeaderFooter/Header';
 import Footer from '../../components/HeaderFooter/Footer';
 
-const GradeInput: React.FC = () => {
+const AddMember: React.FC = () => {
 
     const [formValue, setFormValue] = useState({
         fullName: '',
@@ -263,6 +263,6 @@ const GradeInput: React.FC = () => {
     );
 };
 
-export default GradeInput;
+export default AddMember;
 
 
