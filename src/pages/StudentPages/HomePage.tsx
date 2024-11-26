@@ -2,7 +2,7 @@
 
 function HomePage() {
     return (
-        <div className="mt-[164px]">
+        <div className="mt-40">
             <img src={landingImg} alt='landing-img' className='w-full'></img>
         </div>
     );
