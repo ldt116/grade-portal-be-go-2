@@ -22,7 +22,7 @@ function Login() {
         }
 
         try {
-            const response = await fetch("https://dacnpm.thaily.id.vn/api/info", {
+            const response = await fetch("https://dacnpm.thaily.id.vn/admin/api/account/teacher", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${storedToken}`, // Thêm token vào header
@@ -75,6 +75,49 @@ function Login() {
             body: JSON.stringify({ idToken }),
         })
             .then((response) => {
+                console.log(response);
+                if (!response.ok) {
+                    throw new Error(`Login API error! status: ${response.status}`);
+                }
+                return response.json(); // Parse JSON
+               
+            })
+            .then((data) => {
+                console.log("Login API Response:", data);
+
+                // Lưu token từ phản hồi vào localStorage
+                if (data.token) {
+                    localStorage.setItem('login', data.token);
+                    console.log("Admin token stored in localStorage");
+                } else {
+                    console.error("Token not found in response data");
+                }
+            })
+            .catch((error) => {
+                console.error("Login API Error:", error);
+            });
+    };
+
+    const handleAddAdmin = () => {
+        const idToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
+        if (!idToken) {
+            console.error("No token found in localStorage");
+            return;
+        }
+
+        fetch('https://dacnpm.thaily.id.vn/admin/api/account/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+    "ms": "2213857",
+    "name": "Võ Ngọc Tú",
+    "email": "tu.vo3105@hcmut.edu.vn",
+    "faculty": "KHMT",
+    "role": "student" }),
+        })
+            .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Login API error! status: ${response.status}`);
                 }
@@ -116,7 +159,7 @@ function Login() {
                             Quản trị viên
                         </div><div
                             className="py-2 px-5 bg-[#0388B4] rounded-3xl text-white cursor-pointer"
-                            onClick={fetchData}
+                            onClick={handleAddAdmin}
                         >
                             TTT
                         </div>

@@ -4,14 +4,16 @@ import HallOfFame from "../../components/HallOfFame/HallOfFame";
 import GradeTable from "../../components/GradeTable/GradeTable";
 
 
+
 function GradeInfo() {
    
+  
   return (
     <div className="mt-40 w-full px-9">
       <div className="text-[5rem] py-4 px-20 text-center">Tra cứu điểm</div>
       <div className="flex gap-8">
         <div className="w-2/3">
-          <GradeSearch />
+          <GradeSearch/>
         </div>
         <div className="w-1/3">
           <HallOfFame />
