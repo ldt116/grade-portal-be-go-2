@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Define types for the API response
 interface GradeData {
@@ -19,33 +20,31 @@ interface ApiResponse {
 }
 
 function StudentGradeTable() {
-  const classID = localStorage.getItem('SelectedClassID');
-  const token = localStorage.getItem('BearerToken');
   const [gradeData, setGradeData] = useState<GradeData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const token = localStorage.getItem('BearerToken');
+  const classID = sessionStorage.getItem('SelectedClassID');
+  console.log(classID);
 
   useEffect(() => {
     const fetchGrades = async () => {
       try {
-        console.log(token);
         if (!token) {
           throw new Error('Token not found');
         }
 
-        const response = await fetch(`https://dacnpm.thaily.id.vn/api/resultScore/${classID}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get<ApiResponse>(
+          `https://dacnpm.thaily.id.vn/api/resultScore/${classID}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          }
+        );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const data: ApiResponse = await response.json();
+        const data = response.data;
         if (data.code !== 'success') {
           throw new Error('Failed to fetch grade data');
         }
@@ -60,7 +59,6 @@ function StudentGradeTable() {
 
     fetchGrades();
   }, [classID]);
-
 
   const MSSV = gradeData?.MSSV ?? 'N/A';
   const Data = gradeData?.Data;

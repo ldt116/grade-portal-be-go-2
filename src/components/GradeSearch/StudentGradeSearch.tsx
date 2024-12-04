@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Button from "../Button/Button";
 import { CLIENT_API_URL, ADMIN_API_URL } from '../../constants/api.js';
+import {useNavigate} from 'react-router-dom'
 
 // Định nghĩa kiểu dữ liệu cho lớp học
 interface ClassItem {
@@ -37,9 +39,10 @@ const TOKEN_KEY = 'BearerToken';
 const CLASS_ID_KEY = 'SelectedClassID'; // Khóa để lưu ID lớp học
 
 function StudentGradeSearch() {
+  const navigate = useNavigate();
   const [classList, setClassList] = useState<ClassItem[]>([]);
   const [courseMap, setCourseMap] = useState<{ [key: string]: string }>({});
-  const [selectedClass, setSelectedClass] = useState<string>(localStorage.getItem(CLASS_ID_KEY) || ''); // Lấy từ localStorage
+  const [selectedClass, setSelectedClass] = useState<string>(sessionStorage.getItem(CLASS_ID_KEY) || '');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -49,20 +52,13 @@ function StudentGradeSearch() {
       const token = localStorage.getItem(TOKEN_KEY);
       if (!token) throw new Error('Token không tồn tại trong localStorage.');
 
-      const response = await fetch(`${CLIENT_API_URL}/class/account`, {
-        method: 'GET',
+      const response = await axios.get<ApiResponse>(`${CLIENT_API_URL}/class/account`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Request failed: ${response.status} - ${errorMessage}`);
-      }
-
-      const data: ApiResponse = await response.json();
+      const data = response.data;
       if (data.code === 'success' && data.classAll.length > 0) {
         setClassList(data.classAll);
         fetchCourseNames(data.classAll.map((item) => item.CourseId));
@@ -76,6 +72,9 @@ function StudentGradeSearch() {
       setLoading(false);
     }
   };
+const handleNavigate = () => {
+    window.location.reload();
+  };
 
   const fetchCourseNames = async (courseIds: string[]) => {
     try {
@@ -84,17 +83,16 @@ function StudentGradeSearch() {
 
       const courseNames = await Promise.all(
         courseIds.map(async (courseId) => {
-          const response = await fetch(`${ADMIN_API_URL}/course/${courseId}`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-          if (response.ok) {
-            const data: CourseResponse = await response.json();
-            return { [courseId]: data.status === 'success' ? data.course.Name : 'Không xác định' };
-          } else {
+          try {
+            const response = await axios.get<CourseResponse>(`${ADMIN_API_URL}/course/${courseId}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+
+            return { [courseId]: response.data.status === 'success' ? response.data.course.Name : 'Không xác định' };
+          } catch {
             return { [courseId]: 'Không xác định' };
           }
         })
@@ -110,17 +108,15 @@ function StudentGradeSearch() {
     fetchClassAccountData();
   }, []);
 
-  // Hàm xử lý khi thay đổi lớp học
   const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const classId = e.target.value;
     setSelectedClass(classId);
-    localStorage.setItem(CLASS_ID_KEY, classId); // Lưu ID lớp học vào localStorage
-    console.log(localStorage.getItem(CLASS_ID_KEY));
+    sessionStorage.setItem(CLASS_ID_KEY, classId);
   };
 
   return (
     <div className="bg-[#ECE8E8] border-t-4 border-[#0B4DC8] py-7 px-6">
-      <Button text="Tra cứu điểm" />
+      <Button text="Tra Cứu Điểm" onClick={handleNavigate} />
       <div className="flex my-12 justify-between">
         <div className="border border-black bg-white rounded-3xl">
           <label htmlFor="mssv" className="border-r border-black py-[0.3125rem] px-4">
