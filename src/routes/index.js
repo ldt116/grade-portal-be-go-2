@@ -5,9 +5,10 @@ import HomePage from '../pages/StudentPages/HomePage';
 import CoursePage from '../pages/StudentPages/CoursePage';
 import CourseInfo from '../pages/StudentPages/CourseInfo';
 import GradeInfo from '../pages/StudentPages/GradeInfo';
-import Login from '../pages/LoginPages/Login';
-import AdminLogin from '../pages/LoginPages/AdminLogin';
-import UserLogin from '../pages/LoginPages/UserLogin';
+import Login from '../pages/LoginPages/Login/Login';
+import AdminLogin from '../pages/LoginPages/AdminLogin/AdminLogin';
+import StudentLogin from '../pages/LoginPages/StudentLogin/StudentLogin';
+import TeacherLogin from '../pages/LoginPages/TeacherLogin/TeacherLogin';
 import TeacherHomePage from '../pages/TeacherPages/HomePage'
 import TeacherCourseInfo from '../pages/TeacherPages/CourseInfo'
 import TeacherGradeInfo from '../pages/TeacherPages/GradeInfo'
@@ -81,8 +82,12 @@ const routes = [
         layout: DefaultLayout,
     },
     {
-        path: '/login/user',
-        page: UserLogin,
+        path: '/login/teacher',
+        page: TeacherLogin,
+    },
+    {
+        path: '/login/student',
+        page: StudentLogin,
     },
     {
         path: '/login/admin',
