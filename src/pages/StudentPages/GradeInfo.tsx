@@ -1,7 +1,7 @@
 import Button from "../../components/Button/Button";
-import GradeSearch from "../../components/GradeSearch/GradeSearch";
+import StudentGradeSearch from "../../components/GradeSearch/StudentGradeSearch";
 import HallOfFame from "../../components/HallOfFame/HallOfFame";
-import GradeTable from "../../components/GradeTable/GradeTable";
+import StudentGradeTable from "../../components/GradeTable/StudentGradeTable";
 
 
 
@@ -13,14 +13,14 @@ function GradeInfo() {
       <div className="text-[5rem] py-4 px-20 text-center">Tra cứu điểm</div>
       <div className="flex gap-8">
         <div className="w-2/3">
-          <GradeSearch/>
+          <StudentGradeSearch/>
         </div>
         <div className="w-1/3">
           <HallOfFame />
         </div>
       </div>
       <div className="w-full mt-7">
-        <GradeTable />
+        <StudentGradeTable />
       </div>
       <div className="flex gap-8 justify-center my-7">
         <Button text="Thông tin lớp học"/>

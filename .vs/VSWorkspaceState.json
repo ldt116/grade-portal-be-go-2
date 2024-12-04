@@ -2,14 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\apis",
     "\\src\\components",
+    "\\src\\components\\GradeSearch",
     "\\src\\components\\GradeTable",
     "\\src\\constants",
-    "\\src\\pages",
-    "\\src\\pages\\LoginPages",
-    "\\src\\pages\\StudentPages",
     "\\src\\routes"
   ],
+  "SelectedNode": "\\src\\components\\GradeSearch\\GradeSearch.tsx",
   "PreviewInSolutionExplorer": false
 }

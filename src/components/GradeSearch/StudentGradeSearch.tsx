@@ -33,12 +33,13 @@ interface CourseResponse {
   status: string;
 }
 
-const TOKEN_KEY = 'login';
+const TOKEN_KEY = 'BearerToken';
+const CLASS_ID_KEY = 'SelectedClassID'; // Khóa để lưu ID lớp học
 
-function GradeSearch() {
+function StudentGradeSearch() {
   const [classList, setClassList] = useState<ClassItem[]>([]);
   const [courseMap, setCourseMap] = useState<{ [key: string]: string }>({});
-  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [selectedClass, setSelectedClass] = useState<string>(localStorage.getItem(CLASS_ID_KEY) || ''); // Lấy từ localStorage
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -81,28 +82,25 @@ function GradeSearch() {
       const token = localStorage.getItem(TOKEN_KEY);
       if (!token) throw new Error('Token không tồn tại trong localStorage.');
 
-      const courseNames: { [key: string]: string } = {};
-      for (const courseId of courseIds) {
-        const response = await fetch(`${ADMIN_API_URL}/course/${courseId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.ok) {
-          const data: CourseResponse = await response.json();
-          if (data.status === 'success') {
-            courseNames[courseId] = data.course.Name;
+      const courseNames = await Promise.all(
+        courseIds.map(async (courseId) => {
+          const response = await fetch(`${ADMIN_API_URL}/course/${courseId}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+          if (response.ok) {
+            const data: CourseResponse = await response.json();
+            return { [courseId]: data.status === 'success' ? data.course.Name : 'Không xác định' };
           } else {
-            courseNames[courseId] = 'Không xác định';
+            return { [courseId]: 'Không xác định' };
           }
-        } else {
-          courseNames[courseId] = 'Không xác định';
-        }
-      }
-      setCourseMap(courseNames);
+        })
+      );
+
+      setCourseMap(Object.assign({}, ...courseNames));
     } catch (error) {
       console.error('Lỗi khi lấy thông tin khóa học:', error);
     }
@@ -111,6 +109,14 @@ function GradeSearch() {
   useEffect(() => {
     fetchClassAccountData();
   }, []);
+
+  // Hàm xử lý khi thay đổi lớp học
+  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const classId = e.target.value;
+    setSelectedClass(classId);
+    localStorage.setItem(CLASS_ID_KEY, classId); // Lưu ID lớp học vào localStorage
+    console.log(localStorage.getItem(CLASS_ID_KEY));
+  };
 
   return (
     <div className="bg-[#ECE8E8] border-t-4 border-[#0B4DC8] py-7 px-6">
@@ -135,7 +141,7 @@ function GradeSearch() {
             id="classSelect"
             className="pl-4 py-1 rounded-e-3xl"
             value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
+            onChange={handleClassChange}
             disabled={loading}
           >
             <option value="">Chọn lớp học</option>
@@ -153,9 +159,8 @@ function GradeSearch() {
           </select>
         </div>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
 
-export default GradeSearch;
+export default StudentGradeSearch;
