@@ -52,6 +52,9 @@ const GradeInput: React.FC = () => {
         if (findClass) {
             console.log("Lớp học được chọn:", findClass.Name);
             setSelectedClass(findClass);
+
+        }
+        else {
             console.log("Không tìm thấy lớp học với classID:", classid);
         }
     };
@@ -151,11 +154,14 @@ const GradeInput: React.FC = () => {
             try {
                 const token = localStorage.getItem("login");
 
+                console.log("Check var:", selectedClass?.ID)
+
                 const gradeInfo = {
                     semester: selectedClass?.Semester,
                     course_id: selectedClass?.CourseId,
-                    // class_id: selectedClass?.ID,
-                    class_id: '672b87af226ae67ef9aaa047',
+                    class_id: selectedClass?.ID,
+                    // class_id: '672b87af226ae67ef9aaa047',
+
                     score: scores.map((student) => ({
                         mssv: student.mssv,
                         data: {
@@ -172,8 +178,7 @@ const GradeInput: React.FC = () => {
                 }
 
                 const checkExistedScore = await axios.get(
-                    // `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
-                    `https://dacnpm.thaily.id.vn/api/resultScore/672b87af226ae67ef9aaa047`,
+                    `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -217,6 +222,10 @@ const GradeInput: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        fetchClassInfo();
+    }, []);
+
 
 
 
@@ -234,21 +243,25 @@ const GradeInput: React.FC = () => {
                     onSubmit={handleSubmit}
                     className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
                 >
-                    <div className='flex flex-row justify-center items-center w-[20%] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
+                    <div className='flex flex-row justify-center items-center w-[150px] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
 
                     {/* Màn hình lớn */}
                     <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
 
                         {/* Thông tin lớp */}
-                        <div className='flex flex-col items-center h-[65%] w-[35%]'>
+                        <div className='flex flex-col justify-evenly items-center h-[80%] w-[40%]'>
+                            <div className='text-3xl font-medium '>
+                                Chọn lớp
+                            </div>
 
                             <select
+
                                 id="classDropdown"
                                 onChange={(event) => handleSelectChange(event.target.value)}
-                                onClick={fetchClassInfo}
-                                className='bg-white rounded-2xl h-[50px] w-[300px] text-center'
+                                // onClick={fetchClassInfo}
+                                className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
                             >
-                                <option value="">-- Select a class --</option>
+
                                 {classInfo.map((classItem) => (
                                     <option
                                         key={classItem.ID}
@@ -258,10 +271,7 @@ const GradeInput: React.FC = () => {
                                     </option>
                                 ))}
                             </select>
-
                         </div>
-
-
                     </div>
 
                     <div className='hidden md:flex flex-col items-center h-[25%] w-full'>
@@ -305,19 +315,24 @@ const GradeInput: React.FC = () => {
 
 
                     {/* Màn hình nhỏ */}
-                    <div className='md:hidden flex flex-col items-center justify-between ml-5 mr-5'>
+                    <div className='md:hidden flex flex-row justify-center m-5 h-[25%]'>
                         {/* Thông tin lớp */}
                         <div className='flex flex-col items-center h-[65%] w-[35%]'>
-
+                            
+                            <div className='text-3xl font-medium '>
+                                Chọn lớp
+                            </div>
+                            
                             <select
                                 id="classDropdown"
                                 onChange={(event) => handleSelectChange(event.target.value)}
                                 onClick={fetchClassInfo}
-                                className='bg-white rounded-2xl h-[50px] w-[300px] text-center'
+                                className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
                             >
-                                <option value="">-- Select a class --</option>
+
                                 {classInfo.map((classItem) => (
                                     <option
+                                        className='w-full'
                                         key={classItem.ID}
                                         value={classItem.ID}
                                     >
@@ -325,13 +340,12 @@ const GradeInput: React.FC = () => {
                                     </option>
                                 ))}
                             </select>
-
                         </div>
                     </div>
 
-                    <div className='md:hidden flex flex-col items-center h-[20%] w-full mt-4'>
+                    <div className='md:hidden flex flex-col items-center h-[25%] w-full'>
                         {/* Chọn file */}
-                        <div className='flex justify-between items-center w-[80%] h-[50%]'>
+                        <div className='flex items-center justify-center w-[80%] h-[50%]'>
                             <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
                                 <div>Chọn file (.csv)</div>
                                 <input
@@ -346,7 +360,7 @@ const GradeInput: React.FC = () => {
                             </label>
 
                             {/* Hiện tên file */}
-                            <div className='flex flex-col justify-center w-[70%] h-[100%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+                            <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
                                 {fileGrade ? (
                                     <div className="text-md text-gray-700">{fileName}</div>
                                 ) : (
@@ -359,7 +373,7 @@ const GradeInput: React.FC = () => {
                         )}
                     </div>
 
-                    <div className='md:hidden flex flex-col items-center justify-center h-[13%]'>
+                    <div className='md:hidden flex flex-col items-center justify-center h-14 mt-2'>
                         <button
                             className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
                             type='submit'>
