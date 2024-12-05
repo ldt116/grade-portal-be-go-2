@@ -48,11 +48,13 @@ function StudentGradeTable() {
         console.log(data);
         if (data.code !== 'success') {
           throw new Error('Failed to fetch grade data');
+          
         }
 
         setGradeData(data.score);
       } catch (err: any) {
         setError(err.message);
+        setGradeData(null);
       } finally {
         setLoading(false);
       }
@@ -60,6 +62,7 @@ function StudentGradeTable() {
 
     fetchGrades();
   }, [classID]);
+   
 
   const MSSV = gradeData?.MSSV ?? 'N/A';
   const Data = gradeData?.Data;
