@@ -17,9 +17,22 @@ interface ClassInfo {
     UpdatedBy: string
 }
 
+interface ScoreData {
+    mssv: string;
+    data: {
+        BT: number[];
+        TN: number[];
+        BTL: number[];
+        GK: number;
+        CK: number;
+    };
+}
+
 const GradeInput: React.FC = () => {
 
     const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
+
+    const [scores, setScores] = useState<ScoreData[]>([]);
 
     const [popUp, setPopUp] = useState(false);
 
@@ -30,10 +43,7 @@ const GradeInput: React.FC = () => {
     const [error, setError] = useState<{ [key: string]: string }>({});
 
     const [selectedClass, setSelectedClass] = useState<ClassInfo>();
-    const [isOpen, setIsOpen] = useState(false);
-    const openDropDown = () => {
-        setIsOpen(true);
-    }
+
 
     const handleSelectChange = (classid: string) => {
         // Tìm lớp học trong classInfo dựa trên classID
@@ -55,6 +65,29 @@ const GradeInput: React.FC = () => {
             setFileName(file.name); // Lưu tên file
             setFileGrade(file);
             setError({ ...error, gradeFile: '' });
+            Papa.parse(file, {
+                header: true, // Đọc CSV với dòng đầu là header
+                skipEmptyLines: true, // Bỏ qua dòng trống
+                complete: (result) => {
+                    // Tạo dữ liệu từ file CSV
+                    const formattedScores: ScoreData[] = result.data.map((row: any) => ({
+                        mssv: row.mssv,
+                        data: {
+                            BT: [parseFloat(row.BT1), parseFloat(row.BT2), parseFloat(row.BT3)],
+                            TN: [parseFloat(row.TN)],
+                            BTL: [parseFloat(row.BTL)],
+                            GK: parseFloat(row.GK),
+                            CK: parseFloat(row.CK),
+                        },
+                    }));
+
+                    // Gán vào state
+                    setScores(formattedScores);
+                },
+                error: (error) => {
+                    console.error("Error parsing CSV file:", error);
+                },
+            });
         }
         else {
             setFileName('');
@@ -121,40 +154,59 @@ const GradeInput: React.FC = () => {
                 const gradeInfo = {
                     semester: selectedClass?.Semester,
                     course_id: selectedClass?.CourseId,
-                    class_id: selectedClass?.ID,
-                    score: [
-                        {
-                            mssv: "2210011", // Mã số sinh viên, có thể từ form hoặc danh sách sinh viên
-                            data: {
-                                BT: [10.0, 10.0, 10.0], // Thông tin bài tập
-                                TN: [10.0], // Thông tin thực nghiệm
-                                BTL: [10.0], // Thông tin bài tập lớn
-                                GK: 10.0, // Điểm giữa kỳ
-                                CK: 10.0, // Điểm cuối kỳ
-                            },
-                        },
-                    ],
+                    // class_id: selectedClass?.ID,
+                    class_id: '672b87af226ae67ef9aaa047',
+                    score: scores.map((student) => ({
+                        mssv: student.mssv,
+                        data: {
+                            BT: student.data.BT,
+                            TN: student.data.TN,
+                            BTL: student.data.BTL,
+                            GK: student.data.GK,
+                            CK: student.data.CK,
+                        }
+                    })),
                     expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
                     createdBy: selectedClass?.CreatedBy,
                     updatedBy: selectedClass?.UpdatedBy
                 }
 
-                const sendForm = await axios.post(
+                const checkExistedScore = await axios.get(
                     // `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
-                    `https://dacnpm.thaily.id.vn/api/resultScore/create`,
-                    // `https://dacnpm.thaily.id.vn/api/resultScore/672b87af226ae67ef9aaa047`,
-                    gradeInfo,
+                    `https://dacnpm.thaily.id.vn/api/resultScore/672b87af226ae67ef9aaa047`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-
                     }
                 );
-                console.log("Cập nhật thành công", sendForm.data);
-                // console.log(sendForm.status)
 
-                console.log("Hehehe: ", selectedClass?.ID)
+                if (checkExistedScore.data.resultScore.SCORE) {
+                    const modifyScore = await axios.patch(
+                        `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                        gradeInfo,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+
+                        }
+                    );
+                    console.log("Đã cập nhật bằng PATCH", gradeInfo);
+                }
+                else {
+                    const addScore = await axios.post(
+                        `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+                        gradeInfo,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+
+                        }
+                    );
+                    console.log("Đã thêm điểm bằng POST");
+                }
 
             }
             catch (error) {
