@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import AddSuccess from '../../components/PopUp/AddSuccess';
 import Header from '../../components/HeaderFooter/Header';
 import Footer from '../../components/HeaderFooter/Footer';
+import axios from 'axios';
 
 const AddMember: React.FC = () => {
 
@@ -113,25 +114,74 @@ const AddMember: React.FC = () => {
 
     }
 
-    const handleSubmit = (event: React.FormEvent) => {
+    // const handleSubmit = (event: React.FormEvent) => {
+    //     event.preventDefault();
+    //     if (validateForm()) {
+    //         console.log('Form hợp lệ');
+    //         console.log(formValue);
+    //         setFormValue({
+    //             fullName: '',
+    //             mail: '',
+    //             mssv: '',
+    //             subject: '',
+    //             class: ''
+    //         });
+    //         setError({});
+    //         setPopUp(true);
+    //     }
+    //     else {
+    //         console.log('Form không hợp lệ');
+    //     }
+    // };
+
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+    
         if (validateForm()) {
-            console.log('Form hợp lệ');
-            console.log(formValue);
-            setFormValue({
-                fullName: '',
-                mail: '',
-                mssv: '',
-                subject: '',
-                class: ''
-            });
-            setError({});
-            setPopUp(true);
-        }
-        else {
+            try {
+                const formData = new FormData();
+                formData.append('class_id', formValue.class); // Mã lớp học
+                formData.append('listStudent_ms', JSON.stringify([formValue.mssv])); // Danh sách MSSV (chuyển sang chuỗi JSON)
+    
+                // Lấy token từ localStorage
+                const token = localStorage.getItem("login");
+                if (!token) {
+                    alert("Bạn chưa đăng nhập. Vui lòng đăng nhập để thêm thành viên.");
+                    return;
+                }
+    
+                console.log(token);
+                // Gửi API
+                const response = await axios.post(
+                    'https://dacnpm.thaily.id.vn/admin/api/class/add',
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+    
+                console.log('API Response:', response.data);
+                alert("Thêm thành viên thành công!");
+                setFormValue({
+                    fullName: '',
+                    mail: '',
+                    mssv: '',
+                    subject: '',
+                    class: '',
+                });
+                setPopUp(true); // Hiển thị popup khi thành công
+            } catch (error: any) {
+                console.error('Lỗi khi gọi API:', error.response?.data || error.message);
+                alert(`Lỗi: ${error.response?.data?.message || 'Không thể thêm thành viên. Vui lòng thử lại.'}`);
+            }
+        } else {
             console.log('Form không hợp lệ');
         }
     };
+    
 
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>

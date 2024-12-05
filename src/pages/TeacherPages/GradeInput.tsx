@@ -3,15 +3,23 @@ import Navbar from '../../components/Navbar/Navbar';
 import AddSuccess from '../../components/PopUp/AddSuccess';
 import Header from '../../components/HeaderFooter/Header';
 import Footer from '../../components/HeaderFooter/Footer';
+import axios from 'axios';
+import Papa from 'papaparse';
 
+interface ClassInfo {
+    ID: string,
+    Semester: string,
+    Name: string,
+    CourseId: string,
+    ListStudentMs: string[],
+    TeacherId: string,
+    CreatedBy: string,
+    UpdatedBy: string
+}
 
 const GradeInput: React.FC = () => {
-    const [formValue, setFormValue] = useState({
-        subject: '',
-        class: '',
-        semester: '',
-        // gradeFile: 
-    });
+
+    const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
 
     const [popUp, setPopUp] = useState(false);
 
@@ -20,6 +28,23 @@ const GradeInput: React.FC = () => {
     }
 
     const [error, setError] = useState<{ [key: string]: string }>({});
+
+    const [selectedClass, setSelectedClass] = useState<ClassInfo>();
+    const [isOpen, setIsOpen] = useState(false);
+    const openDropDown = () => {
+        setIsOpen(true);
+    }
+
+    const handleSelectChange = (classid: string) => {
+        // Tìm lớp học trong classInfo dựa trên classID
+        const findClass = classInfo.find((classItem) => classItem.ID === classid);
+
+        if (findClass) {
+            console.log("Lớp học được chọn:", findClass.Name);
+            setSelectedClass(findClass);
+            console.log("Không tìm thấy lớp học với classID:", classid);
+        }
+    };
 
     const [fileGrade, setFileGrade] = useState<File | null>(null);
     const [fileName, setFileName] = useState<string>('');
@@ -37,77 +62,9 @@ const GradeInput: React.FC = () => {
         }
     };
 
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormValue({
-            ...formValue,
-            [name]: value,
-        });
-    };
-
-    const checkLetter = (c: string) => {
-        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) return true;
-        return false;
-    }
-
-    const checkDigit = (c: string) => {
-        if (c >= '0' && c <= '9') return true;
-        return false;
-    }
-
     const validateForm = () => {
         let newError: { [key: string]: string } = {};
         let valid = true;
-
-        // Kiểm tra mã môn học
-
-        if (!formValue.subject) {
-            newError.subject = 'Hãy nhập mã môn học!';
-            valid = false;
-        }
-        else if (formValue.subject.length != 6) {
-            newError.subject = 'Mã môn học không hợp lệ!';
-            valid = false;
-        }
-        else if (!checkLetter(formValue.subject[0]) || !checkLetter(formValue.subject[1]) || !checkDigit(formValue.subject[2]) || !checkDigit(formValue.subject[3]) || !checkDigit(formValue.subject[4]) || !checkDigit(formValue.subject[5])) {
-            newError.subject = 'Mã môn học không hợp lệ!';
-            valid = false;
-        }
-
-        // Kiểm tra mã lớp học
-
-        if (!formValue.class) {
-            newError.class = 'Hãy nhập mã lớp học!';
-            valid = false;
-        }
-        else if (formValue.class.length == 4 && (!checkLetter(formValue.class[0]) || !checkLetter(formValue.class[1]) || !checkDigit(formValue.class[2]) || !checkDigit(formValue.class[3]))) {
-            newError.class = 'Mã lớp không hợp lệ!';
-            valid = false;
-        }
-        else if (formValue.class.length == 3 && (!checkLetter(formValue.class[0]) || !checkDigit(formValue.class[1]) || !checkDigit(formValue.class[2]))) {
-            newError.class = 'Mã lớp không hợp lệ!';
-            valid = false;
-        }
-        else if (formValue.class.length < 3 || formValue.class.length > 4) {
-            newError.class = 'Mã lớp không hợp lệ!';
-            valid = false;
-        }
-
-        // Kiểm tra học kì
-
-        if (!formValue.semester) {
-            newError.semester = 'Hãy nhập học kì!';
-            valid = false;
-        }
-        else if (formValue.semester.length != 3) {
-            newError.semester = 'Thông tin không hợp lệ!';
-            valid = false;
-        }
-        else if (!checkDigit(formValue.semester[0]) || !checkDigit(formValue.semester[1]) || !checkDigit(formValue.semester[2])) {
-            newError.semester = 'Thông tin không hợp lệ!';
-            valid = false;
-        }
 
         // Kiểm tra file
 
@@ -120,31 +77,102 @@ const GradeInput: React.FC = () => {
         return valid;
     }
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        if (validateForm()) {
-            console.log('Form hợp lệ');
-            console.log(formValue);
-            setFormValue({
-                subject: '',
-                class: '',
-                semester: '',
-            });
-            setFileGrade(null);
-            setFileName('');
-            setError({});
-            setPopUp(true);
-        }
-        else {
-            console.log('Form không hợp lệ');
+    const fetchClassInfo = async () => {
+        try {
+            const token = localStorage.getItem("login");
+            const classIdExists = await axios.get(
+                `https://dacnpm.thaily.id.vn/api/class/account`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const data = classIdExists.data;
+
+            // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
+            const formattedClasses = data.classAll.map((classItem: any) => ({
+                ID: classItem.ID || "", // Lấy classID hoặc giá trị mặc định
+                Semester: classItem.Semester || "",
+                Name: classItem.Name || "",
+                CourseId: classItem.CourseId || "",
+                ListStudentMs: classItem.ListStudentMs || [],
+                TeacherId: classItem.TeacherId || "",
+                CreatedBy: classItem.CreatedBy || "",
+                UpdatedBy: classItem.UpdatedBy || "",
+            }));
+
+
+            // Cập nhật state với danh sách lớp đã format
+            setClassInfo(formattedClasses);
+        } catch (error) {
+            console.error("Failed to fetch class info:", error);
         }
     };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        if (validateForm()) {
+            try {
+                const token = localStorage.getItem("login");
+
+                const gradeInfo = {
+                    semester: selectedClass?.Semester,
+                    course_id: selectedClass?.CourseId,
+                    class_id: selectedClass?.ID,
+                    score: [
+                        {
+                            mssv: "2210011", // Mã số sinh viên, có thể từ form hoặc danh sách sinh viên
+                            data: {
+                                BT: [10.0, 10.0, 10.0], // Thông tin bài tập
+                                TN: [10.0], // Thông tin thực nghiệm
+                                BTL: [10.0], // Thông tin bài tập lớn
+                                GK: 10.0, // Điểm giữa kỳ
+                                CK: 10.0, // Điểm cuối kỳ
+                            },
+                        },
+                    ],
+                    expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
+                    createdBy: selectedClass?.CreatedBy,
+                    updatedBy: selectedClass?.UpdatedBy
+                }
+
+                const sendForm = await axios.post(
+                    // `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                    `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+                    // `https://dacnpm.thaily.id.vn/api/resultScore/672b87af226ae67ef9aaa047`,
+                    gradeInfo,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+
+                    }
+                );
+                console.log("Cập nhật thành công", sendForm.data);
+                // console.log(sendForm.status)
+
+                console.log("Hehehe: ", selectedClass?.ID)
+
+            }
+            catch (error) {
+                console.error("Đã có lỗi khi gửi dữ liệu: ", error);
+            }
+        } else {
+            console.log("Form không hợp lệ");
+        }
+    };
+
+
+
 
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
 
-            <Header/>
-            <Navbar/>
+            <Header />
+            <Navbar />
             {/* Nhập điểm */}
             <div className='w-full flex flex-col items-center max-w-6xl my-5 rounded-lg h-[70vh] border border-black'>
 
@@ -156,64 +184,32 @@ const GradeInput: React.FC = () => {
                 >
                     <div className='flex flex-row justify-center items-center w-[20%] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
 
-                    {/* Nhập thông tin môn, lớp, học kì */}
                     {/* Màn hình lớn */}
-                    <div className='hidden md:flex flex-row justify-between m-5 h-[25%]'>
-
-                        {/* Thông tin môn */}
-                        <div className='flex flex-col items-center h-[65%] w-[35%]'>
-                            <div className='flex flex-row items-center bg-white border border-black rounded-xl h-[60%] w-full'>
-                                <div className='w-[40%] flex flex-col items-center overflow-hidden whitespace-nowrap'>Mã môn học</div>
-                                <input
-                                    type="text"
-                                    placeholder='Nhập mã môn học'
-                                    name='subject'
-                                    value={formValue.subject}
-                                    onChange={handleChange}
-                                    className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                                />
-
-                            </div>
-                            {error.subject && (
-                                <div className='text-red-500 text-sm text-center mt-3 h-[40%]'>{error.subject}</div>
-                            )}
-                        </div>
+                    <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
 
                         {/* Thông tin lớp */}
                         <div className='flex flex-col items-center h-[65%] w-[35%]'>
-                            <div className='flex flex-row items-center bg-white border border-black rounded-xl h-[60%] w-full'>
-                                <div className='w-[40%] flex flex-col items-center'>Mã lớp</div>
-                                <input type="text"
-                                    placeholder='Nhập mã lớp học'
-                                    name='class'
-                                    value={formValue.class}
-                                    onChange={handleChange}
-                                    className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                                />
 
-                            </div>
-                            {error.class && (
-                                <div className="text-red-500 text-sm text-center mt-3 h-[40%]">{error.class}</div>
-                            )}
+                            <select
+                                id="classDropdown"
+                                onChange={(event) => handleSelectChange(event.target.value)}
+                                onClick={fetchClassInfo}
+                                className='bg-white rounded-2xl h-[50px] w-[300px] text-center'
+                            >
+                                <option value="">-- Select a class --</option>
+                                {classInfo.map((classItem) => (
+                                    <option
+                                        key={classItem.ID}
+                                        value={classItem.ID}
+                                    >
+                                        {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+                                    </option>
+                                ))}
+                            </select>
+
                         </div>
 
-                        {/* Chọn học kì */}
-                        <div className='flex flex-col items-center h-[65%] w-[25%]'>
-                            <div className='flex flex-row items-center bg-white border border-black rounded-xl h-[60%] w-full'>
-                                <div className='w-[40%] flex flex-col items-center'>Học kì</div>
-                                <input type="text"
-                                    placeholder='Nhập học kì'
-                                    name='semester'
-                                    value={formValue.semester}
-                                    onChange={handleChange}
-                                    className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                                />
 
-                            </div>
-                            {error.semester && (
-                                <div className="text-red-500 text-sm text-center mt-3 h-[40%] ">{error.semester}</div>
-                            )}
-                        </div>
                     </div>
 
                     <div className='hidden md:flex flex-col items-center h-[25%] w-full'>
@@ -255,63 +251,29 @@ const GradeInput: React.FC = () => {
 
                     </div>
 
-                    
+
                     {/* Màn hình nhỏ */}
                     <div className='md:hidden flex flex-col items-center justify-between ml-5 mr-5'>
-
-                        {/* Thông tin môn */}
-                        <div className='flex flex-row items-center justify-normal mb-5 h-[5vh] w-full'>
-                            <div className='flex flex-row items-center bg-white border border-black rounded-xl  h-full w-[55%] '>
-                                <div className='w-[40%] flex flex-col items-center overflow-hidden whitespace-nowrap text-ellipsis'>Mã môn học</div>
-                                <input
-                                    type="text"
-                                    placeholder='Nhập mã môn học'
-                                    name='subject'
-                                    value={formValue.subject}
-                                    onChange={handleChange}
-                                    className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                                />
-
-                            </div>
-                            {error.subject && (
-                                <div className='text-red-500 text-sm text-center mt-4 ml-2 h-full w-[45%]'>{error.subject}</div>
-                            )}
-                        </div>
-
                         {/* Thông tin lớp */}
-                        <div className='flex flex-row items-center justify-normal mb-5 h-[5vh] w-full'>
-                            <div className='flex flex-row items-center bg-white border border-black rounded-xl  h-full w-[55%]'>
-                                <div className='w-[40%] flex flex-col items-center overflow-hidden whitespace-nowrap text-ellipsis'>Mã lớp</div>
-                                <input type="text"
-                                    placeholder='Nhập mã lớp học'
-                                    name='class'
-                                    value={formValue.class}
-                                    onChange={handleChange}
-                                    className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                                />
+                        <div className='flex flex-col items-center h-[65%] w-[35%]'>
 
-                            </div>
-                            {error.class && (
-                                <div className="text-red-500 text-sm text-center mt-4 ml-2 h-full w-[45%]">{error.class}</div>
-                            )}
-                        </div>
+                            <select
+                                id="classDropdown"
+                                onChange={(event) => handleSelectChange(event.target.value)}
+                                onClick={fetchClassInfo}
+                                className='bg-white rounded-2xl h-[50px] w-[300px] text-center'
+                            >
+                                <option value="">-- Select a class --</option>
+                                {classInfo.map((classItem) => (
+                                    <option
+                                        key={classItem.ID}
+                                        value={classItem.ID}
+                                    >
+                                        {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+                                    </option>
+                                ))}
+                            </select>
 
-                        {/* Chọn học kì */}
-                        <div className='flex flex-row items-center justify-normal mb-5 h-[5vh] w-full'>
-                            <div className='flex flex-row items-center bg-white border border-black rounded-xl  h-full w-[55%]'>
-                                <div className='w-[40%] flex flex-col items-center overflow-hidden whitespace-nowrap text-ellipsis'>Học kì</div>
-                                <input type="text"
-                                    placeholder='Nhập học kì'
-                                    name='semester'
-                                    value={formValue.semester}
-                                    onChange={handleChange}
-                                    className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                                />
-
-                            </div>
-                            {error.semester && (
-                                <div className="text-red-500 text-sm text-center mt-4 ml-2 h-full w-[45%]">{error.semester}</div>
-                            )}
                         </div>
                     </div>
 
@@ -356,7 +318,7 @@ const GradeInput: React.FC = () => {
 
                     {popUp && (
                         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <AddSuccess onClose={changeStatePopup}/>
+                            <AddSuccess onClose={changeStatePopup} />
                         </div>
                     )}
 
@@ -367,7 +329,7 @@ const GradeInput: React.FC = () => {
             {/* <footer className='h-[15vh] w-full bg-gray-500'>
 
             </footer> */}
-            <Footer/>
+            <Footer />
         </div>
 
     );

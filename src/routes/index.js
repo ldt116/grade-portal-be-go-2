@@ -78,7 +78,7 @@ const routes = [
         page: TeacherGradeInfo,
     },
     {
-        path: 'teacher/addmember',
+        path: '/teacher/addmember',
         page: AddMember,
     },
     {
