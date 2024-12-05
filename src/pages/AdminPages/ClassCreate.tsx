@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import Navbar from '../src/components/Navbar/Navbar';
-import AddSuccess from '../src/components/PopUp/AddSuccess';
-import Header from '../src/components/HeaderFooter/Header';
-import Footer from '../src/components/HeaderFooter/Footer';
+import Navbar from '../src/component/Navbar/Navbar';
+import AddSuccess from '../src/component/PopUp/AddSuccess';
+import Header from '../src/component/HeaderFooter/Header';
+import Footer from '../src/component/HeaderFooter/Footer';
+import axios from 'axios';
 
 const ClassCreate: React.FC = () => {
 
@@ -95,23 +96,76 @@ const ClassCreate: React.FC = () => {
         return valid;
     }
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (validateForm()) {
             console.log('Form hợp lệ');
             console.log(formValue);
-            setFormValue({
-                MMM: '',
-                ML: '',
-                class: '',
-                teacher: '',
-                file: ''
-            });
-            setError({});
-            setPopUp(true);
-        }
-        else {
+    
+            try {
+                // Gửi dữ liệu lớp học lên server
+                const response = await axios.post('/class/create', {
+                    MMM: formValue.MMM,
+                    ML: formValue.ML,
+                    className: formValue.class,
+                    teacherId: formValue.teacher,
+                });
+    
+                if (response.data.code === "success") {
+                    console.log("Tạo lớp thành công:", response.data);
+    
+                    // Upload danh sách sinh viên nếu file được chọn
+                    if (formValue.file && formValue.ML) {
+                        const file = document.querySelector<HTMLInputElement>("#file-upload")?.files?.[0];
+                        if (file) {
+                            await uploadStudentList(file, formValue.ML);
+                        }
+                    }
+    
+                    // Reset form và hiển thị popup
+                    setFormValue({
+                        MMM: '',
+                        ML: '',
+                        class: '',
+                        teacher: '',
+                        file: ''
+                    });
+                    setError({});
+                    setPopUp(true); // Hiển thị popup khi thành công
+                } else {
+                    console.error("Lỗi:", response.data.message);
+                    alert("Có lỗi xảy ra: " + response.data.message);
+                }
+            } catch (error) {
+                console.error("Lỗi khi gọi API tạo lớp:", error);
+                alert("Không thể kết nối đến server. Vui lòng thử lại sau.");
+            }
+        } else {
             console.log('Form không hợp lệ');
+        }
+    };
+    const uploadStudentList = async (file: File, classId: string) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('classId', classId);
+    
+        try {
+            const response = await axios.post('/class/upload-student-list', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+    
+            if (response.data.code === "success") {
+                console.log("Upload danh sách sinh viên thành công:", response.data);
+                setPopUp(true); // Hiển thị popup khi upload thành công
+            } else {
+                console.error("Lỗi:", response.data.message);
+                alert("Có lỗi xảy ra: " + response.data.message);
+            }
+        } catch (error) {
+            console.error("Lỗi khi gọi API upload:", error);
+            alert("Không thể kết nối đến server. Vui lòng thử lại sau.");
         }
     };
 
