@@ -9,7 +9,13 @@ function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(sessionStorage);
+    console.log(localStorage);
     const token = localStorage.getItem('BearerToken');
+    if (!token){
+    navigate('/');
+}
+    console.log(token);
     if (token) {
       // Fetch user info using axios if token exists
       axios
@@ -37,12 +43,56 @@ function Header() {
     navigate('/login');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('BearerToken');
+ const handleLogout = async () => {
+  const token = localStorage.getItem('BearerToken');
+  const role = sessionStorage.getItem('role'); // Lấy role từ sessionStorage
+
+  if (!token || !role) {
+    console.warn("No token or role found, redirecting to login");
+    localStorage.clear();
+    sessionStorage.clear();
     setIsLogin(false);
     setUserName('');
     navigate('/');
-  };
+    return;
+  }
+
+  try {
+    // Xác định URL API dựa trên role
+    const apiUrl =
+      role === 'admin'
+        ? 'https://dacnpm.thaily.id.vn/api/admin/logout'
+        : 'https://dacnpm.thaily.id.vn/api/logout';
+
+    // Gọi API logout với token
+    const response = await axios.post(
+      apiUrl,
+      {},
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.code === 'success') {
+      console.log('Logged out successfully');
+    } else {
+      console.warn('Logout failed:', response.data.message);
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+  } finally {
+    // Xóa toàn bộ dữ liệu trong localStorage và sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Reset trạng thái người dùng
+    setIsLogin(false);
+    setUserName('');
+    navigate('/');
+  }
+};
 
   return (
     <div className="bg-[#0388B4] h-[7rem] px-16 flex justify-between py-2 items-center fixed top-0 w-full z-50">

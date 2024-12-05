@@ -60,6 +60,7 @@ function StudentGradeSearch() {
 
       const data = response.data;
       if (data.code === 'success' && data.classAll.length > 0) {
+         console.log(data);
         setClassList(data.classAll);
         fetchCourseNames(data.classAll.map((item) => item.CourseId));
       } else {
@@ -108,11 +109,14 @@ const handleNavigate = () => {
     fetchClassAccountData();
   }, []);
 
-  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const classId = e.target.value;
+const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const classId = e.target.value;
+  if (classId && classId !== selectedClass) {
     setSelectedClass(classId);
     sessionStorage.setItem(CLASS_ID_KEY, classId);
-  };
+  }
+};
+
 
   return (
     <div className="bg-[#ECE8E8] border-t-4 border-[#0B4DC8] py-7 px-6">

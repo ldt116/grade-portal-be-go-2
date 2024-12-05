@@ -51,10 +51,12 @@ const Login: React.FC = () => {
       if (result.token) {
         localStorage.setItem("BearerToken", result.token);
         if (selectedEndpoint === CLIENT_LOGIN) {
-          navigate("/home"); // Chuyển hướng đến /home nếu là Sinh viên/Giảng viên
+          navigate("/home");
+          sessionStorage.setItem("role","client"); // Chuyển hướng đến /home nếu là Sinh viên/Giảng viên
         }
       } else {
         console.error("Token not found in response");
+          sessionStorage.setItem("role","admin");
       }
     } catch (err) {
       console.error("Error during API login:", (err as Error).message);

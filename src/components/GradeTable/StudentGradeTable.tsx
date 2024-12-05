@@ -45,6 +45,7 @@ function StudentGradeTable() {
         );
 
         const data = response.data;
+        console.log(data);
         if (data.code !== 'success') {
           throw new Error('Failed to fetch grade data');
         }
@@ -88,7 +89,7 @@ function StudentGradeTable() {
             </tr>
           ) : (
             <tr>
-              <td colSpan={6} className="text-center">No data available</td>
+              
             </tr>
           )}
         </tbody>

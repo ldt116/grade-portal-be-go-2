@@ -4,10 +4,13 @@
     "\\src",
     "\\src\\components",
     "\\src\\components\\GradeSearch",
-    "\\src\\components\\GradeTable",
-    "\\src\\constants",
-    "\\src\\routes"
+    "\\src\\components\\Layout",
+    "\\src\\components\\Layout\\StudentLayout",
+    "\\src\\pages",
+    "\\src\\pages\\LoginPages",
+    "\\src\\pages\\StudentPages",
+    "\\src\\pages\\TeacherPages"
   ],
-  "SelectedNode": "\\src\\components\\GradeSearch\\GradeSearch.tsx",
+  "SelectedNode": "\\src\\components\\GradeSearch\\StudentGradeSearch.tsx",
   "PreviewInSolutionExplorer": false
 }

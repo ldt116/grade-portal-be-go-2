@@ -39,6 +39,11 @@ const routes = [
         layout: StudentLayout,
     },
     {
+        path: '/gradeinfo/:id',
+        page: GradeInfo,
+        layout: StudentLayout,
+    },
+     {
         path: '/gradeinfo',
         page: GradeInfo,
         layout: StudentLayout,
