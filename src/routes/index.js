@@ -12,6 +12,8 @@ import TeacherHomePage from '../pages/TeacherPages/HomePage'
 import TeacherCourseInfo from '../pages/TeacherPages/CourseInfo'
 import TeacherGradeInfo from '../pages/TeacherPages/GradeInfo'
 import TeacherCoursePage from '../pages/TeacherPages/CoursePage'
+import GradeInput from '../pages/TeacherPages/GradeInput'
+import AddMember from '../pages/TeacherPages/AddMember';
 import AdminHomePage from '../pages/AdminPages/HomePage'
 import AdminCourseInfo from '../pages/AdminPages/CourseInfo'
 import AdminGradeInfo from '../pages/AdminPages/GradeInfo'
@@ -21,6 +23,7 @@ const routes = [
     {
         path: '/',
         page: LandingPage,
+        layout: DefaultLayout,
     },
     {
         path: '/home',
@@ -75,8 +78,17 @@ const routes = [
         page: TeacherGradeInfo,
     },
     {
+        path: '/teacher/addmember',
+        page: AddMember,
+    },
+    {
+        path: 'teacher/gradeinput',
+        page: GradeInput,
+    },
+    {
         path: '/login',
         page: Login,
+        layout: DefaultLayout,
     },
     {
         path: '/login/user',

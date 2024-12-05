@@ -18,4 +18,4 @@ function GradeTable() {
   )
 }
 
-export default GradeTable
+export default GradeTable;

@@ -1,12 +1,11 @@
 ﻿import landingImg from '../../assets/img/land-img.svg';
 
-
-function LandingPage() {
+function HomePage() {
     return (
-        <div className="mt-[7rem]">
+        <div className="mt-40">
             <img src={landingImg} alt='landing-img' className='w-full'></img>
         </div>
     );
 }
 
-export default LandingPage;
+export default HomePage;
