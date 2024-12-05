@@ -3,7 +3,8 @@ import routes from './routes';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DefaultLayout from './components/Layout/Layout';
 import { Fragment } from 'react';
-
+import AdminSearch from './pages/AdminPages/Admin_Search';
+import HomePage from './pages/AdminPages/HomePage';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         //     </Routes>
         // </BrowserRouter>
         <>
+        <AdminSearch />
         </>
     );
 }
