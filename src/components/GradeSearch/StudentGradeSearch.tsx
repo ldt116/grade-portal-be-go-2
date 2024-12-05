@@ -111,16 +111,18 @@ const handleNavigate = () => {
 
 const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   const classId = e.target.value;
+  console.log(classId);
+  
   if (classId && classId !== selectedClass) {
     setSelectedClass(classId);
     sessionStorage.setItem(CLASS_ID_KEY, classId);
   }
+    window.location.reload();
 };
 
 
   return (
     <div className="bg-[#ECE8E8] border-t-4 border-[#0B4DC8] py-7 px-6">
-      <Button text="Tra Cứu Điểm" onClick={handleNavigate} />
       <div className="flex my-12 justify-between">
         <div className="border border-black bg-white rounded-3xl">
           <label htmlFor="mssv" className="border-r border-black py-[0.3125rem] px-4">

@@ -3,14 +3,14 @@
     "",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\GradeSearch",
-    "\\src\\components\\Layout",
-    "\\src\\components\\Layout\\StudentLayout",
+    "\\src\\components\\GradeTable",
+    "\\src\\components\\Navbar",
+    "\\src\\constants",
     "\\src\\pages",
-    "\\src\\pages\\LoginPages",
     "\\src\\pages\\StudentPages",
-    "\\src\\pages\\TeacherPages"
+    "\\src\\pages\\TeacherPages",
+    "\\src\\routes"
   ],
-  "SelectedNode": "\\src\\components\\GradeSearch\\StudentGradeSearch.tsx",
+  "SelectedNode": "\\src\\components\\GradeTable\\StudentGradeTable.tsx",
   "PreviewInSolutionExplorer": false
 }
