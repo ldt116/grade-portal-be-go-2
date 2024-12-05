@@ -14,7 +14,7 @@ import AdminHomePage from '../pages/AdminPages/HomePage'
 import AdminCourseInfo from '../pages/AdminPages/CourseInfo'
 import AdminGradeInfo from '../pages/AdminPages/GradeInfo'
 import AdminCoursePage from '../pages/AdminPages/CoursePage'
-
+import GradeInput from '../pages/TeacherPages/GradeInput'
 const routes = [
     {
         path: '/',
@@ -65,8 +65,13 @@ const routes = [
         page: TeacherCourseInfo,
     },
     {
-        path: 'teacher/course/:id/grade',
+        path: 'teacher/gradeinfo',
         page: TeacherGradeInfo,
+    },
+    {
+        path: 'teacher/gradeinput',
+        page: GradeInput,
+        layout: StudentLayout,
     },
     {
         path: '/login',
