@@ -19,9 +19,7 @@ function GradeInfo() {
           <HallOfFame />
         </div>
       </div>
-      <div className="w-full mt-7">
-        <StudentGradeTable />
-      </div>
+
       <div className="flex gap-8 justify-center my-7">
         <Button text="Thông tin lớp học"/>
         <Button text="Gửi phản hồi" />

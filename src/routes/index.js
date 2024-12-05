@@ -2,8 +2,6 @@ import StudentLayout from '../components/Layout/StudentLayout/StudentLayout';
 import DefaultLayout from '../components/Layout/Layout';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import HomePage from '../pages/StudentPages/HomePage';
-import CoursePage from '../pages/StudentPages/CoursePage';
-import CourseInfo from '../pages/StudentPages/CourseInfo';
 import GradeInfo from '../pages/StudentPages/GradeInfo';
 import Login from '../pages/LoginPages/Login';
 import AdminLogin from '../pages/LoginPages/AdminLogin';
@@ -26,16 +24,6 @@ const routes = [
     {
         path: '/home',
         page: HomePage,
-        layout: StudentLayout,
-    },
-    {
-        path: '/course',
-        page: CoursePage,
-        layout: StudentLayout,
-    },
-    {
-        path: '/course/:id/info',
-        page: CourseInfo,
         layout: StudentLayout,
     },
     {

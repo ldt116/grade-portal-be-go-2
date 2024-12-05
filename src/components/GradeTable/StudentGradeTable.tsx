@@ -81,7 +81,7 @@ function StudentGradeTable() {
           {Data ? (
             <tr>
               <td className="pl-4">{MSSV}</td>
-              <td className="pl-4">{Data.BT ?? 'N/A'}</td>
+              <td className="pl-4">{`${Data.BT}` ?? 'N/A'}</td>
               <td className="pl-4">{Data.TN ?? 'N/A'}</td>
               <td className="pl-4">{Data.BTL ?? 'N/A'}</td>
               <td className="pl-4">{Data.GK}</td>

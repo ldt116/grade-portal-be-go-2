@@ -3,6 +3,7 @@ import axios from 'axios';
 import Button from "../Button/Button";
 import { CLIENT_API_URL, ADMIN_API_URL } from '../../constants/api.js';
 import {useNavigate} from 'react-router-dom'
+import StudentGradeTable from '../GradeTable/StudentGradeTable'
 
 // Định nghĩa kiểu dữ liệu cho lớp học
 interface ClassItem {
@@ -74,7 +75,7 @@ function StudentGradeSearch() {
     }
   };
 const handleNavigate = () => {
-    window.location.reload();
+    //window.location.reload();
   };
 
   const fetchCourseNames = async (courseIds: string[]) => {
@@ -117,7 +118,7 @@ const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedClass(classId);
     sessionStorage.setItem(CLASS_ID_KEY, classId);
   }
-    window.location.reload();
+    //window.location.reload();
 };
 
 
@@ -161,7 +162,11 @@ const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           </select>
         </div>
       </div>
+      <div className="w-full mt-7">
+        <StudentGradeTable />
+      </div>
     </div>
+
   );
 }
 
