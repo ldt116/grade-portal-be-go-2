@@ -81,7 +81,10 @@ function AdminSearch() {
     setSemester(event.target.value); // Cập nhật giá trị từ input
   };
 
-  const handleSearchClass = () => {
+  const handleSearchClass = (event: React.FormEvent) => {
+    event.preventDefault();
+    fetchCourse();
+    fetchClass();
     const matchedCourse = courseList.find((course) => course.MS === courseCode);
     const matchedClass = classList.find((cls) => cls.CourseId === matchedCourse?.ID && cls.Name === classCode && cls.Semester === semester);
     const matchedTeacher = teacherList.find((tcher) => tcher.ID === matchedClass?.TeacherId);
@@ -214,46 +217,48 @@ function AdminSearch() {
       }
     };
 
-    const fetchCourse = async () => {
-      try {
-        const token = localStorage.getItem("login");
-        console.log("Token của admin:", token);
-        const courses = await axios.get(
-          `https://dacnpm.thaily.id.vn/admin/api/course/all`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = courses.data;
-
-        // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
-        const formattedCourses = data.allCourse.map((CourseItem: any) => ({
-          ID: CourseItem.ID,
-          MS: CourseItem.MS,
-          Credit: CourseItem.Credit,
-          Name: CourseItem.Name,
-          Desc: CourseItem.Desc,
-          HS: CourseItem.HS,
-          CreatedBy: CourseItem.CreatedBy,
-          ExpiredAt: CourseItem.ExpiredAt,
-        }));
-
-        setCourseList(formattedCourses);
-        console.log("Danh sách khóa học:", courseList);
-      }
-      catch (error) {
-        console.error("Failed to fetch course info:", error);
-      }
-    };
+    
 
     fetchTeacher();
     fetchStudent();
-    fetchCourse();
-    fetchClass();
+
+    // fetchCourse();
+    
   }, []);
+  const fetchCourse = async () => {
+    try {
+      const token = localStorage.getItem("login");
+      console.log("Token của admin:", token);
+      const courses = await axios.get(
+        `https://dacnpm.thaily.id.vn/admin/api/course/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = courses.data;
+
+      // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
+      const formattedCourses = data.allCourse.map((CourseItem: any) => ({
+        ID: CourseItem.ID,
+        MS: CourseItem.MS,
+        Credit: CourseItem.Credit,
+        Name: CourseItem.Name,
+        Desc: CourseItem.Desc,
+        HS: CourseItem.HS,
+        CreatedBy: CourseItem.CreatedBy,
+        ExpiredAt: CourseItem.ExpiredAt,
+      }));
+
+      setCourseList(formattedCourses);
+      console.log("Danh sách khóa học:", courseList);
+    }
+    catch (error) {
+      console.error("Failed to fetch course info:", error);
+    }
+  };
   return (
 
     <div>
@@ -262,7 +267,9 @@ function AdminSearch() {
       <div className="flex flex-col flex-grow items-center ">
         <div className="text-5xl font-medium text-center w-full mt-5">Tìm kiếm lớp học</div>
 
-        <div className="w-[60%]  mt-5 bg-gray-200 border-2 border-t-blue-600 flex flex-col">
+        <form className="w-[60%]  mt-5 bg-gray-200 border-2 border-t-blue-600 flex flex-col"
+            onSubmit={handleSearchClass}
+        >
 
           <div className="border-2 border-black bg-blue-600 m-5 p-2 text-white text-center text-2xl font-medium w-[20%] h-15   ">
             Tìm kiếm
@@ -295,11 +302,10 @@ function AdminSearch() {
             </div>
           </div>
 
-          <button className="bg-blue-500 h-[60px] w-[200px] text-white text-2xl rounded-xl font-medium self-center my-10 hover:bg-blue-600 duration-200  "
-                  onSubmit={handleSearchClass}>
+          <button className="bg-blue-500 h-[60px] w-[200px] text-white text-2xl rounded-xl font-medium self-center my-10 hover:bg-blue-600 duration-200  ">
             Tìm lớp học
           </button>
-        </div>
+        </form>
       </div>
       <Footer />
     </div>

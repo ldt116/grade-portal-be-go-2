@@ -62,41 +62,93 @@ function Login() {
     };
 
     // Đăng nhập cho quản trị viên
-    const handleLogin = () => {
-        const idToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
-        if (!idToken) {
+    // const handleLogin = () => {
+    //     const idToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
+    //     if (!idToken) {
             
-            console.error("No token found in localStorage");
+    //         console.error("No token found in localStorage");
+    //         return;
+    //     }
+
+    //     fetch(ADMIN_LOGIN, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ idToken }),
+    //     })
+    //         .then((response) => {
+    //             if (!response.ok) {
+    //                 throw new Error(`Login API error! status: ${response.status}`);
+    //             }
+    //             return response.json(); // Parse JSON
+    //         })
+    //         .then((data) => {
+    //             console.log("Login API Response:", data);
+
+    //             // Lưu token từ phản hồi vào localStorage
+    //             if (data.token) {
+    //                 localStorage.setItem('login', data.token);
+    //                 console.log("Admin token stored in localStorage");
+    //             } else {
+    //                 console.error("Token not found in response data");
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error("Login API Error:", error);
+    //         });
+    //         navigate("/admin/search");
+    // };
+
+    
+
+    const handleLogin = async () => {
+        const idToken = localStorage.getItem("authToken"); // Lấy token từ localStorage
+        
+        if (!idToken) {
+            console.error("No Google ID token found in localStorage. Please log in.");
+            alert("Vui lòng đăng nhập qua Google trước!");
             return;
         }
 
-        fetch(ADMIN_LOGIN, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ idToken }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Login API error! status: ${response.status}`);
-                }
-                return response.json(); // Parse JSON
-            })
-            .then((data) => {
-                console.log("Login API Response:", data);
-
-                // Lưu token từ phản hồi vào localStorage
-                if (data.token) {
-                    localStorage.setItem('login', data.token);
-                    console.log("Admin token stored in localStorage");
-                } else {
-                    console.error("Token not found in response data");
-                }
-            })
-            .catch((error) => {
-                console.error("Login API Error:", error);
+        try {
+            // Gửi idToken đến API đăng nhập của Teacher
+            const response = await fetch("https://dacnpm.thaily.id.vn/admin/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ idToken }), // Gửi idToken trong body
             });
+
+            if (!response.ok) {
+                throw new Error(`Login API error! Status: ${response.status}`);
+            }
+
+            const data = await response.json(); // Lấy phản hồi từ API
+            console.log("Teacher Login Response:", data);
+            console.log(data.token)
+
+            // Lưu token Teacher vào localStorage
+            if (data.token) {
+                localStorage.setItem("login", data.token);
+                console.log("Admin token stored in localStorage");
+                console.log()
+                // Thông báo thành công hoặc điều hướng sang trang khác
+
+                alert("Đăng nhập admin thành công!");
+                
+                
+
+            } else {
+                throw new Error("Token not found in API response");
+            }
+        } catch (err) {
+            console.error("Admin Login Error:", err.message);
+            alert("Đăng nhập thất bại. Vui lòng thử lại.");
+        }
+        navigate("/admin/search");
+
     };
 
     const handleTeacherLogin = async () => {
@@ -207,12 +259,12 @@ function Login() {
                         </div>
                         <div
                             className="py-2 px-5 bg-[#0388B4] rounded-3xl text-white cursor-pointer"
-
+                            onClick={handleLogin}
                         >
                             Quản trị viên
                         </div><div
                             className="py-2 px-5 bg-[#0388B4] rounded-3xl text-white cursor-pointer"
-                            onClick={handleTeacherLogin}
+                            
                         >
                             TTT
                         </div>
