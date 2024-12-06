@@ -57,8 +57,8 @@ const EditForm: React.FC = () => {
     };
 
     const handleUpdate = async (userId: string) => {
-        if (!name && !faculty && !newRole) {
-            alert('Vui lòng nhập ít nhất một thông tin để cập nhật.');
+        if (!(name && faculty && newRole)) {
+            alert('Vui lòng nhập các thông tin để cập nhật.');
             return;
         }
 
@@ -184,7 +184,7 @@ const EditForm: React.FC = () => {
 
                         <button
                             onClick={() => handleUpdate(users[0].ID)} // Replace with the correct user ID
-                            className='mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600'
+                            className='mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 items-center justify-normal'
                         >
                             Cập nhật
                         </button>

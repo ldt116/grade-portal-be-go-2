@@ -3,6 +3,7 @@ import DefaultLayout from '../components/Layout/Layout';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import HomePage from '../pages/StudentPages/HomePage';
 import GradeInfo from '../pages/StudentPages/GradeInfo';
+import TeacherGradeInfo from '../pages/TeacherPages/TeacherGradeInfo';
 import Login from '../pages/LoginPages/Login';
 import GradeInput from '../pages/TeacherPages/GradeInput';
 import ClassCreate from '../pages/AdminPages/ClassCreate';
@@ -21,6 +22,11 @@ const routes = [
      {
         path: '/gradeinfo',
         page: GradeInfo,
+        layout: StudentLayout,
+    },
+         {
+        path: 'teacher/gradeinfo',
+        page: TeacherGradeInfo,
         layout: StudentLayout,
     },
     {

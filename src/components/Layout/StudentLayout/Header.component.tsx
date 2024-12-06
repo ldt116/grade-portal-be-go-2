@@ -19,6 +19,7 @@ function Header() {
      
     if (token) {
         const role = sessionStorage.getItem('role'); // Lấy role từ sessionStorage
+        setIsLogin(true);
     const apiUrl =
       role === 'admin'
         ? 'https://dacnpm.thaily.id.vn/admin/api/profile'
@@ -35,8 +36,6 @@ function Header() {
           if (data.code === 'success') {
             setIsLogin(true);
             setUserName(data.user.Name);
-          } else {
-            setIsLogin(false);
           }
         })
         .catch(() => {

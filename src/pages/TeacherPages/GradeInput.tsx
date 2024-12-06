@@ -13,7 +13,8 @@ interface ClassInfo {
     TeacherId: string,
     CreatedBy: string,
     UpdatedBy: string
-}
+}s
+
 
 interface ScoreData {
     mssv: string;
@@ -33,6 +34,7 @@ const GradeInput: React.FC = () => {
     const [scores, setScores] = useState<ScoreData[]>([]);
 
     const [popUp, setPopUp] = useState(false);
+    const [courseNames, setCourseNames] = useState<{ [key: string]: string }>({});
 
     const changeStatePopup = () => {
         setPopUp(!popUp);
@@ -113,7 +115,7 @@ const GradeInput: React.FC = () => {
 
     const fetchClassInfo = async () => {
         try {
-            const token = localStorage.getItem("login");
+            const token = localStorage.getItem("BearerToken");
             const classIdExists = await axios.get(
                 `https://dacnpm.thaily.id.vn/api/class/account`,
                 {
@@ -140,6 +142,32 @@ const GradeInput: React.FC = () => {
 
             // Cập nhật state với danh sách lớp đã format
             setClassInfo(formattedClasses);
+
+            const courses = await Promise.all(
+                formattedClasses.map(async (classItem: any) => {
+                    if (classItem.CourseId) {
+                        const courseResponse = await axios.get(
+                            `https://dacnpm.thaily.id.vn/api/course/${classItem.CourseId}`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        console.log(courseResponse.data.course.Name);
+                        return { courseId: classItem.CourseId, courseName: courseResponse.data.course.Name };
+                    }
+                    return null;
+                })
+            );
+
+            const courseNameMap = courses.reduce((acc: { [key: string]: string }, course: any) => {
+                if (course) acc[course.courseId] = course.courseName;
+                return acc;
+            }, {});
+
+            setCourseNames(courseNameMap);
+            
         } catch (error) {
             console.error("Failed to fetch class info:", error);
         }
@@ -150,9 +178,11 @@ const GradeInput: React.FC = () => {
 
         if (validateForm()) {
             try {
-                const token = localStorage.getItem("login");
+                const token = localStorage.getItem("BearerToken");
 
                 console.log("Check var:", selectedClass?.ID)
+
+                
 
                 const gradeInfo = {
                     semester: selectedClass?.Semester,
@@ -174,7 +204,6 @@ const GradeInput: React.FC = () => {
                     createdBy: selectedClass?.CreatedBy,
                     updatedBy: selectedClass?.UpdatedBy
                 }
-
                 const checkExistedScore = await axios.get(
                     `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
                     {
@@ -258,13 +287,13 @@ const GradeInput: React.FC = () => {
                                 // onClick={fetchClassInfo}
                                 className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
                             >
-
+                                <option value="">Chọn lớp học</option>
                                 {classInfo.map((classItem) => (
                                     <option
                                         key={classItem.ID}
                                         value={classItem.ID}
                                     >
-                                        {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+                                        {courseNames[classItem.CourseId]} - {classItem.Name} - {classItem.Semester}
                                     </option>
                                 ))}
                             </select>
@@ -333,7 +362,7 @@ const GradeInput: React.FC = () => {
                                         key={classItem.ID}
                                         value={classItem.ID}
                                     >
-                                        {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+                                        {classItem.Name} - {classItem.Name} - {classItem.Semester}
                                     </option>
                                 ))}
                             </select>
