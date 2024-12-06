@@ -16,12 +16,18 @@ function Header() {
     navigate('/');
 }
     console.log(token);
+     
     if (token) {
+        const role = sessionStorage.getItem('role'); // Lấy role từ sessionStorage
+    const apiUrl =
+      role === 'admin'
+        ? 'https://dacnpm.thaily.id.vn/admin/api/profile'
+        : 'https://dacnpm.thaily.id.vn/api/info';
       // Fetch user info using axios if token exists
       axios
-        .get('https://dacnpm.thaily.id.vn/api/info', {
+        .get(apiUrl, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
           },
         })
         .then((response) => {

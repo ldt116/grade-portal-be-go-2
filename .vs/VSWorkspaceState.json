@@ -3,14 +3,14 @@
     "",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\GradeTable",
-    "\\src\\components\\Navbar",
+    "\\src\\components\\PopUp",
     "\\src\\constants",
     "\\src\\pages",
+    "\\src\\pages\\AdminPages",
     "\\src\\pages\\StudentPages",
     "\\src\\pages\\TeacherPages",
     "\\src\\routes"
   ],
-  "SelectedNode": "\\src\\components\\GradeTable\\StudentGradeTable.tsx",
+  "SelectedNode": "\\src\\routes\\index.js",
   "PreviewInSolutionExplorer": false
 }

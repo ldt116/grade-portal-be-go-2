@@ -54,6 +54,10 @@ const Login: React.FC = () => {
           navigate("/home");
           sessionStorage.setItem("role","client"); // Chuyển hướng đến /home nếu là Sinh viên/Giảng viên
         }
+        else{
+            navigate("/home");        
+            sessionStorage.setItem("role","admin");
+}
       } else {
         console.error("Token not found in response");
           sessionStorage.setItem("role","admin");

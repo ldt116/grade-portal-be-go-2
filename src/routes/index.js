@@ -41,7 +41,7 @@ const routes = [
     {
         path: '/edit',
         page: EditForm,
-        layout: DefaultLayout,
+        layout: StudentLayout,
     },
     
 
