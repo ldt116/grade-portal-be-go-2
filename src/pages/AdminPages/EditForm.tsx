@@ -61,7 +61,7 @@ const EditForm: React.FC = () => {
     };
 
     const handleSave = async () => {
-        try {me
+        try {
             const updatedData = { ...rowData };
             await axios.patch(`http://domain/admin/api/account/change/${rowData.MS}`, updatedData);
             setEditingField(null); 
