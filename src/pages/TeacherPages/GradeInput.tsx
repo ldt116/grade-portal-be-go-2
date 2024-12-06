@@ -13,8 +13,7 @@ interface ClassInfo {
     TeacherId: string,
     CreatedBy: string,
     UpdatedBy: string
-}s
-
+}
 
 interface ScoreData {
     mssv: string;
