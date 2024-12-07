@@ -55,7 +55,7 @@ const Login: React.FC = () => {
           sessionStorage.setItem("role","client"); // Chuyển hướng đến /home nếu là Sinh viên/Giảng viên
         }
         else{
-            navigate("/admin/search");        
+            navigate("/admin/addMem");        
             sessionStorage.setItem("role","admin");
 }
       } else {

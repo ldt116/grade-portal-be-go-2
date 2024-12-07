@@ -3,7 +3,7 @@ import routes from './routes';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Fragment } from 'react';
 import GradeInput from './pages/TeacherPages/GradeInput';
-import AddMember from './pages/TeacherPages/AddMember';
+// import AddMember from './pages/TeacherPages/AddMember';
 import Login from './pages/LoginPages/Login';
 import TeacherLogin from './pages/LoginPages/TeacherLogin/TeacherLogin';
 // import Login from './pages/LoginPages/Login/Login';
@@ -11,6 +11,7 @@ import LoginForm from './pages/LoginPages/Login/LoginForm';
 import avt from './assets/img/bababananana.png'
 import HomePage from './pages/AdminPages/HomePage';
 import AdminSearch from './pages/AdminPages/Admin_Search';
+import AddMember from './pages/AdminPages/AddMember';
 
 function App() {
     return (
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/teacher/addMember" element={<AddMember />} />
                 <Route path="/admin/homepage" element={<HomePage />} />
                 <Route path="/admin/search" element={<AdminSearch />} />
+                <Route path="/admin/addMem" element={<AddMember />} />
             </Routes>
         </BrowserRouter>
 
