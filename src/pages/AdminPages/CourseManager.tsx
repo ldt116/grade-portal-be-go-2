@@ -140,7 +140,7 @@ const CourseManager: React.FC = () => {
       <div className="w-full flex flex-col items-center max-w-4xl mt-5 mb-5 rounded-lg border border-black p-4 bg-white">
         <div className="flex justify-between w-full">
           <h1 className="text-2xl font-bold mb-4">
-            {id === "all" ? "All Courses" : `Course Details: ${currentCourse?.Name}`}
+            {id === "all" ? "All Courses" : `${currentCourse?.Name}`}
           </h1>
           {id !== "all" && currentCourse && (
             <button
