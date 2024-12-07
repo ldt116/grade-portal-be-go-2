@@ -27,18 +27,16 @@ interface StudentInfo {
     ExpiredAt: string,
 }
 
-const AddMember: React.FC = () => {
+const DeleteMember: React.FC = () => {
 
 
     const [teacherList, setTeacherList] = useState<TeacherInfo[]>([]);
     const [studentList, setStudentList] = useState<StudentInfo[]>([]);
 
     const [formValue, setFormValue] = useState({
-        fullName: '',
         email: '',
         ms: '',
         role: '',
-        faculty: ''
     })
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,11 +53,9 @@ const AddMember: React.FC = () => {
     const changeStatePopup = () => {
         setPopUp(!popUp);
         setFormValue({
-            fullName: '',
             email: '',
             ms: '',
             role: '',
-            faculty: ''
         })
     }
 
@@ -149,29 +145,40 @@ const AddMember: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (formValue.email === '' || formValue.fullName === '' || formValue.ms === '' || formValue.role === '' || formValue.faculty === '') {
+        if (formValue.email === '' || formValue.ms === '' || formValue.role === '') {
             alert("Hãy điền đầy đủ thông tin");
             return;
         }
 
         if (formValue.role !== 'admin' && formValue.role !== 'teacher' && formValue.role !== 'student') {
-            alert("Hãy nhập 1 trong 3 vai trò: admin, teacher hoặc student");
+            alert("Hãy nhập 1 trong 2 vai trò: teacher hoặc student");
             return;
         }
 
         const token = localStorage.getItem("BearerToken");
-        if (formValue.role === 'admin') {
+
+        const checkExistEmailTeacher = teacherList.find((teacher) => teacher.Email === formValue.email);
+        const checkExistEmailStudent = studentList.find((student) => student.Email === formValue.email);
+
+        const checkExistMSTeacher = teacherList.find((teacher) => teacher.Ms === formValue.ms);
+        const checkExistMSStudent = studentList.find((student) => student.Ms === formValue.ms);
+
+        if (formValue.role === 'student' && !checkExistEmailStudent && !checkExistMSStudent) {
+            alert("Sinh viên không có trong hệ thống");
+            return;
+        }
+
+        if (formValue.role === 'teacher' && !checkExistEmailTeacher && !checkExistMSTeacher) {
+            alert("Giảng viên không có trong hệ thống");
+            return;
+        }
+
+        if (formValue.role === 'student') {
             try {
-                const adminInfo = {
-                    email: formValue.email,
-                    name: formValue.fullName,
-                    faculty: formValue.faculty,
-                    ms: formValue.ms
-                }
-                console.log("Check admin:", adminInfo);
-                const addScore = await axios.post(
-                    `https://dacnpm.thaily.id.vn/admin/api/create`,
-                    adminInfo,
+                const studentId = checkExistEmailStudent?.ID;
+                console.log("Check student id:", studentId);
+                const deleteStudent = await axios.delete(
+                    `https://dacnpm.thaily.id.vn/admin/api/account/delete/${studentId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -179,45 +186,17 @@ const AddMember: React.FC = () => {
 
                     }
                 );
-                console.log("Đã thêm admin bằng POST");
-            }
-            catch (error) {
-                console.log("Khong them admin duoc:", error);
-                alert("Admin này đã tồn tại, hãy chọn email và mã số khác");
-                return;
+                console.log("Đã xóa student");
+            } catch (error) {
+                console.log("Không xóa được student");
             }
         }
-        else if (formValue.role === 'teacher' || formValue.role === 'student') {
+        else {
             try {
-                const checkDuplicateEmailTeacher = teacherList.find((teacher) => teacher.Email === formValue.email);
-                const checkDuplicateEmailStudent = studentList.find((student) => student.Email === formValue.email);
-
-                const checkDuplicateMSTeacher = teacherList.find((teacher) => teacher.Ms === formValue.ms);
-                const checkDuplicateMSStudent = studentList.find((student) => student.Ms === formValue.ms);
-
-                if(checkDuplicateEmailStudent || checkDuplicateMSStudent){
-                    alert("Sinh viên này đã tồn tại trong hệ thống");
-                    return;
-                }
-
-                if(checkDuplicateEmailTeacher || checkDuplicateMSTeacher){
-                    alert("Giảng viên này đã tồn tại trong hệ thống");
-                    return;
-                }
-
-
-                const clientInfo = [{
-                    ms: formValue.ms,
-                    name: formValue.fullName,
-                    email: formValue.email,
-                    faculty: formValue.faculty,
-                    role: formValue.role
-                }]
-                console.log("Check client:", clientInfo);
-                console.log(token);
-                const addScore = await axios.post(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/create`,
-                    clientInfo,
+                const teacherId = checkExistEmailTeacher?.ID;
+                console.log("Check teacher id:", teacherId);
+                const deleteStudent = await axios.delete(
+                    `https://dacnpm.thaily.id.vn/admin/api/account/delete/${teacherId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -225,10 +204,9 @@ const AddMember: React.FC = () => {
 
                     }
                 );
-                console.log("Đã thêm client bằng POST");
-            }
-            catch (error) {
-                console.log("Khong them client duoc:", error);
+                console.log("Đã xóa teacher");
+            } catch (error) {
+                console.log("Không xóa được teacher");
             }
         }
         setPopUp(true);
@@ -241,29 +219,15 @@ const AddMember: React.FC = () => {
             <Navbar />
 
             {/* Nhập thông tin */}
-            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-5 mb-5 rounded-lg h-[85vh] border border-black my-2'>
+            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-5 mb-5 rounded-lg h-[50vh] border border-black my-2'>
 
-                <h2 className='text-5xl mt-5 mb-5 h-[10%]'>Thêm thành viên</h2>
+                <h2 className='text-5xl mt-5 mb-5 h-[10%]'>Xóa tài khoản</h2>
 
                 <form
-                    className='w-full flex flex-col h-[90%] '
+                    className='w-full flex flex-col h-[90%] mt-10 '
                     onSubmit={handleSubmit}
                 >
                     <div className='flex flex-col items-center justify-evenly h-[90%]'>
-                        {/* Họ và tên */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Họ và tên: </div>
-                                <input type="text"
-                                    name='fullName'
-                                    placeholder='Nhập họ và tên'
-                                    value={formValue.fullName}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
 
                         {/* Email */}
                         <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
@@ -295,7 +259,6 @@ const AddMember: React.FC = () => {
 
                         </div>
 
-
                         {/* Vai trò */}
                         <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
                             <div className='flex flex-row items-center h-[80%] w-full'>
@@ -311,23 +274,9 @@ const AddMember: React.FC = () => {
 
                         </div>
 
-                        {/* Khoa */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Tên khoa: </div>
-                                <input type="text"
-                                    placeholder='Nhập tên lớp'
-                                    name='faculty'
-                                    value={formValue.faculty}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
                     </div>
 
-                    <div className='flex flex-col items-center justify-center h-[12%] mt-5 mb-5'>
+                    <div className='flex flex-col items-center justify-center h-[30%] mt-5 mb-5'>
                         <button className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
                     </div>
 
@@ -349,4 +298,4 @@ const AddMember: React.FC = () => {
     );
 };
 
-export default AddMember;
+export default DeleteMember;

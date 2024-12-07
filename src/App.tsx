@@ -12,6 +12,7 @@ import avt from './assets/img/bababananana.png'
 import HomePage from './pages/AdminPages/HomePage';
 import AdminSearch from './pages/AdminPages/Admin_Search';
 import AddMember from './pages/AdminPages/AddMember';
+import DeleteMember from './pages/AdminPages/DeleteAccount';
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/admin/homepage" element={<HomePage />} />
                 <Route path="/admin/search" element={<AdminSearch />} />
                 <Route path="/admin/addMem" element={<AddMember />} />
+                <Route path="/admin/delMem" element={<DeleteMember />} />
             </Routes>
         </BrowserRouter>
 
