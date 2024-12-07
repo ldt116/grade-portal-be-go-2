@@ -55,7 +55,7 @@ interface SearchedClass {
   courseID: string,
   courseName: string,
   teacherName: string,
-  numMember: Number,
+  numMember: number,
 }
 
 function AdminSearch() {
@@ -64,6 +64,7 @@ function AdminSearch() {
   const [courseCode, setCourseCode] = useState("");
   const [semester, setSemester] = useState("");
 
+  const [courseId, setCourseId] = useState<string>("");
 
   const [teacherList, setTeacherList] = useState<TeacherInfo[]>([]);
   const [studentList, setStudentList] = useState<StudentInfo[]>([]);
@@ -73,22 +74,32 @@ function AdminSearch() {
 
   const handleClassCode = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClassCode(event.target.value); // Cập nhật giá trị từ input
+    // console.log(classCode);
   };
   const handleCourseCode = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCourseCode(event.target.value); // Cập nhật giá trị từ input
+    // console.log(courseCode);
   };
   const handleSemester = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSemester(event.target.value); // Cập nhật giá trị từ input
+    // console.log(semester);
   };
 
-  const handleSearchClass = (event: React.FormEvent) => {
+  const handleSearchClass = async (event: React.FormEvent) => {
     event.preventDefault();
-    fetchCourse();
-    fetchClass();
-    const matchedCourse = courseList.find((course) => course.MS === courseCode);
-    const matchedClass = classList.find((cls) => cls.CourseId === matchedCourse?.ID && cls.Name === classCode && cls.Semester === semester);
-    const matchedTeacher = teacherList.find((tcher) => tcher.ID === matchedClass?.TeacherId);
 
+    const matchedCourse = courseList.find((course) => course.MS === courseCode);
+    const matchedCourseId = matchedCourse?.ID || "";
+    setCourseId(matchedCourseId);
+    // console.log("Check point");
+    await fetchClass(matchedCourseId);
+    console.log("Check class list", classList);
+    const matchedClass = classList.find((cls) => cls.Name === classCode && cls.Semester === semester);
+    const matchedTeacher = teacherList.find((tcher) => tcher.ID === matchedClass?.TeacherId);
+    
+    console.log("Mát tích chờ:", matchedTeacher);
+    console.log("Mát course:", matchedCourse);
+    console.log("Mát cờ lát:", matchedClass);
     if (matchedCourse && matchedClass && matchedTeacher) {
       // Cập nhật searchedClass với các thông tin đã lấy được
       setSearchedClass({
@@ -107,17 +118,17 @@ function AdminSearch() {
         numMember: matchedClass.ListStudentMs.length,
       });
     } else {
+      // alert("Vui lòng kiểm tra lại thông tin lớp cần tìm");
       console.log("No matching class or course or teacher found.");
       setSearchedClass(undefined); // Xóa thông tin nếu không tìm thấy kết quả
     }
   };
 
-  const fetchClass = async () => {
+  const fetchClass = async (searchedCourseId: string) => {
     try {
-      const token = localStorage.getItem("login");
-
+      const token = localStorage.getItem("BearerToken");
       const classesList = await axios.get(
-        `https://dacnpm.thaily.id.vn/admin/api/class/course/${courseCode}`,
+        `https://dacnpm.thaily.id.vn/admin/api/class/course/${searchedCourseId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -126,6 +137,7 @@ function AdminSearch() {
       );
 
       const data = classesList.data;
+      console.log("Check data class:", data);
 
       // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
       const formattedClasses = data.classes.map((ClassItem: any) => ({
@@ -150,7 +162,7 @@ function AdminSearch() {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const token = localStorage.getItem("login");
+        const token = localStorage.getItem("BearerToken");
         console.log("Check token:", token)
         const teachers = await axios.get(
           `https://dacnpm.thaily.id.vn/admin/api/account/teacher`,
@@ -175,9 +187,8 @@ function AdminSearch() {
           ExpiredAt: teacherItem.ExpiredAt,
         }));
 
-        console.log("Hello teacher");
         setTeacherList(formattedTeacher);
-        console.log("Danh sách gv:", teacherList);
+
       } catch (error) {
         console.error("Failed to fetch teacher info:", error);
       }
@@ -209,56 +220,71 @@ function AdminSearch() {
           ExpiredAt: StudentItem.ExpiredAt,
         }));
 
-        console.log("Hello student");
         setStudentList(formattedStudent);
-        console.log("Danh sách sv:", studentList);
+
       } catch (error) {
         console.error("Failed to fetch student info:", error);
       }
     };
 
-    
+    const fetchCourse = async () => {
+      try {
+        const token = localStorage.getItem("BearerToken");
+        console.log("Token của admin:", token);
+        const courses = await axios.get(
+          `https://dacnpm.thaily.id.vn/admin/api/course/all`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = courses.data;
+
+        // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
+        const formattedCourses = data.allCourse.map((CourseItem: any) => ({
+          ID: CourseItem.ID,
+          MS: CourseItem.MS,
+          Credit: CourseItem.Credit,
+          Name: CourseItem.Name,
+          Desc: CourseItem.Desc,
+          HS: CourseItem.HS,
+          CreatedBy: CourseItem.CreatedBy,
+          ExpiredAt: CourseItem.ExpiredAt,
+        }));
+
+        setCourseList(formattedCourses);
+      }
+      catch (error) {
+        console.error("Failed to fetch course info:", error);
+      }
+    };
+
 
     fetchTeacher();
     fetchStudent();
-
-    // fetchCourse();
-    
+    fetchCourse();
   }, []);
-  const fetchCourse = async () => {
-    try {
-      const token = localStorage.getItem("login");
-      console.log("Token của admin:", token);
-      const courses = await axios.get(
-        `https://dacnpm.thaily.id.vn/admin/api/course/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
 
-      const data = courses.data;
+  // Check thông tin GV và SV
 
-      // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
-      const formattedCourses = data.allCourse.map((CourseItem: any) => ({
-        ID: CourseItem.ID,
-        MS: CourseItem.MS,
-        Credit: CourseItem.Credit,
-        Name: CourseItem.Name,
-        Desc: CourseItem.Desc,
-        HS: CourseItem.HS,
-        CreatedBy: CourseItem.CreatedBy,
-        ExpiredAt: CourseItem.ExpiredAt,
-      }));
+  useEffect(() => {
+    console.log("Teacher list updated:", teacherList);
+  }, [teacherList]);
 
-      setCourseList(formattedCourses);
-      console.log("Danh sách khóa học:", courseList);
-    }
-    catch (error) {
-      console.error("Failed to fetch course info:", error);
-    }
-  };
+  useEffect(() => {
+    console.log("Student list updated:", studentList);
+  }, [studentList]);
+
+  useEffect(() => {
+    console.log("Course list updated:", courseList);
+  }, [courseList]);
+
+  useEffect(() => {
+    console.log("Class list updated:", classList);
+  }, [classList]);
+
   return (
 
     <div>
@@ -268,7 +294,7 @@ function AdminSearch() {
         <div className="text-5xl font-medium text-center w-full mt-5">Tìm kiếm lớp học</div>
 
         <form className="w-[60%]  mt-5 bg-gray-200 border-2 border-t-blue-600 flex flex-col"
-            onSubmit={handleSearchClass}
+          onSubmit={handleSearchClass}
         >
 
           <div className="border-2 border-black bg-blue-600 m-5 p-2 text-white text-center text-2xl font-medium w-[20%] h-15   ">
@@ -306,6 +332,30 @@ function AdminSearch() {
             Tìm lớp học
           </button>
         </form>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white shadow-md rounded-lg">
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="px-4 py-2 text-left">Mã Lớp</th>
+                <th className="px-4 py-2 text-left">Mã Môn Học</th>
+                <th className="px-4 py-2 text-left">Tên Môn Học</th>
+                <th className="px-4 py-2 text-left">Giảng viên phụ trách</th>
+                <th className="px-4 py-2 text-left">Số lượng thành viên</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-4 py-2">{searchedClass?.classID}</td>
+                <td className="px-4 py-2">{searchedClass?.courseID}</td>
+                <td className="px-4 py-2">{searchedClass?.courseName}</td>
+                <td className="px-4 py-2">{searchedClass?.teacherName}</td>
+                <td className="px-4 py-2">{searchedClass?.numMember}</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
       </div>
       <Footer />
     </div>
