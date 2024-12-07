@@ -1,281 +1,232 @@
-import React, { useState } from 'react';
-import Navbar from '../../components/Navbar/Navbar';
-import axios from 'axios';
-import AddSuccess from '../../components/PopUp/AddSuccess';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const ClassCreate: React.FC = () => {
+  const [teachers, setTeachers] = useState<{ ID: string; Ms: string; Name: string }[]>([]);
+  const [courses, setCourses] = useState<{ ID: string; MS: string; Name: string }[]>([]);
+  const [semesters, setSemesters] = useState<string[]>([]);
+  const [formData, setFormData] = useState({
+    semester: "",
+    name: "",
+    course_id: "",
+    teacher_id: "",
+    listStudent_ms: [] as string[],
+  });
 
-    const [formValue, setFormValue] = useState({
-        MMM: '',
-        ML: '',
-        class: '',
-        teacher: '',
-        file: ''
-    });
-    const MLOptions = ['L', 'CC', 'TN'];
+  // Fetch Teachers, Courses, and Semesters
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("BearerToken");
+        if (!token) {
+          alert("Token not found. Please log in.");
+          return;
+        }
 
-    const [error, setError] = useState<{ [key: string]: string }>({});
+        // Fetch Teachers
+        const teacherResponse = await axios.get(
+          "https://dacnpm.thaily.id.vn/admin/api/account/teacher",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    const [popUp, setPopUp] = useState(false);
+        if (teacherResponse.data && teacherResponse.data.foundedUser) {
+          const teacherList = teacherResponse.data.foundedUser.map((teacher: any) => ({
+            ID: teacher.ID,
+            Ms: teacher.Ms,
+            Name: teacher.Name,
+          }));
+          setTeachers(teacherList);
+        }
 
-    const changeStatePopup = () => {
-        setPopUp(!popUp);
-    }
-
-    const handleChange = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
-        const { name, value } = event.target;
-        setFormValue({
-            ...formValue,
-            [name]: value,
+        // Fetch Courses and Semesters
+        const courseResponse = await axios.get("https://dacnpm.thaily.id.vn/admin/api/course/all", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+
+        if (courseResponse.data && courseResponse.data.allCourse) {
+          const courseList = courseResponse.data.allCourse.map((course: any) => ({
+            ID: course.ID,
+            MS: course.MS,
+            Name: course.Name,
+          }));
+          setCourses(courseList);
+        }
+
+        if (courseResponse.data && courseResponse.data.semester) {
+          const { PREV, CUREENT, NEXT } = courseResponse.data.semester;
+          setSemesters([PREV, CUREENT, NEXT]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("Failed to fetch teacher, course, or semester data.");
+      }
     };
 
-    const checkLetter = (c: string) => {
-        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) return true;
-        return false;
-    }
+    fetchData();
+  }, []);
 
-    const checkDigit = (c: string) => {
-        if (c >= '0' && c <= '9') return true;
-        return false;
-    }
+const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    const validateForm = () => {
-        let newError: { [key: string]: string } = {};
-        let valid = true;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const text = event.target?.result as string;
 
-        if (!formValue.MMM) {
-            newError.MMM = 'Nhập Mã môn học';
-            valid = false;
-        }
-        else if (formValue.MMM.length !== 6) {
-            newError.MMM = 'Mã môn học không hợp lệ!';
-            valid = false;
-        }
-        else if (!checkLetter(formValue.MMM[0]) || !checkLetter(formValue.MMM[1]) || !checkDigit(formValue.MMM[2]) || !checkDigit(formValue.MMM[3]) || !checkDigit(formValue.MMM[4]) || !checkDigit(formValue.MMM[5])) {
-            newError.MMM = 'Mã môn học không hợp lệ!';
-            valid = false;
-        }
+    // Split the CSV by lines
+    const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
 
-        if (!formValue.ML) {
-            newError.ML = 'Chọn mã lớp';
-            valid = false;
-        }
+    // Remove the header row (assuming 'mssv' is the header)
+    const studentIDs = lines.slice(1).map((line) => line.split(",")[0]); // Assumes CSV uses commas
 
-        if (!formValue.class) {
-            newError.class = 'Nhập tên lớp';
-            valid = false;
-        }
+    setFormData((prev) => ({ ...prev, listStudent_ms: studentIDs }));
+  };
+  reader.readAsText(file);
+};
 
-        if (!formValue.teacher) {
-            newError.teacher = 'Nhập mã giảng viên';
-            valid = false;
-        }
-        else if (formValue.teacher.length !== 7) {
-            newError.teacher = 'Mã giảng viên không hợp lệ!';
-            valid = false;
-        }
-        else if (!checkDigit(formValue.teacher[0]) || !checkDigit(formValue.teacher[1]) || !checkDigit(formValue.teacher[2]) || !checkDigit(formValue.teacher[3]) || !checkDigit(formValue.teacher[4]) || !checkDigit(formValue.teacher[5]) || !checkDigit(formValue.teacher[6])) {
-            newError.teacher = 'Mã giảng viên không hợp lệ!';
-            valid = false;
-        }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-        if (!formValue.file) {
-            newError.file = 'Chưa có Danh sách Sinh viên';
-            valid = false;
-        }
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-        setError(newError);
-        return valid;
-    }
+  const token = localStorage.getItem("BearerToken");
+  if (!token) {
+    alert("Token not found. Please log in.");
+    return;
+  }
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        if (validateForm()) {
-            console.log('Form hợp lệ');
-            console.log(formValue);
-    
-            try {
-                // Gửi dữ liệu lớp học lên server
-                const response = await axios.post('http://domain/admin/api/class/create', {
-                    MMM: formValue.MMM,
-                    ML: formValue.ML,
-                    className: formValue.class,
-                    teacherId: formValue.teacher,
-                });
-    
-                if (response.data.code === "success") {
-                    console.log("Tạo lớp thành công:", response.data);
-    
-                    // Upload danh sách sinh viên nếu file được chọn
-                    if (formValue.file && formValue.ML) {
-                        const file = document.querySelector<HTMLInputElement>("#file-upload")?.files?.[0];
-                        if (file) {
-                            await uploadStudentList(file, formValue.ML);
-                        }
-                    }
-    
-                    // Reset form và hiển thị popup
-                    setFormValue({
-                        MMM: '',
-                        ML: '',
-                        class: '',
-                        teacher: '',
-                        file: ''
-                    });
-                    setError({});
-                    setPopUp(true); // Hiển thị popup khi thành công
-                } else {
-                    console.error("Lỗi:", response.data.message);
-                    alert("Có lỗi xảy ra: " + response.data.message);
-                }
-            } catch (error) {
-                console.error("Lỗi khi gọi API tạo lớp:", error);
-                alert("Không thể kết nối đến server. Vui lòng thử lại sau.");
-            }
-        } else {
-            console.log('Form không hợp lệ');
-        }
-    };
-
-    const uploadStudentList = async (file: File, classId: string) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('classId', classId);
-    
-        try {
-            const response = await axios.post('http://domain/admin/api/class/upload-student-list', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-    
-            if (response.data.code === "success") {
-                console.log("Upload danh sách sinh viên thành công:", response.data);
-                setPopUp(true); // Hiển thị popup khi upload thành công
-            } else {
-                console.error("Lỗi:", response.data.message);
-                alert("Có lỗi xảy ra: " + response.data.message);
-            }
-        } catch (error) {
-            console.error("Lỗi khi gọi API upload:", error);
-            alert("Không thể kết nối đến server. Vui lòng thử lại sau.");
-        }
-    };
-
-    return (
-        <div className='mt-40 flex flex-col items-center min-h-screen bg-gray-100'>
-
-            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-5 mb-5 rounded-lg h-[85vh] border border-black my-2'>
-
-                <h2 className='text-5xl font-bold mt-5 mb-5 h-[10%]'>Tạo Lớp</h2>
-
-                <form
-                    className='w-full flex flex-col h-[90%] '
-                    onSubmit={handleSubmit}
-                >
-                    <div className='flex flex-col items-center justify-evenly h-[90%]'>
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Mã Môn học: </div>
-                                <input type="text"
-                                    name='MMM'
-                                    placeholder='Nhập Mã Môn học'
-                                    value={formValue.MMM}
-                                    onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-                            {error.MMM && (
-                                <div className='text-red-500 text-sm h-[20%] ml-20'>{error.MMM}</div>
-                            )}
-                        </div>
-
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Mã lớp: </div>
-                                <select 
-                                    name='ML'
-                                    value={formValue.ML}
-                                    onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-2 text-center focus:outline-none leading-[2.5rem] placeholder-opacity-50 opacity-80'
->
-                                <option value="" disabled>Chọn lớp</option>
-                                {MLOptions.map((className, index) => (
-                                    <option key={index} value={className}>{className}</option>
-                                ))}
-                                </select> 
-                                <div className='w-[30%]'></div>
-                            </div>
-                            {error.ML && (
-                                <div className='text-red-500 text-sm h-[20%] ml-20'>{error.ML}</div>
-                            )}
-                        </div>
-
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Tên lớp: </div>
-                                <input type="text"
-                                    placeholder='Nhập Tên lớp'
-                                    name="class"
-                                    value={formValue.class}
-                                    onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-                            {error.class && (
-                                <div className='text-red-500 text-sm h-[20%] ml-20'>{error.class}</div>
-                            )}
-                        </div>
-
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Mã giảng viên: </div>
-                                <input type="text"
-                                    name="teacher"
-                                    placeholder='Nhập Mã giảng viên'
-                                    value={formValue.teacher}
-                                    onChange={handleChange}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-                            {error.teacher && (
-                                <div className='text-red-500 text-sm h-[20%] ml-20'>{error.teacher}</div>
-                            )}
-                        </div>
-
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>File danh sách sinh viên: </div>
-                                <input 
-                                    type="file"
-                                    name="file"
-                                    id="file-upload"
-                                    onChange={(e) => setFormValue({...formValue, file: e.target.files?.[0]?.name || ''})}
-                                    className='bg-gray-300 rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' 
-                                />
-                            </div>
-                            {error.file && (
-                                <div className='text-red-500 text-sm h-[20%] ml-20'>{error.file}</div>
-                            )}
-                        </div>
-
-                        <button type="submit"
-                            className='mt-4 bg-blue-500 text-white text-lg p-3 rounded-full w-[50%] hover:bg-blue-700'>
-                            Tạo lớp
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-
-            {/* Pop up */}
-            {popUp && <AddSuccess onClose={changeStatePopup} />}
-        </div>
+  try {
+    const response = await axios.post(
+      "https://dacnpm.thaily.id.vn/admin/api/class/create",
+      formData, // The formData state already contains the required structure
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
-}
+
+    if (response.status === 200) {
+      alert("Class created successfully!");
+    } else {
+      alert(`Error: ${response.data.message || "Failed to create class"}`);
+    }
+  } catch (error: any) {
+    console.error("Error submitting form:", error);
+    alert(error.response?.data?.message || "An unexpected error occurred");
+  }
+};      
+
+  return (
+    <div className="mt-40 flex flex-col items-center min-h-screen bg-gray-100">
+      <div className="w-full flex flex-col items-center max-w-4xl mt-5 mb-5 rounded-lg border border-black p-4 bg-white">
+        <h1 className="text-2xl font-bold mb-4">Create a New Class</h1>
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+          {/* Semester Dropdown */}
+          <label>
+            Semester:
+            <select
+              name="semester"
+              value={formData.semester}
+              onChange={handleChange}
+              className="block w-full border rounded p-2"
+              required
+            >
+              <option value="">Select Semester</option>
+              {semesters.map((semester) => (
+                <option key={semester} value={semester}>
+                  {semester}
+                </option>
+              ))}
+            </select>
+          </label>
+
+       
+          {/* Teacher Dropdown */}
+          <label>
+            Teacher:
+            <select
+              name="teacher_id"
+              value={formData.teacher_id}
+              onChange={handleChange}
+              className="block w-full border rounded p-2"
+              required
+            >
+              <option value="">Select Teacher</option>
+              {teachers.map((teacher) => (
+                <option key={teacher.ID} value={teacher.ID}>
+                  {teacher.Ms} - {teacher.Name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Course Dropdown */}
+          <label>
+            Course:
+            <select
+              name="course_id"
+              value={formData.course_id}
+              onChange={handleChange}
+              className="block w-full border rounded p-2"
+              required
+            >
+              <option value="">Select Course</option>
+              {courses.map((course) => (
+                <option key={course.ID} value={course.ID}>
+                  {course.MS} - {course.Name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Class Name Input */}
+          <label>
+            Class Name:
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="block w-full border rounded p-2"
+              placeholder="Enter class name"
+              required
+            />
+          </label>
+
+          {/* CSV File Upload */}
+          <label>
+            Upload Student List (CSV):
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="block w-full border rounded p-2"
+              required
+            />
+          </label>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Create Class
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 export default ClassCreate;
-
-

@@ -212,7 +212,7 @@ const GradeInput: React.FC = () => {
                     }
                 );
 
-                if (checkExistedScore.data.resultScore.SCORE) {
+                if (checkExistedScore.data.code==='success') {
                     const modifyScore = await axios.patch(
                         `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
                         gradeInfo,
@@ -338,6 +338,7 @@ const GradeInput: React.FC = () => {
                                 <div>Chọn file (.csv)</div>
                                 <input
                                     type="file"
+
                                     name='gradeFile'
                                     accept='.csv'
                                     // value={fileGrade}
