@@ -32,10 +32,8 @@ function StudentGradeTable() {
   const [scoreList, setScoreList] = useState<ScoreItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   const token = localStorage.getItem('BearerToken');
   const classID = sessionStorage.getItem('SelectedClassID');
-
 useEffect(() => {
   const fetchGrades = async () => {
     try {
@@ -61,9 +59,7 @@ useEffect(() => {
         throw new Error('Failed to fetch grade data');
       }
 
-      const mssvFilter = sessionStorage.getItem('MSSV');
-
-      // Nếu `MSSV` trống hoặc không tồn tại, render toàn bộ danh sách
+      const mssvFilter = sessionStorage.getItem('MSSV'); // Lấy giá trị mới nhất của MSSV
       const filteredScores = mssvFilter
         ? data.resultScore.SCORE.filter((item) => item.MSSV === mssvFilter)
         : data.resultScore.SCORE;
@@ -82,7 +78,9 @@ useEffect(() => {
   };
 
   fetchGrades();
-}, [classID, token]);
+}, [classID, token, sessionStorage.getItem('MSSV')]);
+
+
   return (
     <div className="overflow-x-auto">
       {loading ? (

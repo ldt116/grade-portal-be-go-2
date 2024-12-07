@@ -145,6 +145,7 @@ const handleMssvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   defaultValue={sessionStorage.getItem('MSSV') || ''} // Hiển thị giá trị MSSV từ sessionStorage nếu có
 />
         </div>
+         
         <div className="border border-black bg-white rounded-3xl">
           <label htmlFor="classSelect" className="border-r border-black py-[0.5rem] px-4">
             Lớp Học
