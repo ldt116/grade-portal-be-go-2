@@ -68,6 +68,7 @@ const AddMember: React.FC = () => {
           setStatusMessage("Tạo tài khoản thành công!");
           console.log(response)
           setFile(null); // Reset file input
+        window.location.reload(); // Reload the page
         } catch (error) {
           console.error("Error uploading CSV data:", error);
           setStatusMessage("Đã xảy ra lỗi khi tạo tài khoản từ CSV.");
