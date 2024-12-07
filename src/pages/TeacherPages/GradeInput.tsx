@@ -225,9 +225,46 @@ const GradeInput: React.FC = () => {
                     );
                     console.log("Đã cập nhật bằng PATCH", gradeInfo);
                 }
-                else {
-                    const addScore = await axios.post(
+
+            }
+            catch (error) {
+                const gradeInfo = {
+                    semester: selectedClass?.Semester,
+                    course_id: selectedClass?.CourseId,
+                    class_id: selectedClass?.ID,
+                    // class_id: '672b87af226ae67ef9aaa047',
+
+                    score: scores.map((student) => ({
+                        mssv: student.mssv,
+                        data: {
+                            BT: student.data.BT,
+                            TN: student.data.TN,
+                            BTL: student.data.BTL,
+                            GK: student.data.GK,
+                            CK: student.data.CK,
+                        }
+                    })),
+                    expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
+                    createdBy: selectedClass?.CreatedBy,
+                    updatedBy: selectedClass?.UpdatedBy
+                }
+                const token = localStorage.getItem("BearerToken");
+
+                const addScore = await axios.post(
                         `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+                        {
+                            score: [],
+                            class_id: `${selectedClass?.ID}`,
+                         },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+
+                        }
+                    );
+                    const modifyScore = await axios.patch(
+                        `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
                         gradeInfo,
                         {
                             headers: {
@@ -237,11 +274,6 @@ const GradeInput: React.FC = () => {
                         }
                     );
                     console.log("Đã thêm điểm bằng POST");
-                }
-
-            }
-            catch (error) {
-                console.error("Đã có lỗi khi gửi dữ liệu: ", error);
             }
         } else {
             console.log("Form không hợp lệ");
