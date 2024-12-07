@@ -8,6 +8,8 @@ import EditForm from '../pages/AdminPages/EditForm'
 import Login from '../pages/LoginPages/Login';
 import GradeInput from '../pages/TeacherPages/GradeInput';
 import CourseCreate from '../pages/AdminPages/CourseCreate'
+import CourseManager from '../pages/AdminPages/CourseManager'
+import ClassManager from '../pages/AdminPages/ClassManager'
 import ClassCreate from '../pages/AdminPages/ClassCreate';
 const routes = [
     {
@@ -36,8 +38,21 @@ const routes = [
         layout: StudentLayout,
     },
     {
-        path: 'teacher/gradeinput',
+        path: '/teacher/gradeinput',
         page: GradeInput,
+        layout: StudentLayout,
+    },
+
+
+    {
+        path: '/course/:id',
+        page: CourseManager,
+        layout: StudentLayout,
+    },
+
+    {
+        path: '/class/:id',
+        page: ClassManager,
         layout: StudentLayout,
     },
     {

@@ -300,7 +300,6 @@ const GradeInput: React.FC = () => {
                     onSubmit={handleSubmit}
                     className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
                 >
-                    <div className='flex flex-row justify-center items-center w-[150px] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
 
                     {/* Màn hình lớn */}
                     <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
