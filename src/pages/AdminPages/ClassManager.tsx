@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Papa from "papaparse";
 
 interface ClassData {
   ID: string;
@@ -20,6 +21,7 @@ const ClassManager: React.FC = () => {
   const [teacherName, setTeacherName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false); // State to track expanded student list
+  const [csvData, setCsvData] = useState<string[]>([]); // State to store parsed MSSV
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -115,10 +117,61 @@ const ClassManager: React.FC = () => {
     }
   };
 
-  // Toggle the expansion of the student list
-  const toggleExpand = () => {
-    setIsExpanded(prev => !prev);
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      complete: (result) => {
+        const parsedData = result.data
+          .filter((row: any) => row.mssv) // Chỉ lấy hàng có mssv
+          .map((row: any) => row.mssv.trim()); // Lấy dữ liệu cột `mssv` và loại bỏ khoảng trắng
+        setCsvData(parsedData);
+      },
+      error: () => {
+        setError("Failed to parse the CSV file.");
+      },
+    });
   };
+const handleAddStudents = async () => {
+  if (!classData || csvData.length === 0) {
+    setError("No data to add. Please upload a valid CSV file.");
+    return;
+  }
+
+  const token = localStorage.getItem("BearerToken");
+  if (!token) {
+    setError("Authentication token is missing. Please log in.");
+    return;
+  }
+
+  try {
+    const response = await axios.patch(
+      `https://dacnpm.thaily.id.vn/admin/api/class/add`,
+      {
+        class_id: classData.ID,
+        listStudent_ms: csvData,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.code === "success") {
+      alert("Students added successfully!");
+      setCsvData([]); // Reset CSV data
+      window.location.reload(); // Reload the page
+    } else {
+      setError(response.data.message || "Failed to add students.");
+    }
+  } catch (err) {
+    console.error(err);
+    setError("An error occurred while adding students.");
+  }
+};
 
   return (
     <div className="mt-40 flex flex-col items-center min-h-screen bg-gray-100">
@@ -141,7 +194,7 @@ const ClassManager: React.FC = () => {
 
             <h2 className="text-xl font-semibold mt-4">Student List</h2>
             <button
-              onClick={toggleExpand}
+              onClick={() => setIsExpanded((prev) => !prev)}
               className="text-blue-500 mt-2 mb-4"
             >
               {isExpanded ? "Collapse" : "Expand"} Student List
@@ -160,6 +213,20 @@ const ClassManager: React.FC = () => {
             ) : isExpanded ? (
               <p>No students available.</p>
             ) : null}
+
+            <h2 className="text-xl font-semibold mt-4">Add Students</h2>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="border border-gray-300 rounded p-2 mt-2"
+            />
+            <button
+              onClick={handleAddStudents}
+              className="bg-green-500 text-white py-2 px-4 rounded mt-4 hover:bg-green-600"
+            >
+              Add Students
+            </button>
           </>
         ) : (
           <p>Loading...</p>
