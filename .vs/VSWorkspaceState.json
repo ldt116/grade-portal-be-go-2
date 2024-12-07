@@ -1,6 +1,16 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\apis",
+    "\\src\\components",
+    "\\src\\components\\GradeTable",
+    "\\src\\constants",
+    "\\src\\pages",
+    "\\src\\pages\\LoginPages",
+    "\\src\\pages\\StudentPages",
+    "\\src\\routes"
   ],
+  "SelectedNode": "\\src\\pages\\StudentPages\\HomePage.tsx",
   "PreviewInSolutionExplorer": false
 }

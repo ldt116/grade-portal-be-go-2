@@ -1,143 +1,1291 @@
-import React, { useState } from 'react'
-import Navbar from '../../components/Navbar/Navbar';
+// import React, { useEffect, useState } from 'react'
+// import Navbar from '../../components/Navbar/Navbar';
+// import AddSuccess from '../../components/PopUp/AddSuccess';
+// import Header from '../../components/HeaderFooter/Header';
+// import Footer from '../../components/HeaderFooter/Footer';
+// import axios from 'axios';
+// import Papa from 'papaparse';
 
+// interface ClassInfo {
+//     ID: string,
+//     Semester: string,
+//     Name: string,
+//     CourseId: string,
+//     ListStudentMs: string[],
+//     TeacherId: string,
+//     CreatedBy: string,
+//     UpdatedBy: string
+// }
+
+// interface ScoreData {
+//     mssv: string;
+//     data: {
+//         BT: number[];
+//         TN: number[];
+//         BTL: number[];
+//         GK: number;
+//         CK: number;
+//     };
+// }
+
+// const GradeInput: React.FC = () => {
+
+//     const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
+
+//     const [scores, setScores] = useState<ScoreData[]>([]);
+
+//     const [popUp, setPopUp] = useState(false);
+
+//     const changeStatePopup = () => {
+//         setPopUp(!popUp);
+//     }
+
+//     const [error, setError] = useState<{ [key: string]: string }>({});
+
+//     const [selectedClass, setSelectedClass] = useState<ClassInfo>();
+
+
+//     const handleSelectChange = (classid: string) => {
+//         // Tìm lớp học trong classInfo dựa trên classID
+//         const findClass = classInfo.find((classItem) => classItem.ID === classid);
+
+//         if (findClass) {
+//             console.log("Lớp học được chọn:", findClass.Name);
+//             setSelectedClass(findClass);
+
+//         }
+//         else {
+//             console.log("Không tìm thấy lớp học với classID:", classid);
+//         }
+//     };
+
+//     const [fileGrade, setFileGrade] = useState<File | null>(null);
+//     const [fileName, setFileName] = useState<string>('');
+
+//     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//         const file = event.target.files?.[0];
+//         if (file) {
+//             setFileName(file.name); // Lưu tên file
+//             setFileGrade(file);
+//             setError({ ...error, gradeFile: '' });
+//             Papa.parse(file, {
+//                 header: true, // Đọc CSV với dòng đầu là header
+//                 skipEmptyLines: true, // Bỏ qua dòng trống
+//                 complete: (result) => {
+//                     // Tạo dữ liệu từ file CSV
+//                     const formattedScores: ScoreData[] = result.data.map((row: any) => ({
+//                         mssv: row.mssv,
+//                         data: {
+//                             BT: [parseFloat(row.BT1), parseFloat(row.BT2), parseFloat(row.BT3)],
+//                             TN: [parseFloat(row.TN)],
+//                             BTL: [parseFloat(row.BTL)],
+//                             GK: parseFloat(row.GK),
+//                             CK: parseFloat(row.CK),
+//                         },
+//                     }));
+
+//                     // Gán vào state
+//                     setScores(formattedScores);
+//                 },
+//                 error: (error) => {
+//                     console.error("Error parsing CSV file:", error);
+//                 },
+//             });
+//         }
+//         else {
+//             setFileName('');
+//             setFileGrade(null);
+//         }
+//     };
+
+//     const validateForm = () => {
+//         let newError: { [key: string]: string } = {};
+//         let valid = true;
+
+//         // Kiểm tra file
+
+//         if (!fileGrade) {
+//             newError.gradeFile = 'Hãy upload file điểm!';
+//             valid = false;
+//         }
+
+//         setError(newError);
+//         return valid;
+//     }
+
+// const fetchClassInfo = async () => {
+//     try {
+//         const token = localStorage.getItem("login");
+//         const classIdExists = await axios.get(
+//             `https://dacnpm.thaily.id.vn/api/class/account`,
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//             }
+//         );
+
+//         const data = classIdExists.data;
+
+//         // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
+//         const formattedClasses = data.classAll.map((classItem: any) => ({
+//             ID: classItem.ID || "", // Lấy classID hoặc giá trị mặc định
+//             Semester: classItem.Semester || "",
+//             Name: classItem.Name || "",
+//             CourseId: classItem.CourseId || "",
+//             ListStudentMs: classItem.ListStudentMs || [],
+//             TeacherId: classItem.TeacherId || "",
+//             CreatedBy: classItem.CreatedBy || "",
+//             UpdatedBy: classItem.UpdatedBy || "",
+//         }));
+
+
+//         // Cập nhật state với danh sách lớp đã format
+//         setClassInfo(formattedClasses);
+//     } catch (error) {
+//         console.error("Failed to fetch class info:", error);
+//     }
+// };
+
+//     const handleSubmit = async (event: React.FormEvent) => {
+//         event.preventDefault();
+
+//         if (validateForm()) {
+//             try {
+//                 const token = localStorage.getItem("login");
+
+//                 console.log("Check var:", selectedClass?.ID)
+
+//                 const gradeInfo = {
+//                     semester: selectedClass?.Semester,
+//                     course_id: selectedClass?.CourseId,
+//                     class_id: selectedClass?.ID,
+//                     // class_id: '672b87af226ae67ef9aaa047',
+
+//                     score: scores.map((student) => ({
+//                         mssv: student.mssv,
+//                         data: {
+//                             BT: student.data.BT,
+//                             TN: student.data.TN,
+//                             BTL: student.data.BTL,
+//                             GK: student.data.GK,
+//                             CK: student.data.CK,
+//                         }
+//                     })),
+//                     expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
+//                     createdBy: selectedClass?.CreatedBy,
+//                     updatedBy: selectedClass?.UpdatedBy
+//                 }
+
+//                 const checkExistedScore = await axios.get(
+//                     `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+//                     {
+//                         headers: {
+//                             Authorization: `Bearer ${token}`,
+//                         },
+//                     }
+//                 );
+
+//                 if (checkExistedScore.data.resultScore.SCORE) {
+//                     const modifyScore = await axios.patch(
+//                         `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+//                         gradeInfo,
+//                         {
+//                             headers: {
+//                                 Authorization: `Bearer ${token}`,
+//                             },
+
+//                         }
+//                     );
+//                     console.log("Đã cập nhật bằng PATCH", gradeInfo);
+//                 }
+//                 else {
+//                     const addScore = await axios.post(
+//                         `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+//                         gradeInfo,
+//                         {
+//                             headers: {
+//                                 Authorization: `Bearer ${token}`,
+//                             },
+
+//                         }
+//                     );
+//                     console.log("Đã thêm điểm bằng POST");
+//                 }
+
+//             }
+//             catch (error) {
+//                 console.error("Đã có lỗi khi gửi dữ liệu: ", error);
+//             }
+//         } else {
+//             console.log("Form không hợp lệ");
+//         }
+//     };
+
+//     useEffect(() => {
+//         fetchClassInfo();
+//     }, []);
+
+
+
+
+//     return (
+//         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
+
+//             <Header />
+//             <Navbar />
+//             {/* Nhập điểm */}
+//             <div className='w-full flex flex-col items-center max-w-6xl my-5 rounded-lg h-[70vh] border border-black'>
+
+//                 <h2 className='text-5xl my-5'>Nhập điểm</h2>
+
+//                 <form
+//                     onSubmit={handleSubmit}
+//                     className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
+//                 >
+//                     <div className='flex flex-row justify-center items-center w-[150px] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
+
+//                     {/* Màn hình lớn */}
+//                     <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
+
+//                         {/* Thông tin lớp */}
+//                         <div className='flex flex-col justify-evenly items-center h-[80%] w-[40%]'>
+//                             <div className='text-3xl font-medium '>
+//                                 Chọn lớp
+//                             </div>
+
+//                             <select
+
+//                                 id="classDropdown"
+//                                 onChange={(event) => handleSelectChange(event.target.value)}
+//                                 // onClick={fetchClassInfo}
+//                                 className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
+//                             >
+
+//                                 {classInfo.map((classItem) => (
+//                                     <option
+//                                         key={classItem.ID}
+//                                         value={classItem.ID}
+//                                     >
+//                                         {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                         </div>
+//                     </div>
+
+//                     <div className='hidden md:flex flex-col items-center h-[25%] w-full'>
+//                         {/* Chọn file */}
+//                         <div className='flex flex-row justify-center items-center w-[80%] h-[50%]'>
+//                             <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
+//                                 <div>Chọn file (.csv)</div>
+//                                 <input
+//                                     type="file"
+//                                     name='gradeFile'
+//                                     accept='.csv'
+//                                     // value={fileGrade}
+//                                     onChange={handleFileChange}
+//                                     className='hidden'
+//                                 />
+
+//                             </label>
+
+//                             {/* Hiện tên file */}
+//                             <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+//                                 {fileGrade ? (
+//                                     <div className="text-md text-gray-700">{fileName}</div>
+//                                 ) : (
+//                                     <div className="text-md text-gray-400">Upload file điểm</div>
+//                                 )}
+//                             </div>
+//                         </div>
+//                         {error.gradeFile && (
+//                             <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+//                         )}
+//                     </div>
+
+//                     <div className='hidden md:flex flex-col items-center justify-center h-14 mt-2'>
+//                         <button
+//                             className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
+//                             type='submit'>
+//                             Cập nhật điểm
+//                         </button>
+
+//                     </div>
+
+
+//                     {/* Màn hình nhỏ */}
+//                     <div className='md:hidden flex flex-row justify-center m-5 h-[25%]'>
+//                         {/* Thông tin lớp */}
+//                         <div className='flex flex-col items-center h-[65%] w-[35%]'>
+
+//                             <div className='text-3xl font-medium '>
+//                                 Chọn lớp
+//                             </div>
+
+//                             <select
+//                                 id="classDropdown"
+//                                 onChange={(event) => handleSelectChange(event.target.value)}
+//                                 onClick={fetchClassInfo}
+//                                 className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
+//                             >
+
+//                                 {classInfo.map((classItem) => (
+//                                     <option
+//                                         className='w-full'
+//                                         key={classItem.ID}
+//                                         value={classItem.ID}
+//                                     >
+//                                         {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                         </div>
+//                     </div>
+
+//                     <div className='md:hidden flex flex-col items-center h-[25%] w-full'>
+//                         {/* Chọn file */}
+//                         <div className='flex items-center justify-center w-[80%] h-[50%]'>
+//                             <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
+//                                 <div>Chọn file (.csv)</div>
+//                                 <input
+//                                     type="file"
+//                                     name='gradeFile'
+//                                     accept='.csv'
+//                                     // value={fileGrade}
+//                                     onChange={handleFileChange}
+//                                     className='hidden'
+//                                 />
+
+//                             </label>
+
+//                             {/* Hiện tên file */}
+//                             <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+//                                 {fileGrade ? (
+//                                     <div className="text-md text-gray-700">{fileName}</div>
+//                                 ) : (
+//                                     <div className="text-md text-gray-400">Upload file điểm</div>
+//                                 )}
+//                             </div>
+//                         </div>
+//                         {error.gradeFile && (
+//                             <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+//                         )}
+//                     </div>
+
+//                     <div className='md:hidden flex flex-col items-center justify-center h-14 mt-2'>
+//                         <button
+//                             className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
+//                             type='submit'>
+//                             Cập nhật điểm
+//                         </button>
+
+//                     </div>
+
+//                     {popUp && (
+//                         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+//                             <AddSuccess onClose={changeStatePopup} />
+//                         </div>
+//                     )}
+
+//                 </form>
+
+//             </div>
+
+//             {/* <footer className='h-[15vh] w-full bg-gray-500'>
+
+//             </footer> */}
+//             <Footer />
+//         </div>
+
+//     );
+// };
+
+// export default GradeInput;
+
+// Test 2 =========================================================
+
+// import React, { useEffect, useState } from "react";
+// import Navbar from "../../components/Navbar/Navbar";
+// import AddSuccess from "../../components/PopUp/AddSuccess";
+// import axios from "axios";
+// import Papa from "papaparse";
+
+// interface ClassInfo {
+//     ID: string;
+//     Semester: string;
+//     Name: string;
+//     CourseId: string;
+//     ListStudentMs: string[];
+//     TeacherId: string;
+//     CreatedBy: string;
+//     UpdatedBy: string;
+// }
+
+// interface ScoreData {
+//     mssv: string;
+//     data: {
+//         BT: number[];
+//         TN: number[];
+//         BTL: number[];
+//         GK: number;
+//         CK: number;
+//     };
+// }
+
+// const GradeInput: React.FC = () => {
+//     const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
+
+//     const [scores, setScores] = useState<ScoreData[]>([]);
+
+//     const [popUp, setPopUp] = useState(false);
+//     const [courseNames, setCourseNames] = useState<{ [key: string]: string }>({});
+
+//     const changeStatePopup = () => {
+//         setPopUp(!popUp);
+//     };
+
+//     const [error, setError] = useState<{ [key: string]: string }>({});
+
+//     const [selectedClass, setSelectedClass] = useState<ClassInfo>();
+
+//     const handleSelectChange = (classid: string) => {
+//         // Tìm lớp học trong classInfo dựa trên classID
+//         console.log("Hello there");
+//         const findClass = classInfo.find((classItem) => classItem.ID === classid);
+//         console.log("Found class:", findClass);
+//         if (findClass) {
+//             console.log("Lớp học được chọn:", findClass.Name);
+//             setSelectedClass(findClass);
+//         } else {
+//             console.log("Không tìm thấy lớp học với classID:", classid);
+//         }
+//     };
+
+//     const [fileGrade, setFileGrade] = useState<File | null>(null);
+//     const [fileName, setFileName] = useState<string>("");
+
+//     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//         const file = event.target.files?.[0];
+//         if (file) {
+//             setFileName(file.name); // Lưu tên file
+//             setFileGrade(file);
+//             setError({ ...error, gradeFile: "" });
+//             Papa.parse(file, {
+//                 header: true, // Đọc CSV với dòng đầu là header
+//                 skipEmptyLines: true, // Bỏ qua dòng trống
+//                 complete: (result) => {
+//                     // Tạo dữ liệu từ file CSV
+//                     const formattedScores: ScoreData[] = result.data.map((row: any) => ({
+//                         mssv: row.mssv,
+//                         data: {
+//                             BT: [
+//                                 parseFloat(row.BT1),
+//                                 parseFloat(row.BT2),
+//                                 parseFloat(row.BT3),
+//                             ],
+//                             TN: [parseFloat(row.TN)],
+//                             BTL: [parseFloat(row.BTL)],
+//                             GK: parseFloat(row.GK),
+//                             CK: parseFloat(row.CK),
+//                         },
+//                     }));
+
+//                     // Gán vào state
+//                     setScores(formattedScores);
+//                 },
+//                 error: (error) => {
+//                     console.error("Error parsing CSV file:", error);
+//                 },
+//             });
+//         } else {
+//             setFileName("");
+//             setFileGrade(null);
+//         }
+//     };
+
+//     const validateForm = () => {
+//         let newError: { [key: string]: string } = {};
+//         let valid = true;
+
+//         // Kiểm tra file
+
+//         if (!fileGrade) {
+//             newError.gradeFile = "Hãy upload file điểm!";
+//             valid = false;
+//         }
+
+//         setError(newError);
+//         return valid;
+//     };
+
+//     const fetchClassInfo = async () => {
+//         try {
+//             const token = localStorage.getItem("login");
+//             const classIdExists = await axios.get(
+//                 `https://dacnpm.thaily.id.vn/api/class/account`,
+//                 {
+//                     headers: {
+//                         Authorization: `Bearer ${token}`,
+//                     },
+//                 }
+//             );
+
+//             const data = classIdExists.data;
+
+//             // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
+//             const formattedClasses = data.classAll.map((classItem: any) => ({
+//                 ID: classItem.ID || "", // Lấy classID hoặc giá trị mặc định
+//                 Semester: classItem.Semester || "",
+//                 Name: classItem.Name || "",
+//                 CourseId: classItem.CourseId || "",
+//                 ListStudentMs: classItem.ListStudentMs || [],
+//                 TeacherId: classItem.TeacherId || "",
+//                 CreatedBy: classItem.CreatedBy || "",
+//                 UpdatedBy: classItem.UpdatedBy || "",
+//             }));
+
+//             console.log("danh sách lớp", formattedClasses);
+//             // Cập nhật state với danh sách lớp đã format
+//             setClassInfo(formattedClasses);
+//         } catch (error) {
+//             console.error("Failed to fetch class info:", error);
+//         }
+//     };
+
+//     const handleSubmit = async (event: React.FormEvent) => {
+//         event.preventDefault();
+
+//         if (!selectedClass) {
+//             console.error("Không có lớp học nào được chọn!");
+//             setError({ ...error, class: "Hãy chọn lớp học!" });
+//             return;
+//         }
+
+//         if (validateForm()) {
+//             try {
+//                 const token = localStorage.getItem("login");
+
+//                 // const gradeInfo = {
+//                 //     semester: selectedClass.Semester,
+//                 //     course_id: selectedClass.CourseId,
+//                 //     class_id: selectedClass.ID,
+//                 //     score: scores.map((student) => ({
+//                 //         mssv: student.mssv,
+//                 //         data: {
+//                 //             BT: student.data.BT,
+//                 //             TN: student.data.TN,
+//                 //             BTL: student.data.BTL,
+//                 //             GK: student.data.GK,
+//                 //             CK: student.data.CK,
+//                 //         },
+//                 //     })),
+//                 //     expiredAt: "2024-12-31T23:59:59Z", // Hạn chót
+//                 //     createdBy: selectedClass.CreatedBy,
+//                 //     updatedBy: selectedClass.UpdatedBy,
+//                 // };
+
+//                 const gradeInfo = {
+//                     semester: selectedClass.Semester,
+//                     course_id: selectedClass.CourseId,
+//                     class_id: selectedClass.ID,
+//                     score: [],
+//                     expiredAt: "2024-12-31T23:59:59Z", // Hạn chót
+//                     createdBy: selectedClass.CreatedBy,
+//                     updatedBy: selectedClass.UpdatedBy,
+//                 };
+//                 console.log(selectedClass.ID);
+//                 const checkExistedScore = await axios.get(
+//                     `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass.ID}`,
+//                     {
+//                         headers: {
+//                             Authorization: `Bearer ${token}`,
+//                         },
+//                     }
+//                 );
+//                 console.log("Check class:",checkExistedScore?.data?.resultScore.SCORE.length);
+
+//                 if (checkExistedScore?.data?.resultScore.SCORE.length !== 0) {
+//                     await axios.patch(
+//                         `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass.ID}`,
+//                         gradeInfo,
+//                         {
+//                             headers: {
+//                                 Authorization: `Bearer ${token}`,
+//                             },
+//                         }
+//                     );
+//                     console.log("Đã cập nhật điểm bằng PATCH:", gradeInfo);
+//                 } else {
+//                     await axios.post(
+//                         `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+//                         {
+//                             score: [], // Truyền mảng rỗng cho `score`
+//                             class_id: `${selectedClass?.ID}`, // ID lớp học
+//                         },
+//                         {
+//                             headers: {
+//                                 Authorization: `Bearer ${token}`,
+//                             },
+//                         }
+//                     );
+//                     await axios.patch(
+//                         `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass.ID}`,
+//                         gradeInfo,
+//                         {
+//                             headers: {
+//                                 Authorization: `Bearer ${token}`,
+//                             },
+//                         }
+//                     );
+//                     console.log("Đã thêm điểm bằng POST:", gradeInfo);
+//                 }
+//             } catch (error) {
+//                 console.log("aa");
+//                 const token = localStorage.getItem("login");
+//                 await axios.post(
+//                     `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+//                     {
+//                         score: [], // Truyền mảng rỗng cho `score`
+//                         class_id: `${selectedClass?.ID}`, // ID lớp học
+//                     },
+//                     {
+//                         headers: {
+//                             Authorization: `Bearer ${token}`,
+//                         },
+//                     }
+//                 );
+//             }
+//         } else {
+//             console.log("Form không hợp lệ");
+//         }
+//     };
+
+//     useEffect(() => {
+//         fetchClassInfo();
+//     }, []);
+
+//     return (
+//         <div className="mt-40">
+//             <div className="flex flex-col items-center min-h-screen bg-gray-100">
+//                 {/* Nhập điểm */}
+//                 <div className="w-full flex flex-col items-center max-w-6xl my-5 rounded-lg h-[70vh] border border-black">
+//                     <h2 className="text-5xl my-5">Nhập điểm</h2>
+
+//                     <form
+//                         onSubmit={handleSubmit}
+//                         className="h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500"
+//                     >
+//                         <div className="flex flex-row justify-center items-center w-[150px] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis ">
+//                             Cập nhật điểm
+//                         </div>
+
+//                         {/* Màn hình lớn */}
+//                         <div className="hidden md:flex flex-row justify-center m-5 h-[25%]">
+//                             {/* Thông tin lớp */}
+//                             <div className="flex flex-col justify-evenly items-center h-[80%] w-[40%]">
+//                                 <div className="text-3xl font-medium ">Chọn lớp</div>
+
+//                                 <select
+//                                     id="classDropdown"
+//                                     onChange={(event) => handleSelectChange(event.target.value)}
+//                                     className="bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5"
+//                                     defaultValue="" // Đặt giá trị mặc định
+//                                 >
+//                                     <option value="" disabled>
+//                                         Chọn lớp học
+//                                     </option>
+//                                     {classInfo.map((classItem) => (
+//                                         <option key={classItem.ID} value={classItem.ID}>
+//                                             {classItem.Name} - {courseNames[classItem.CourseId]} -{" "}
+//                                             {classItem.Semester}
+//                                         </option>
+//                                     ))}
+//                                 </select>
+//                             </div>
+//                         </div>
+
+//                         <div className="hidden md:flex flex-col items-center h-[25%] w-full">
+//                             {/* Chọn file */}
+//                             <div className="flex flex-row justify-center items-center w-[80%] h-[50%]">
+//                                 <label className="flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100">
+//                                     <div>Chọn file (.csv)</div>
+//                                     <input
+//                                         type="file"
+//                                         name="gradeFile"
+//                                         accept=".csv"
+//                                         // value={fileGrade}
+//                                         onChange={handleFileChange}
+//                                         className="hidden"
+//                                     />
+//                                 </label>
+
+//                                 {/* Hiện tên file */}
+//                                 <div className="flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap">
+//                                     {fileGrade ? (
+//                                         <div className="text-md text-gray-700">{fileName}</div>
+//                                     ) : (
+//                                         <div className="text-md text-gray-400">
+//                                             Upload file điểm
+//                                         </div>
+//                                     )}
+//                                 </div>
+//                             </div>
+//                             {error.gradeFile && (
+//                                 <div className="text-red-500 text-sm ml-36">
+//                                     {error.gradeFile}
+//                                 </div>
+//                             )}
+//                         </div>
+
+//                         <div className="hidden md:flex flex-col items-center justify-center h-14 mt-2">
+//                             <button
+//                                 className="w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl"
+//                                 type="submit"
+//                             >
+//                                 Cập nhật điểm
+//                             </button>
+//                         </div>
+
+//                         {/* Màn hình nhỏ */}
+//                         <div className="md:hidden flex flex-row justify-center m-5 h-[25%]">
+//                             {/* Thông tin lớp */}
+//                             <div className="flex flex-col items-center h-[65%] w-[35%]">
+//                                 <div className="text-3xl font-medium ">Chọn lớp</div>
+
+//                                 <select
+//                                     id="classDropdown"
+//                                     onChange={(event) => handleSelectChange(event.target.value)}
+//                                     // onClick={fetchClassInfo}
+//                                     className="bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5"
+//                                 >
+//                                     <option value="" disabled selected>Chọn một giá trị</option>
+//                                     {classInfo.map((classItem) => (
+//                                         <option
+//                                             className="w-full"
+//                                             key={classItem.ID}
+//                                             value={classItem.ID}
+//                                         >
+//                                             {classItem.Name}- {classItem.Name} - {classItem.Semester}
+//                                         </option>
+//                                     ))}
+//                                 </select>
+//                             </div>
+//                         </div>
+
+//                         <div className="md:hidden flex flex-col items-center h-[25%] w-full">
+//                             {/* Chọn file */}
+//                             <div className="flex items-center justify-center w-[80%] h-[50%]">
+//                                 <label className="flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100">
+//                                     <div>Chọn file (.csv)</div>
+//                                     <input
+//                                         type="file"
+//                                         name="gradeFile"
+//                                         accept=".csv"
+//                                         // value={fileGrade}
+//                                         onChange={handleFileChange}
+//                                         className="hidden"
+//                                     />
+//                                 </label>
+
+//                                 {/* Hiện tên file */}
+//                                 <div className="flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap">
+//                                     {fileGrade ? (
+//                                         <div className="text-md text-gray-700">{fileName}</div>
+//                                     ) : (
+//                                         <div className="text-md text-gray-400">
+//                                             Upload file điểm
+//                                         </div>
+//                                     )}
+//                                 </div>
+//                             </div>
+//                             {error.gradeFile && (
+//                                 <div className="text-red-500 text-sm ml-36">
+//                                     {error.gradeFile}
+//                                 </div>
+//                             )}
+//                         </div>
+
+//                         <div className="md:hidden flex flex-col items-center justify-center h-14 mt-2">
+//                             <button
+//                                 className="w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl"
+//                                 type="submit"
+//                             >
+//                                 Cập nhật điểm
+//                             </button>
+//                         </div>
+
+//                         {popUp && (
+//                             <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+//                                 <AddSuccess onClose={changeStatePopup} />
+//                             </div>
+//                         )}
+//                     </form>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default GradeInput;
+
+
+import React, { useEffect, useState } from 'react'
+import Navbar from '../../components/Navbar/Navbar';
+import AddSuccess from '../../components/PopUp/AddSuccess';
+import axios from 'axios';
+import Papa from 'papaparse';
+
+interface ClassInfo {
+    ID: string,
+    Semester: string,
+    Name: string,
+    CourseId: string,
+    ListStudentMs: string[],
+    TeacherId: string,
+    CreatedBy: string,
+    UpdatedBy: string
+}
+
+interface ScoreData {
+    mssv: string;
+    data: {
+        BT: number[];
+        TN: number[];
+        BTL: number[];
+        GK: number;
+        CK: number;
+    };
+}
 
 const GradeInput: React.FC = () => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [inputValue, setInputValue] = useState<string>();
-    const options = ['HK 241', 'HK 242', 'HK 111', 'HK 112', '1', '2', '3', '4', '5', '6'];
 
-    const handleOptionClick = (option: string) => {
-        setInputValue(option); // Đặt giá trị input là option được chọn
-        setIsOpen(false); // Đóng dropdown
+    const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
+
+    const [scores, setScores] = useState<ScoreData[]>([]);
+
+    const [popUp, setPopUp] = useState(false);
+    const [courseNames, setCourseNames] = useState<{ [key: string]: string }>({});
+
+    const changeStatePopup = () => {
+        setPopUp(!popUp);
+    }
+
+    const [error, setError] = useState<{ [key: string]: string }>({});
+
+    const [selectedClass, setSelectedClass] = useState<ClassInfo>();
+
+
+    const handleSelectChange = (classid: string) => {
+        // Tìm lớp học trong classInfo dựa trên classID
+        const findClass = classInfo.find((classItem) => classItem.ID === classid);
+
+        if (findClass) {
+            console.log("Lớp học được chọn:", findClass.Name);
+            setSelectedClass(findClass);
+
+        }
+        else {
+            console.log("Không tìm thấy lớp học với classID:", classid);
+        }
     };
 
+    const [fileGrade, setFileGrade] = useState<File | null>(null);
     const [fileName, setFileName] = useState<string>('');
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            setFileName(file.name);
+            setFileName(file.name); // Lưu tên file
+            setFileGrade(file);
+            setError({ ...error, gradeFile: '' });
+            Papa.parse(file, {
+                header: true, // Đọc CSV với dòng đầu là header
+                skipEmptyLines: true, // Bỏ qua dòng trống
+                complete: (result) => {
+                    // Tạo dữ liệu từ file CSV
+                    const formattedScores: ScoreData[] = result.data.map((row: any) => ({
+                        mssv: row.mssv,
+                        data: {
+                            BT: [parseFloat(row.BT1), parseFloat(row.BT2), parseFloat(row.BT3)],
+                            TN: [parseFloat(row.TN)],
+                            BTL: [parseFloat(row.BTL)],
+                            GK: parseFloat(row.GK),
+                            CK: parseFloat(row.CK),
+                        },
+                    }));
+
+                    // Gán vào state
+                    setScores(formattedScores);
+                },
+                error: (error) => {
+                    console.error("Error parsing CSV file:", error);
+                },
+            });
         }
+        else {
+            setFileName('');
+            setFileGrade(null);
+        }
+    };
+
+    const validateForm = () => {
+        let newError: { [key: string]: string } = {};
+        let valid = true;
+
+        // Kiểm tra file
+
+        if (!fileGrade) {
+            newError.gradeFile = 'Hãy upload file điểm!';
+            valid = false;
+        }
+
+        setError(newError);
+        return valid;
     }
 
-    const prevent_submit_KeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-        if(event.key === "Enter") event.preventDefault();
-    }
+    const fetchClassInfo = async () => {
+        try {
+            const token = localStorage.getItem("BearerToken");
+            const classIdExists = await axios.get(
+                `https://dacnpm.thaily.id.vn/api/class/account`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-    const exit_input = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if(event.key === "Enter") {
-            event.currentTarget.blur();
+            const data = classIdExists.data;
+
+            // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
+            const formattedClasses = data.classAll.map((classItem: any) => ({
+                ID: classItem.ID || "", // Lấy classID hoặc giá trị mặc định
+                Semester: classItem.Semester || "",
+                Name: classItem.Name || "",
+                CourseId: classItem.CourseId || "",
+                ListStudentMs: classItem.ListStudentMs || [],
+                TeacherId: classItem.TeacherId || "",
+                CreatedBy: classItem.CreatedBy || "",
+                UpdatedBy: classItem.UpdatedBy || "",
+            }));
+
+
+            // Cập nhật state với danh sách lớp đã format
+            setClassInfo(formattedClasses);
+
+            const courses = await Promise.all(
+                formattedClasses.map(async (classItem: any) => {
+                    if (classItem.CourseId) {
+                        const courseResponse = await axios.get(
+                            `https://dacnpm.thaily.id.vn/api/course/${classItem.CourseId}`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        console.log(courseResponse.data.course.Name);
+                        return { courseId: classItem.CourseId, courseName: courseResponse.data.course.Name };
+                    }
+                    return null;
+                })
+            );
+
+            const courseNameMap = courses.reduce((acc: { [key: string]: string }, course: any) => {
+                if (course) acc[course.courseId] = course.courseName;
+                return acc;
+            }, {});
+
+            setCourseNames(courseNameMap);
+
+        } catch (error) {
+            console.error("Failed to fetch class info:", error);
         }
-    }
+    };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        if (validateForm()) {
+            try {
+                const token = localStorage.getItem("BearerToken");
+
+                console.log("Check var:", selectedClass?.ID)
+
+
+
+                const gradeInfo = {
+                    semester: selectedClass?.Semester,
+                    course_id: selectedClass?.CourseId,
+                    class_id: selectedClass?.ID,
+                    // class_id: '672b87af226ae67ef9aaa047',
+
+                    score: scores.map((student) => ({
+                        mssv: student.mssv,
+                        data: {
+                            BT: student.data.BT,
+                            TN: student.data.TN,
+                            BTL: student.data.BTL,
+                            GK: student.data.GK,
+                            CK: student.data.CK,
+                        }
+                    })),
+                    // score: [],
+                    expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
+                    createdBy: selectedClass?.CreatedBy,
+                    updatedBy: selectedClass?.UpdatedBy
+                }
+                const checkExistedScore = await axios.get(
+                    `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                console.log("Check data:",checkExistedScore.data);
+
+                if (checkExistedScore.data.resultScore.SCORE) {
+                    const modifyScore = await axios.patch(
+                        `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                        gradeInfo,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+
+                        }
+                    );
+                    console.log("Đã cập nhật bằng PATCH", gradeInfo);
+                }
+
+            }
+            catch (error) {
+                const gradeInfo = {
+                    semester: selectedClass?.Semester,
+                    course_id: selectedClass?.CourseId,
+                    class_id: selectedClass?.ID,
+                    // class_id: '672b87af226ae67ef9aaa047',
+
+                    score: scores.map((student) => ({
+                        mssv: student.mssv,
+                        data: {
+                            BT: student.data.BT,
+                            TN: student.data.TN,
+                            BTL: student.data.BTL,
+                            GK: student.data.GK,
+                            CK: student.data.CK,
+                        }
+                    })),
+                    expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
+                    createdBy: selectedClass?.CreatedBy,
+                    updatedBy: selectedClass?.UpdatedBy
+                }
+                const token = localStorage.getItem("BearerToken");
+
+                const addScore = await axios.post(
+                    `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+                    {
+                        score: [],
+                        class_id: `${selectedClass?.ID}`,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+
+                    }
+                );
+                const modifyScore = await axios.patch(
+                    `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                    gradeInfo,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+
+                    }
+                );
+                console.log("Đã thêm điểm bằng POST");
+            }
+        } else {
+            console.log("Form không hợp lệ");
+        }
+    };
+
+    useEffect(() => {
+        fetchClassInfo();
+    }, []);
+
+
 
 
     return (
-        <div className='flex flex-col items-center min-h-screen bg-gray-100'>
-            <header className='bg-blue-500 w-full flex flex-col p-4 items-center justify-between h-[10vh]'>I am header</header>
-            <nav className='bg-green-200 h-16 w-full text-center'>Chờ chỉnh sau</nav>
-            {/* <div className='relative top-10'>
-            <Navbar/>
-            </div> */}
-            
+        <div className="mt-40">
+            <div className='flex flex-col items-center min-h-screen bg-gray-100'>
 
-            {/* Nhập điểm */}
-            <div className='w-full flex flex-col items-center max-w-5xl mt-0 rounded-lg h-[70vh] border border-black my-2'>
+                {/* Nhập điểm */}
+                <div className='w-full flex flex-col items-center max-w-6xl my-5 rounded-lg h-[70vh] border border-black'>
 
-                <h2 className='text-5xl mt-5 mb-5'>Nhập điểm</h2>
+                    <h2 className='text-5xl my-5'>Nhập điểm</h2>
 
-                <form className='h-[55vh] w-3/4 border bg-gray-200 border-t-4 border-t-blue-500'
-                        onKeyDown={prevent_submit_KeyDown}>
+                    <form
+                        onSubmit={handleSubmit}
+                        className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
+                    >
+                        <div className='flex flex-row justify-center items-center w-[150px] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
 
-                    <div className='flex flex-row justify-center items-center w-1/4 h-[7vh] bg-blue-500 mt-4 ml-4 mb-10 text-white text-xl'>Cập nhật điểm</div>
+                        {/* Màn hình lớn */}
+                        <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
 
-                    {/* Nhập thông tin môn, lớp, học kì */}
-                    <div className='flex flex-row justify-between ml-5 mr-5'>
+                            {/* Thông tin lớp */}
+                            <div className='flex flex-col justify-evenly items-center h-[80%] w-[40%]'>
+                                <div className='text-3xl font-medium '>
+                                    Chọn lớp
+                                </div>
 
-                        {/* Thông tin môn */}
-                        <div className='flex flex-row items-center border border-black rounded-xl bg-white h-[5vh] w-[35%]'>
-                            <div className='w-[40%] flex flex-col items-center'>Mã môn học</div>
-                            <input type="text"
-                                placeholder='Nhập mã môn học'
-                                onKeyDown={exit_input}
-                                className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2'
-                            />
-                        </div>
+                                <select
 
-                        {/* Thông tin lớp */}
-                        <div className='flex flex-row items-center border border-black rounded-xl bg-white h-[5vh] w-[30%]'>
-                            <div className='w-[40%] flex flex-col items-center'>Mã lớp</div>
-                            <input type="text"
-                                placeholder='Nhập mã lớp'
-                                onKeyDown={exit_input}
-                                className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none border border-l-black p-2' />
-                        </div>
-
-                        {/* Chọn học kì */}
-                        <div className='flex flex-row items-center border border-black rounded-xl bg-white h-[5vh] w-[25%]'>
-                            <div className='w-[40%] flex flex-col items-center'>Học kì</div>
-                            <div className='w-[60%] h-[100%] rounded-tr-xl rounded-br-xl border border-l-black'>
-                                <input type="text"
-                                    placeholder='Chọn học kì'
-                                    onKeyDown={exit_input}
-                                    onFocus={() => setIsOpen(true)}
-                                    value={inputValue || ""}
-                                    className='w-[100%] h-[100%] rounded-tr-xl rounded-br-xl focus:outline-none text-center'
-                                    readOnly
-                                />
-                                {isOpen && (
-                                    <ul className="absolute bg-white border mt-1 w-[7%] rounded-xl text-center max-h-40 overflow-y-auto z-10">
-                                        {options.map((option, index) => (
-                                            <li
-                                                key={index}
-                                                className="p-2 hover:bg-gray-100 cursor-pointer w-full border border-gray-100"
-                                                onClick={() => handleOptionClick(option)} // Xử lý chọn option
-                                            >
-                                                {option}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )
-                                }
-                            </div>
-
-                        </div>
-                        
-                    </div>
-
-                    <div className='flex flex-col items-center h-[15vh] mt-[7%]'>
-                        {/* Chọn file */}
-                        <div className='flex justify-between items-center h-[50%]'>
-                            <label className='flex items-center px-4 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
-                                <span>Chọn file (.csv)</span>
-                                <input
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    className='hidden' />
-                            </label>
-
-                        {/* Hiện tên file */}
-                            <div className='w-96 p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
-                                {fileName ? (<span className='text-gray-700'>{fileName}</span>) : (<span className='text-gray-400'>Tải file lên</span>)}
+                                    id="classDropdown"
+                                    onChange={(event) => handleSelectChange(event.target.value)}
+                                    // onClick={fetchClassInfo}
+                                    className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
+                                >
+                                    <option value="">Chọn lớp học</option>
+                                    {classInfo.map((classItem) => (
+                                        <option
+                                            key={classItem.ID}
+                                            value={classItem.ID}
+                                        >
+                                            {courseNames[classItem.CourseId]} - {classItem.Name} - {classItem.Semester}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
-                    </div>
 
-                    <div className='flex flex-col items-center justify-center h-14 mt-5'>
-                        <button className='w-[20%] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
-                    </div>
+                        <div className='hidden md:flex flex-col items-center h-[25%] w-full'>
+                            {/* Chọn file */}
+                            <div className='flex flex-row justify-center items-center w-[80%] h-[50%]'>
+                                <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
+                                    <div>Chọn file (.csv)</div>
+                                    <input
+                                        type="file"
+                                        name='gradeFile'
+                                        accept='.csv'
+                                        // value={fileGrade}
+                                        onChange={handleFileChange}
+                                        className='hidden'
+                                    />
 
-                </form>
+                                </label>
+
+                                {/* Hiện tên file */}
+                                <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+                                    {fileGrade ? (
+                                        <div className="text-md text-gray-700">{fileName}</div>
+                                    ) : (
+                                        <div className="text-md text-gray-400">Upload file điểm</div>
+                                    )}
+                                </div>
+                            </div>
+                            {error.gradeFile && (
+                                <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+                            )}
+                        </div>
+
+                        <div className='hidden md:flex flex-col items-center justify-center h-14 mt-2'>
+                            <button
+                                className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
+                                type='submit'>
+                                Cập nhật điểm
+                            </button>
+
+                        </div>
+
+
+                        {/* Màn hình nhỏ */}
+                        <div className='md:hidden flex flex-row justify-center m-5 h-[25%]'>
+                            {/* Thông tin lớp */}
+                            <div className='flex flex-col items-center h-[65%] w-[35%]'>
+
+                                <div className='text-3xl font-medium '>
+                                    Chọn lớp
+                                </div>
+
+                                <select
+                                    id="classDropdown"
+                                    onChange={(event) => handleSelectChange(event.target.value)}
+                                    onClick={fetchClassInfo}
+                                    className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
+                                >
+
+                                    {classInfo.map((classItem) => (
+                                        <option
+                                            className='w-full'
+                                            key={classItem.ID}
+                                            value={classItem.ID}
+                                        >
+                                            {classItem.Name} - {classItem.Name} - {classItem.Semester}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className='md:hidden flex flex-col items-center h-[25%] w-full'>
+                            {/* Chọn file */}
+                            <div className='flex items-center justify-center w-[80%] h-[50%]'>
+                                <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
+                                    <div>Chọn file (.csv)</div>
+                                    <input
+                                        type="file"
+                                        name='gradeFile'
+                                        accept='.csv'
+                                        // value={fileGrade}
+                                        onChange={handleFileChange}
+                                        className='hidden'
+                                    />
+
+                                </label>
+
+                                {/* Hiện tên file */}
+                                <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+                                    {fileGrade ? (
+                                        <div className="text-md text-gray-700">{fileName}</div>
+                                    ) : (
+                                        <div className="text-md text-gray-400">Upload file điểm</div>
+                                    )}
+                                </div>
+                            </div>
+                            {error.gradeFile && (
+                                <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+                            )}
+                        </div>
+
+                        <div className='md:hidden flex flex-col items-center justify-center h-14 mt-2'>
+                            <button
+                                className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
+                                type='submit'>
+                                Cập nhật điểm
+                            </button>
+
+                        </div>
+
+                        {popUp && (
+                            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <AddSuccess onClose={changeStatePopup} />
+                            </div>
+                        )}
+
+                    </form>
+
+                </div>
 
             </div>
-
-            <footer className='h-[15vh] w-full bg-gray-500'>
-
-            </footer>
-
         </div>
-
     );
 };
 
 export default GradeInput;
-
