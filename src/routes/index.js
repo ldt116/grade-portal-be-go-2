@@ -11,6 +11,8 @@ import CourseCreate from '../pages/AdminPages/CourseCreate'
 import CourseManager from '../pages/AdminPages/CourseManager'
 import ClassManager from '../pages/AdminPages/ClassManager'
 import ClassCreate from '../pages/AdminPages/ClassCreate';
+import AddMember from '../pages/AdminPages/AddMember'
+import DeleteAccount from '../pages/AdminPages/DeleteAccount';
 const routes = [
     {
         path: '/',
@@ -53,6 +55,16 @@ const routes = [
     {
         path: '/class/:id',
         page: ClassManager,
+        layout: StudentLayout,
+    },
+    {
+        path: '/account/add',
+        page: AddMember,
+        layout: StudentLayout,
+    },
+    {
+        path: '/account/delete',
+        page: DeleteAccount,
         layout: StudentLayout,
     },
     {
