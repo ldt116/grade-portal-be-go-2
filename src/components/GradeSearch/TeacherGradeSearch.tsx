@@ -113,12 +113,19 @@ const handleNavigate = () => {
 const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   const classId = e.target.value;
   console.log(classId);
-  
+
   if (classId && classId !== selectedClass) {
     setSelectedClass(classId);
     sessionStorage.setItem(CLASS_ID_KEY, classId);
+
+    const mssv = sessionStorage.getItem('MSSV') || ''; // Lấy MSSV hiện tại
+    console.log(`Lưu MSSV: ${mssv} và ClassID: ${classId} vào sessionStorage`);
   }
-    //window.location.reload();
+};
+
+const handleMssvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const mssv = e.target.value;
+  sessionStorage.setItem('MSSV', mssv); // Lưu MSSV vào sessionStorage
 };
 
 
@@ -129,12 +136,14 @@ const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           <label htmlFor="mssv" className="border-r border-black py-[0.3125rem] px-4">
             MSSV
           </label>
-          <input
-            type="number"
-            placeholder="Nhập MSSV"
-            id="mssv"
-            className="pl-4 py-1 rounded-e-3xl"
-          />
+<input
+  type="number"
+  placeholder="Nhập MSSV"
+  id="mssv"
+  className="pl-4 py-1 rounded-e-3xl"
+  onChange={handleMssvChange} // Gọi hàm khi giá trị thay đổi
+  defaultValue={sessionStorage.getItem('MSSV') || ''} // Hiển thị giá trị MSSV từ sessionStorage nếu có
+/>
         </div>
         <div className="border border-black bg-white rounded-3xl">
           <label htmlFor="classSelect" className="border-r border-black py-[0.5rem] px-4">

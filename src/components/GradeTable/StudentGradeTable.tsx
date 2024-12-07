@@ -32,6 +32,7 @@ function StudentGradeTable() {
     const fetchGrades = async () => {
       try {
         if (!token) {
+          const token = localStorage.getItem('BearerToken');  
           throw new Error('Token not found');
         }
 
