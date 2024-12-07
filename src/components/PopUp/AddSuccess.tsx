@@ -9,15 +9,15 @@ const AddSuccess: React.FC<AddSuccess> = ({ onClose }) => {
     return (
 
         // <div className="bg-transparent h-screen w-full flex justify-center items-center">
-        <div className="bg-white border border-black h-48 w-96 rounded-3xl flex flex-col justify-evenly items-center text-4xl">
+        <div className="bg-white border border-gray-500 h-48 w-[300px] rounded-3xl flex flex-col justify-evenly items-center text-4xl">
             <p>
                 Hoàn tất!!!
             </p>
             <button
                 type='button'
-                className="bg-[#0388B4] text-white w-[44%] h-[34%] rounded-full text-3xl"
+                className="bg-blue-600 text-white w-[30%] h-[30%] rounded-xl text-2xl hover:bg-blue-700 duration-150"
                 onClick={onClose}>
-                Xác nhận
+                Đóng
             </button>
 
         </div>
