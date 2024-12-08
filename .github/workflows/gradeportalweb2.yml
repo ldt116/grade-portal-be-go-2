@@ -23,10 +23,15 @@ jobs:
             fi
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Login Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: dangnguyen143
+          password: dckr_pat_EPIXkQPnfrvzDJNXZbWE0sGkxhE
       - name: Build and push Docker Image
         run: |
           docker build -t dangnguyen143/grade-portal-web-2 .
-          docker push dangnguyen143/grade-portal-web-2
+          docker push dangnguyen143/grade-portal-web-2 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
