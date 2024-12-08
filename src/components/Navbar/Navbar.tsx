@@ -11,6 +11,11 @@ function Navbar() {
   const handleDropdownToggle = () => {
     setDropdownOpen(!isDropdownOpen); // Bật / tắt dropdown
   };
+// Hàm xử lý khi nhấp vào mục dropdown
+const handleDropdownItemClick = (path) => {
+  navigate(path); // Điều hướng
+  setDropdownOpen(false); // Đóng dropdown
+};
 
   return (
     <nav className="bg-white h-14 w-full flex border-b text-xl font-bold items-center px-6 lg:px-20 z-40 fixed top-[7rem]">
@@ -68,46 +73,48 @@ function Navbar() {
           </div>
 
           {/* Dropdown menu */}
-          {isDropdownOpen && (
-            <div className="absolute top-full left-0 bg-white border shadow-md w-48">
-              <div
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => navigate('/account/add')}
-              >
-                Tạo tài khoản
-              </div>
-              <div
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => navigate('/account/delete')}
-              >
-                Xóa tài khoản
-              </div>
-              <div
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => navigate('/course/all')}
-              >
-                Khóa học
-              </div>
-              <div
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => navigate('/course/create')}
-              >
-                Tạo khóa học
-              </div>
-              <div
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => navigate('/class/create')}
-              >
-                Tạo lớp học
-              </div>
-              <div
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => navigate('/edit')}
-              >
-                Chỉnh Sửa Tài Khoản
-              </div>
-            </div>
-          )}
+   {/* Dropdown menu */}
+{isDropdownOpen && (
+  <div className="absolute top-full left-0 bg-white border shadow-md w-48">
+    <div
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      onClick={() => handleDropdownItemClick('/account/add')}
+    >
+      Tạo tài khoản
+    </div>
+    <div
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      onClick={() => handleDropdownItemClick('/account/delete')}
+    >
+      Xóa tài khoản
+    </div>
+    <div
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      onClick={() => handleDropdownItemClick('/course/all')}
+    >
+      Khóa học
+    </div>
+    <div
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      onClick={() => handleDropdownItemClick('/course/create')}
+    >
+      Tạo khóa học
+    </div>
+    <div
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      onClick={() => handleDropdownItemClick('/class/create')}
+    >
+      Tạo lớp học
+    </div>
+    <div
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      onClick={() => handleDropdownItemClick('/edit')}
+    >
+      Chỉnh sửa tài khoản
+    </div>
+  </div>
+)}
+
         </div>
       )}
     </nav>
