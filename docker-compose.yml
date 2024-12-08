@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  web:
+    image: pdtriet/coin_price
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"

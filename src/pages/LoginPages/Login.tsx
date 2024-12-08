@@ -35,8 +35,7 @@ const Login: React.FC = () => {
       const apiResponse = await fetch(selectedEndpoint, {
         method: "POST",
         headers: {
-          "idToken": '${idToken}',
-          "Content-Type": "application/json",
+         'Content-Type': 'application/json',
         },
         body: JSON.stringify({ idToken }),
       });
