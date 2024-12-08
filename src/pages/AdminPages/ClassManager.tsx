@@ -38,6 +38,8 @@ const ClassManager: React.FC = () => {
         const response = await axios.get(`https://dacnpm.thaily.id.vn/admin/api/class/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
           },
         });
 
@@ -51,6 +53,8 @@ const ClassManager: React.FC = () => {
             {
               headers: {
                 Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
               },
             }
           );
@@ -65,6 +69,8 @@ const ClassManager: React.FC = () => {
             {
               headers: {
                 Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
               },
             }
           );
@@ -103,6 +109,8 @@ const ClassManager: React.FC = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
           },
         }
       );
@@ -157,6 +165,8 @@ const handleAddStudents = async () => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
         },
       }
     );

@@ -56,6 +56,8 @@ function StudentGradeSearch() {
       const response = await axios.get<ApiResponse>(`${CLIENT_API_URL}/class/account`, {
         headers: {
           'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
         },
       });
 

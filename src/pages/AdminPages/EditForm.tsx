@@ -39,7 +39,6 @@ const EditForm: React.FC = () => {
             const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
                 },
             });
 

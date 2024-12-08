@@ -2,7 +2,6 @@ import React from 'react';
 import routes from './routes';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Fragment } from 'react';
-
 function App() {
     return (
         <BrowserRouter>

@@ -36,6 +36,8 @@ const HallOfFame: React.FC = () => {
         const response = await axios.get("https://dacnpm.thaily.id.vn/api/HOF/all", {
           headers: {
             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
           },
         });
 
@@ -64,7 +66,9 @@ const HallOfFame: React.FC = () => {
           courseIds.map(async (course_id) => {
             try {
               const res = await axios.get(`https://dacnpm.thaily.id.vn/api/course/${course_id}`, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${token}` ,                    'Content-Type': 'application/json',
+},
+
               });
 
               if (res.data.status === "success") {

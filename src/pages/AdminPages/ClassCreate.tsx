@@ -30,6 +30,8 @@ const ClassCreate: React.FC = () => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
             },
           }
         );
@@ -47,6 +49,8 @@ const ClassCreate: React.FC = () => {
         const courseResponse = await axios.get("https://dacnpm.thaily.id.vn/admin/api/course/all", {
           headers: {
             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
           },
         });
 

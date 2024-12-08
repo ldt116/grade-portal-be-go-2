@@ -74,6 +74,8 @@ const DeleteMember: React.FC = () => {
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
                         },
                     }
                 );
@@ -107,6 +109,8 @@ const DeleteMember: React.FC = () => {
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
                         },
                     }
                 );
@@ -190,6 +194,8 @@ const DeleteMember: React.FC = () => {
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+
                         },
 
                     }
@@ -208,6 +214,8 @@ const DeleteMember: React.FC = () => {
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+
                         },
 
                     }
