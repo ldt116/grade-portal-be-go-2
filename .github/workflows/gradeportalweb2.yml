@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "dckr_pat_EPIXkQPnfrvzDJNXZbWE0sGkxhE" | docker login -u dangnguyen143 --password-stdin
           docker build -t dangnguyen143/grade-portal-web-2 .
-          docker push dangnguyen143/grade-portal-web-2
+          docker push dangnguyen143/grade-portal-web-2:1.0.0
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
