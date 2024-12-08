@@ -118,7 +118,7 @@ const GradeInput: React.FC = () => {
         try {
             const token = localStorage.getItem("BearerToken");
             const classIdExists = await axios.get(
-                `https://dacnpm.thaily.id.vn/api/class/account`,
+                process.env.REACT_APP_CLIENT_GET_ALL_CLASS!,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -148,7 +148,7 @@ const GradeInput: React.FC = () => {
                 formattedClasses.map(async (classItem: any) => {
                     if (classItem.CourseId) {
                         const courseResponse = await axios.get(
-                            `https://dacnpm.thaily.id.vn/api/course/${classItem.CourseId}`,
+                            `${process.env.REACT_APP_CLIENT_GET_COURSE}/${classItem.CourseId}`,
                             {
                                 headers: {
                                     Authorization: `Bearer ${token}`,
@@ -206,7 +206,7 @@ const GradeInput: React.FC = () => {
                     updatedBy: selectedClass?.UpdatedBy
                 }
                 const checkExistedScore = await axios.get(
-                    `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                    `${process.env.REACT_APP_CLIENT_GET_SCORE}/${selectedClass?.ID}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -216,7 +216,7 @@ const GradeInput: React.FC = () => {
 
                 if (checkExistedScore.data.code==='success') {
                     const modifyScore = await axios.patch(
-                        `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                        `${process.env.REACT_APP_CLIENT_GET_SCORE}/${selectedClass?.ID}`,
                         gradeInfo,
                         {
                             headers: {
@@ -253,7 +253,7 @@ const GradeInput: React.FC = () => {
                 const token = localStorage.getItem("BearerToken");
 
                 const addScore = await axios.post(
-                        `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+                        process.env.REACT_APP_TEACHER_ADD_SCORE!,
                         {
                             score: [],
                             class_id: `${selectedClass?.ID}`,
@@ -266,7 +266,7 @@ const GradeInput: React.FC = () => {
                         }
                     );
                     const modifyScore = await axios.patch(
-                        `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+                        `${process.env.REACT_APP_CLIENT_SCORE}/${selectedClass?.ID}`,
                         gradeInfo,
                         {
                             headers: {

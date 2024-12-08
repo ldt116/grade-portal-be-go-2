@@ -35,7 +35,7 @@ const EditForm: React.FC = () => {
                 return;
             }
 
-            const url = `https://dacnpm.thaily.id.vn/admin/api/account/${role}`;
+            const url = `${process.env.REACT_APP_ADMIN_GET_CLIENT}/${role}`;
             const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const EditForm: React.FC = () => {
                 return;
             }
 
-            const url = `https://dacnpm.thaily.id.vn/admin/api/account/change/${userId}`;
+            const url = `${process.env.REACT_APP_ADMIN_CHANGE_CLIENT_INFO}/${userId}`;
             const updateBody = {
                 ...(name && { name }),
                 ...(faculty && { faculty }),

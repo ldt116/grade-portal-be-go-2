@@ -26,7 +26,7 @@ const ClassCreate: React.FC = () => {
 
         // Fetch Teachers
         const teacherResponse = await axios.get(
-          "https://dacnpm.thaily.id.vn/admin/api/account/teacher",
+          process.env.REACT_APP_ADMIN_GET_ALL_TEACHER!,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ const ClassCreate: React.FC = () => {
         }
 
         // Fetch Courses and Semesters
-        const courseResponse = await axios.get("https://dacnpm.thaily.id.vn/admin/api/course/all", {
+        const courseResponse = await axios.get(process.env.REACT_APP_ADMIN_GET_ALL_COURSE!, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -107,7 +107,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     const response = await axios.post(
-      "https://dacnpm.thaily.id.vn/admin/api/class/create",
+      process.env.REACT_APP_ADMIN_ADD_CLASS!,
       formData, // The formData state already contains the required structure
       {
         headers: {

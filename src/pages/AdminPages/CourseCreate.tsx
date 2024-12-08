@@ -36,7 +36,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     try {
         const response = await axios.post(
-            "https://dacnpm.thaily.id.vn/admin/api/course/create",
+            process.env.REACT_APP_ADMIN_ADD_COURSE!,
             formData, // Body of the request
             {
                 headers: {

@@ -33,7 +33,7 @@ const HallOfFame: React.FC = () => {
 
       try {
         // Fetch Hall of Fame data
-        const response = await axios.get("https://dacnpm.thaily.id.vn/api/HOF/all", {
+        const response = await axios.get(process.env.REACT_APP_CLIENT_HOF!, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,7 +63,7 @@ const HallOfFame: React.FC = () => {
         await Promise.all(
           courseIds.map(async (course_id) => {
             try {
-              const res = await axios.get(`https://dacnpm.thaily.id.vn/api/course/${course_id}`, {
+              const res = await axios.get(`${process.env.REACT_APP_CLIENT_GET_COURSE}/${course_id}`, {
                 headers: { Authorization: `Bearer ${token}` },
               });
 

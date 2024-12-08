@@ -57,7 +57,7 @@ const AddMember: React.FC = () => {
 
           // Send parsed data to the API
           const response = await axios.post(
-            "https://dacnpm.thaily.id.vn/admin/api/account/create",
+            process.env.REACT_APP_ADMIN_ADD_MEM!,
             data,
             {
               headers: {
@@ -94,7 +94,7 @@ const AddMember: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "https://dacnpm.thaily.id.vn/admin/api/create",
+        process.env.REACT_APP_ADMIN_ADD_ADMIN!,
         formData,
         {
           headers: {

@@ -35,7 +35,7 @@ const ClassManager: React.FC = () => {
       }
 
       try {
-        const response = await axios.get(`https://dacnpm.thaily.id.vn/admin/api/class/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_ADMIN_GET_CLASS}/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -47,7 +47,7 @@ const ClassManager: React.FC = () => {
 
           // Fetch course name using CourseId
           const courseResponse = await axios.get(
-            `https://dacnpm.thaily.id.vn/admin/api/course/${classInfo.CourseId}`,
+            `${process.env.REACT_APP_ADMIN_GET_COURSE}/${classInfo.CourseId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ const ClassManager: React.FC = () => {
 
           // Fetch teacher name using TeacherId
           const teacherResponse = await axios.get(
-            `https://dacnpm.thaily.id.vn/admin/api/account/${classInfo.TeacherId}`,
+            `${process.env.REACT_APP_ADMIN_GET_CLIENT}/${classInfo.TeacherId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -99,7 +99,7 @@ const ClassManager: React.FC = () => {
 
     try {
       const response = await axios.delete(
-        `https://dacnpm.thaily.id.vn/admin/api/class/delete/${id}`,
+        `${process.env.REACT_APP_ADMIN_DEL_CLASS}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ const handleAddStudents = async () => {
     console.log(csvData);
   try {
     const response = await axios.patch(
-      `https://dacnpm.thaily.id.vn/admin/api/class/add`,
+      process.env.REACT_APP_ADMIN_ADD_STU_CLASS!,
       {
         class_id: classData.ID,
         listStudent_ms: csvData,

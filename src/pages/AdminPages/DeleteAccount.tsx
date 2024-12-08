@@ -70,7 +70,7 @@ const DeleteMember: React.FC = () => {
                 const token = localStorage.getItem("BearerToken");
                 console.log("Check token:", token)
                 const teachers = await axios.get(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/teacher`,
+                    process.env.REACT_APP_ADMIN_GET_ALL_TEACHER!,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -103,7 +103,7 @@ const DeleteMember: React.FC = () => {
             try {
                 const token = localStorage.getItem("login");
                 const students = await axios.get(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/student`,
+                    process.env.REACT_APP_ADMIN_GET_ALL_STUDENT!,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -186,7 +186,7 @@ const DeleteMember: React.FC = () => {
                 const studentId = checkExistEmailStudent?.ID;
                 console.log("Check student id:", studentId);
                 const deleteStudent = await axios.delete(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/delete/${studentId}`,
+                    `${process.env.REACT_APP_ADMIN_DEL_CLIENT}/${studentId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -204,7 +204,7 @@ const DeleteMember: React.FC = () => {
                 const teacherId = checkExistEmailTeacher?.ID;
                 console.log("Check teacher id:", teacherId);
                 const deleteStudent = await axios.delete(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/delete/${teacherId}`,
+                    `${process.env.REACT_APP_ADMIN_DEL_CLIENT}/${teacherId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

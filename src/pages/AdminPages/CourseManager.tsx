@@ -39,7 +39,7 @@ const CourseManager: React.FC = () => {
         if (id === "all") {
           // Fetch all courses
           const courseResponse = await axios.get(
-            "https://dacnpm.thaily.id.vn/admin/api/course/all",
+            process.env.REACT_APP_ADMIN_GET_ALL_COURSE!,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ const CourseManager: React.FC = () => {
         } else {
           // Fetch a specific course
           const courseResponse = await axios.get(
-            `https://dacnpm.thaily.id.vn/admin/api/course/${id}`,
+            `${process.env.REACT_APP_ADMIN_GET_COURSE}/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ const CourseManager: React.FC = () => {
 
           // Fetch classes for the course
           const classResponse = await axios.get(
-            `https://dacnpm.thaily.id.vn/admin/api/class/course/${id}`,
+            `${process.env.REACT_APP_ADMIN_GET_CLASS_COURSE}/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -106,7 +106,7 @@ const CourseManager: React.FC = () => {
       const token = localStorage.getItem("BearerToken");
 
       const deleteResponse = await axios.delete(
-        `https://dacnpm.thaily.id.vn/admin/api/course/delete/${currentCourse.ID}`,
+        `${process.env.REACT_APP_ADMIN_DEL_COURSE}/${currentCourse.ID}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

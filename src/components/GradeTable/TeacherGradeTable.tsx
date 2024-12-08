@@ -46,7 +46,7 @@ useEffect(() => {
       }
 
       const response = await axios.get<ApiResponse>(
-        `https://dacnpm.thaily.id.vn/api/resultScore/${classID}`,
+        `${process.env.REACT_APP_CLIENT_SCORE}/${classID}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

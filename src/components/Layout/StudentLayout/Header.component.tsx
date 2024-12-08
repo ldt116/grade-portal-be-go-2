@@ -17,8 +17,8 @@ useEffect(() => {
   const role = sessionStorage.getItem('role');
   const apiUrl =
     role === 'admin'
-      ? 'https://dacnpm.thaily.id.vn/admin/api/profile'
-      : 'https://dacnpm.thaily.id.vn/api/info';
+      ? process.env.REACT_APP_ADMIN_INFO!
+      : process.env.REACT_APP_CLIENT_INFO!;
 
   axios
     .get(apiUrl, {
@@ -71,8 +71,8 @@ useEffect(() => {
     // Xác định URL API dựa trên role
     const apiUrl =
       role === 'admin'
-        ? 'https://dacnpm.thaily.id.vn/api/admin/logout'
-        : 'https://dacnpm.thaily.id.vn/api/logout';
+        ? process.env.REACT_APP_ADMIN_LOGOUT!
+        : process.env.REACT_APP_CLIENT_LOGOUT!;
 
     // Gọi API logout với token
     const response = await axios.post(
