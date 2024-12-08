@@ -45,5 +45,5 @@ jobs:
         run: |
           docker stop grade-portal-web-2 || true 
           docker rm grade-portal-web-2 || true
-          docker pull dangnguyen143/grade-portal-web-2:1.0.0
+          docker pull dangnguyen143/grade-portal-web-2:latest
           docker run -d -p 3000:3000 --name grade-portal-web-2 dangnguyen143/grade-portal-web-2:latest
