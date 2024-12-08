@@ -63,7 +63,7 @@ const HallOfFame: React.FC = () => {
         await Promise.all(
           courseIds.map(async (course_id) => {
             try {
-              const res = await axios.get(`https://dacnpm.thaily.id.vn/api/course/${course_id}`, {
+              const res = await axios.get(`${process.env.BASE_URL_CLIENT}/course/${course_id}`, {
                 headers: { Authorization: `Bearer ${token}` },
               });
 
@@ -91,7 +91,6 @@ const HallOfFame: React.FC = () => {
         Bảng Vinh Danh
       </div>
 
-      {error && <div className="text-red-500 text-center">{error}</div>}
 
       {data ? (
         <div>

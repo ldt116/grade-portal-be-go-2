@@ -1,7 +1,9 @@
 ﻿import React, { useState } from 'react';
 import axios from 'axios';
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
 
 const EditForm: React.FC = () => {
+    useProtectedRoute('/edit');
     const [code, setCode] = useState<string>(''); // State for code
     const [role, setRole] = useState<string>(''); // State for role
     const [users, setUsers] = useState<any[]>([]); // State for fetched users

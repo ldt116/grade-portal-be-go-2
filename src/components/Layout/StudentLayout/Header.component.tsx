@@ -7,43 +7,48 @@ function Header() {
   const [isLogin, setIsLogin] = useState(false);
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(sessionStorage);
-    console.log(localStorage);
-    const token = localStorage.getItem('BearerToken');
-    if (!token){
+useEffect(() => {
+  const token = localStorage.getItem('BearerToken');
+  if (!token) {
     navigate('/');
-}
-    console.log(token);
-     
-    if (token) {
-        const role = sessionStorage.getItem('role'); // Lấy role từ sessionStorage
-        setIsLogin(true);
-    const apiUrl =
-      role === 'admin'
-        ? 'https://dacnpm.thaily.id.vn/admin/api/profile'
-        : 'https://dacnpm.thaily.id.vn/api/info';
-      // Fetch user info using axios if token exists
-      axios
-        .get(apiUrl, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const data = response.data;
-          if (data.code === 'success') {
-            setIsLogin(true);
-            setUserName(data.user.Name);
-          }
-        })
-        .catch(() => {
-          setIsLogin(false);
-        });
-    }
-  }, []);
+    return;
+  }
 
+  const role = sessionStorage.getItem('role');
+  const apiUrl =
+    role === 'admin'
+      ? 'https://dacnpm.thaily.id.vn/admin/api/profile'
+      : 'https://dacnpm.thaily.id.vn/api/info';
+
+  axios
+    .get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      const data = response.data;
+      if (data.code === 'success') {
+        setIsLogin(true);
+        setUserName(data.user.Name);
+        console.log(data);
+        // Lưu protectedRole vào sessionStorage
+        const userRole = data.user.Role;
+        if (role === 'client') {
+          sessionStorage.setItem('protectedRole', userRole);
+            console.log(userRole);
+        } else if (role === 'admin') {
+          sessionStorage.setItem('protectedRole', 'admin');
+            console.log('admin')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching user info:', error);
+      setIsLogin(false);
+      navigate('/');
+    });
+}, []);
   const handleLogin = () => {
     navigate('/login');
   };

@@ -12,7 +12,6 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Hook để điều hướng
-
   // Xử lý khi đăng nhập Google thành công
   const handleSuccess = async (response: CredentialResponse) => {
     if (!response.credential) {

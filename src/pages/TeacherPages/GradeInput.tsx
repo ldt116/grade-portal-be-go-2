@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import AddSuccess from '../../components/PopUp/AddSuccess';
 import axios from 'axios';
 import Papa from 'papaparse';
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
 
 interface ClassInfo {
     ID: string,
@@ -27,6 +28,7 @@ interface ScoreData {
 }
 
 const GradeInput: React.FC = () => {
+    useProtectedRoute('/teacher/gradeinput')
 
     const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
 

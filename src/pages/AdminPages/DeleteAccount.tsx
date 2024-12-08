@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/Navbar/Navbar';
-import AddSuccess from '../../components/PopUp/AddSuccess';
 import Header from '../../components/HeaderFooter/Header';
 import Footer from '../../components/HeaderFooter/Footer';
 import axios from 'axios';
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
+
 
 interface TeacherInfo {
     ID: string,
@@ -28,10 +29,14 @@ interface StudentInfo {
 }
 
 const DeleteMember: React.FC = () => {
-
+     useProtectedRoute('/account/delete')
 
     const [teacherList, setTeacherList] = useState<TeacherInfo[]>([]);
     const [studentList, setStudentList] = useState<StudentInfo[]>([]);
+
+    const [deletedStudent, setDeletedStudent] = useState<StudentInfo>();
+    const [deletedTeacher, setDeletedTeacher] = useState<TeacherInfo>();
+
 
     const [formValue, setFormValue] = useState({
         email: '',
@@ -163,6 +168,9 @@ const DeleteMember: React.FC = () => {
         const checkExistMSTeacher = teacherList.find((teacher) => teacher.Ms === formValue.ms);
         const checkExistMSStudent = studentList.find((student) => student.Ms === formValue.ms);
 
+        setDeletedStudent(checkExistEmailStudent);
+        setDeletedTeacher(checkExistEmailTeacher);
+
         if (formValue.role === 'student' && !checkExistEmailStudent && !checkExistMSStudent) {
             alert("Sinh viên không có trong hệ thống");
             return;
@@ -219,70 +227,96 @@ const DeleteMember: React.FC = () => {
             <Navbar />
 
             {/* Nhập thông tin */}
-            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-5 mb-5 rounded-lg h-[50vh] border border-black my-2'>
+            <div className='w-full flex flex-col items-center justify-normal bg-white max-w-5xl mt-5 mb-5 rounded-lg h-[50vh] border border-black my-2'>
 
-                <h2 className='text-5xl mt-5 mb-5 h-[10%]'>Xóa tài khoản</h2>
+                <h2 className='text-4xl font-medium mt-5 mb-5 h-[10%]'>Xóa tài khoản</h2>
 
                 <form
                     className='w-full flex flex-col h-[90%] mt-10 '
                     onSubmit={handleSubmit}
                 >
-                    <div className='flex flex-col items-center justify-evenly h-[90%]'>
+                    <div className='flex flex-row items-center justify-around h-[50%]'>
 
                         {/* Email */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Email: </div>
-                                <input type="text"
-                                    placeholder='Nhập email (đuôi hcmut)'
-                                    name='email'
-                                    value={formValue.email}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
+                        <div className='flex flex-col items-center justify-start h-[100%] w-[25%]  '>
+
+                            <div className=' mb-4 text-xl font-medium text-right '>Email </div>
+                            <input type="text"
+                                placeholder='Nhập email (đuôi hcmut)'
+                                name='email'
+                                value={formValue.email}
+                                onChange={handleChange}
+                                className='bg-white border border-gray-300 rounded-xl text-md h-10 w-full p-6 placeholder:text-center text-left focus:outline-none' />
+
 
                         </div>
 
                         {/* MS */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Mã số: </div>
-                                <input type="text"
-                                    placeholder='Nhập mã số'
-                                    name='ms'
-                                    value={formValue.ms}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
+                        <div className='flex flex-col items-center justify-start h-[100%] w-[25%]  '>
+
+                            <div className='mr-4 mb-4 text-xl font-medium text-right '>Mã số </div>
+                            <input type="text"
+                                placeholder='Nhập mã số'
+                                name='ms'
+                                value={formValue.ms}
+                                onChange={handleChange}
+                                className='bg-white border border-gray-300 rounded-xl text-md h-10 w-full p-6 placeholder:text-center text-left focus:outline-none' />
+
 
                         </div>
 
                         {/* Vai trò */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Vai trò: </div>
-                                <input type="text"
-                                    placeholder='Nhập vai trò'
-                                    name='role'
-                                    value={formValue.role}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
+                        <div className='flex flex-col items-center justify-start h-[100%] w-[25%]  '>
+
+                            <div className='mr-4 mb-4 text-xl font-medium text-right '>Vai trò </div>
+                            <input type="text"
+                                placeholder='Nhập vai trò'
+                                name='role'
+                                value={formValue.role}
+                                onChange={handleChange}
+                                className='bg-white border border-gray-300 rounded-xl text-md h-10 w-full p-6 placeholder:text-center text-left focus:outline-none' />
+
 
                         </div>
 
                     </div>
 
-                    <div className='flex flex-col items-center justify-center h-[30%] mt-5 mb-5'>
-                        <button className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
+                    <div className='flex flex-col items-center justify-center h-[30%] '>
+                        <button className='w-[130px] h-[70%] bg-blue-600 rounded-xl text-white text-xl hover:bg-blue-700 duration-150'>Xác nhận</button>
                     </div>
 
                     {popUp && (
                         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <AddSuccess onClose={changeStatePopup} />
+
+                            <div className="bg-white border border-gray-500 rounded-xl p-4 flex flex-col justify-evenly items-center text-lg font-normal">
+                                <h2 className="text-2xl font-semibold mb-4">Thông tin tài khoản</h2>
+
+                                {formValue.role === 'student' && deletedStudent ? (
+                                    <div className="text-center">
+                                        <p>Họ và tên: {deletedStudent.Name}</p>
+                                        <p>Email: {deletedStudent.Email}</p>
+                                        <p>Mã số: {deletedStudent.Ms}</p>
+                                        <p>Vai trò: {deletedStudent.Role}</p>
+                                    </div>
+                                ) : formValue.role === 'teacher' && deletedTeacher ? (
+                                    <div className="text-center">
+                                        <p>Họ và tên: {deletedTeacher.Name}</p>
+                                        <p>Email: {deletedTeacher.Email}</p>
+                                        <p>Mã số: {deletedTeacher.Ms}</p>
+                                        <p>Vai trò: {deletedTeacher.Role}</p>
+                                    </div>
+                                ) : (
+                                    <p className="text-red-500">Không tìm thấy thông tin tài khoản.</p>
+                                )}
+
+                                <button
+                                    type='button'
+                                    className="bg-red-600 text-white w-[30%] h-[50px] mt-4 rounded-xl text-2xl hover:bg-red-700 duration-150"
+                                    onClick={changeStatePopup}>
+                                    Xóa
+                                </button>
+
+                            </div>
                         </div>
                     )}
 

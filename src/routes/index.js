@@ -18,31 +18,37 @@ const routes = [
         path: '/',
         page: LandingPage,
         layout: DefaultLayout,
+        protectedRole: null,
     },
     {
         path: '/home',
         page: HomePage,
         layout: StudentLayout,
+        protectedRole: null,
     },
      {
         path: '/gradeinfo',
         page: GradeInfo,
         layout: StudentLayout,
+        protectedRole: 'student',
     },
          {
         path: 'teacher/gradeinfo',
         page: TeacherGradeInfo,
         layout: StudentLayout,
+        protectedRole: 'teacher',
     },
         {
         path: '/class/create',
         page: ClassCreate,
         layout: StudentLayout,
+        protectedRole: 'admin',
     },
     {
         path: '/teacher/gradeinput',
         page: GradeInput,
         layout: StudentLayout,
+        protectedRole: 'teacher',
     },
 
 
@@ -50,37 +56,44 @@ const routes = [
         path: '/course/:id',
         page: CourseManager,
         layout: StudentLayout,
+        protectedRole: 'admin',
     },
 
     {
         path: '/class/:id',
         page: ClassManager,
         layout: StudentLayout,
+        protectedRole: 'admin',
     },
     {
         path: '/account/add',
         page: AddMember,
         layout: StudentLayout,
+        protectedRole: 'admin',
     },
     {
         path: '/account/delete',
         page: DeleteAccount,
         layout: StudentLayout,
+        protectedRole: 'admin',
     },
     {
         path: '/login',
         page: Login,
         layout: DefaultLayout,
+         protectedRole: null,
     },
     {
         path: '/course/create',
         page: CourseCreate,
         layout: StudentLayout,
+        protectedRole: 'admin',
     },
     {
         path: '/edit',
         page: EditForm,
         layout: StudentLayout,
+protectedRole: 'admin',
     },
     
 

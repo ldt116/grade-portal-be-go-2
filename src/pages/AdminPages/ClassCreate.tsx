@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
 const ClassCreate: React.FC = () => {
+    useProtectedRoute('/class/create'); // Kiểm tra nếu người dùng có quyền truy cập
   const [teachers, setTeachers] = useState<{ ID: string; Ms: string; Name: string }[]>([]);
   const [courses, setCourses] = useState<{ ID: string; MS: string; Name: string }[]>([]);
   const [semesters, setSemesters] = useState<string[]>([]);

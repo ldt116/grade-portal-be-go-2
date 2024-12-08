@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Papa from "papaparse"; // Install this library using: npm install papaparse
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
 
 const AddMember: React.FC = () => {
+    useProtectedRoute('/account/add'); // Kiểm tra nếu người dùng có quyền truy cập
   // State to manage form data
   const [formData, setFormData] = useState({
     email: "",

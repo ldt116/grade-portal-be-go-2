@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
+
 const CourseCreate: React.FC = () => {
+     useProtectedRoute('/course/create');
     const [formData, setFormData] = useState({
         ms: "",
         credit: 0,

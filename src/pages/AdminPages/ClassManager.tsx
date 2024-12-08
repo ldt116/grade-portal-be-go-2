@@ -2,8 +2,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Papa from "papaparse";
-
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
 interface ClassData {
+  //  useProtectedRoute('/class/:id'); // Kiểm tra nếu người dùng có quyền truy cập
   ID: string;
   Semester: string;
   Name: string;

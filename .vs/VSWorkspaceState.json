@@ -2,15 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\src",
+    "\\src\\apis",
     "\\src\\components",
-    "\\src\\components\\PopUp",
-    "\\src\\constants",
+    "\\src\\components\\GradeSearch",
+    "\\src\\components\\HallOfFame",
+    "\\src\\components\\Layout",
+    "\\src\\components\\Layout\\StudentLayout",
     "\\src\\pages",
-    "\\src\\pages\\AdminPages",
-    "\\src\\pages\\StudentPages",
-    "\\src\\pages\\TeacherPages",
-    "\\src\\routes"
+    "\\src\\pages\\LoginPages"
   ],
-  "SelectedNode": "\\src\\routes\\index.js",
+  "SelectedNode": "\\src\\components\\HallOfFame\\HallOfFame.tsx",
   "PreviewInSolutionExplorer": false
 }
