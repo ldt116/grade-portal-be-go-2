@@ -28,7 +28,7 @@ interface ApiResponse {
   resultScore: ResultScore;
 }
 
-function StudentGradeTable() {
+function TeacherGradeTable() {
   const [scoreList, setScoreList] = useState<ScoreItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ useEffect(() => {
           },
         }
       );
-
+        console.log(response);
       const data = response.data;
       if (data.code !== 'success') {
         throw new Error('Failed to fetch grade data');
@@ -127,4 +127,4 @@ useEffect(() => {
   );
 }
 
-export default StudentGradeTable;
+export default TeacherGradeTable;

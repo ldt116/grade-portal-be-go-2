@@ -146,7 +146,7 @@ const handleAddStudents = async () => {
     setError("Authentication token is missing. Please log in.");
     return;
   }
-
+    console.log(csvData);
   try {
     const response = await axios.patch(
       `https://dacnpm.thaily.id.vn/admin/api/class/add`,
