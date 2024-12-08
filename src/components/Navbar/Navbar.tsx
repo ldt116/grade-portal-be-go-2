@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
+
   const navigate = useNavigate();
   const role = sessionStorage.getItem('role'); // Lấy giá trị role từ sessionStorage
   const protectedRole = sessionStorage.getItem('protectedRole'); // Lấy giá trị protectedRole từ sessionStorage

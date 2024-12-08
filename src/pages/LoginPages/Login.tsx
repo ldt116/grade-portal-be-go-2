@@ -6,7 +6,8 @@ import {ADMIN_LOGIN, CLIENT_LOGIN} from "../../constants/api.js"
 
 
 const clientId = "86683415797-aq6n74j9gdkrd7pd3u6a2d55fh587cd3.apps.googleusercontent.com";
-
+  const BASE_URL_ADMIN = process.env.REACT_APP_BASE_URL_ADMIN;
+  const BASE_URL_CLIENT = process.env.REACT_APP_BASE_URL_CLIENT;
 const Login: React.FC = () => {
   const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null); // Endpoint API đã chọn
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,7 +23,7 @@ const Login: React.FC = () => {
     const idToken = response.credential;
     console.log("Google ID Token:", idToken);
 
-    if (!selectedEndpoint) {
+    if (!selectedEndpoint) {all
       setError("No endpoint selected.");
       return;
     }
