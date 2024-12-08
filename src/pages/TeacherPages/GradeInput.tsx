@@ -37,8 +37,12 @@ const GradeInput: React.FC = () => {
     const [popUp, setPopUp] = useState(false);
     const [courseNames, setCourseNames] = useState<{ [key: string]: string }>({});
 
+    const [isSelectedOption, setIsSelectedOption] = useState(false);
+    const [option, setOption] = useState('');
+
     const changeStatePopup = () => {
         setPopUp(!popUp);
+        setFileGrade(null);
     }
 
     const [error, setError] = useState<{ [key: string]: string }>({});
@@ -47,6 +51,8 @@ const GradeInput: React.FC = () => {
 
 
     const handleSelectChange = (classid: string) => {
+        setOption(classid);
+        setIsSelectedOption(true);
         // Tìm lớp học trong classInfo dựa trên classID
         const findClass = classInfo.find((classItem) => classItem.ID === classid);
 
@@ -110,6 +116,11 @@ const GradeInput: React.FC = () => {
             valid = false;
         }
 
+        if(!option){
+            alert("Hãy chọn 1 lớp");
+            valid = false;
+        }
+
         setError(newError);
         return valid;
     }
@@ -168,7 +179,7 @@ const GradeInput: React.FC = () => {
             }, {});
 
             setCourseNames(courseNameMap);
-            
+
         } catch (error) {
             console.error("Failed to fetch class info:", error);
         }
@@ -183,7 +194,7 @@ const GradeInput: React.FC = () => {
 
                 console.log("Check var:", selectedClass?.ID)
 
-                
+
 
                 const gradeInfo = {
                     semester: selectedClass?.Semester,
@@ -206,7 +217,7 @@ const GradeInput: React.FC = () => {
                     updatedBy: selectedClass?.UpdatedBy
                 }
                 const checkExistedScore = await axios.get(
-                    `${process.env.REACT_APP_CLIENT_GET_SCORE}/${selectedClass?.ID}`,
+                    `${process.env.REACT_APP_CLIENT_SCORE}/${selectedClass?.ID}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -214,9 +225,9 @@ const GradeInput: React.FC = () => {
                     }
                 );
 
-                if (checkExistedScore.data.code==='success') {
+                if (checkExistedScore.data.code === 'success') {
                     const modifyScore = await axios.patch(
-                        `${process.env.REACT_APP_CLIENT_GET_SCORE}/${selectedClass?.ID}`,
+                        `${process.env.REACT_APP_CLIENT_SCORE}/${selectedClass?.ID}`,
                         gradeInfo,
                         {
                             headers: {
@@ -253,30 +264,32 @@ const GradeInput: React.FC = () => {
                 const token = localStorage.getItem("BearerToken");
 
                 const addScore = await axios.post(
-                        process.env.REACT_APP_TEACHER_ADD_SCORE!,
-                        {
-                            score: [],
-                            class_id: `${selectedClass?.ID}`,
-                         },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
+                    process.env.REACT_APP_TEACHER_ADD_SCORE!,
+                    {
+                        score: [],
+                        class_id: `${selectedClass?.ID}`,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
 
-                        }
-                    );
-                    const modifyScore = await axios.patch(
-                        `${process.env.REACT_APP_CLIENT_SCORE}/${selectedClass?.ID}`,
-                        gradeInfo,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
+                    }
+                );
+                const modifyScore = await axios.patch(
+                    `${process.env.REACT_APP_CLIENT_SCORE}/${selectedClass?.ID}`,
+                    gradeInfo,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
 
-                        }
-                    );
-                    console.log("Đã thêm điểm bằng POST");
+                    }
+                );
+                console.log("Đã thêm điểm bằng POST");
+
             }
+            setPopUp(true);
         } else {
             console.log("Form không hợp lệ");
         }
@@ -290,169 +303,169 @@ const GradeInput: React.FC = () => {
 
 
     return (
-<div className="mt-40">
-        <div className='flex flex-col items-center min-h-screen bg-gray-100'>
+        <div className="mt-40">
+            <div className='flex flex-col items-center min-h-screen bg-gray-100'>
 
-            {/* Nhập điểm */}
-            <div className='w-full flex flex-col items-center max-w-6xl my-5 rounded-lg h-[70vh] border border-black'>
+                {/* Nhập điểm */}
+                <div className='w-full flex flex-col items-center max-w-6xl my-5 rounded-lg h-[70vh] border border-black'>
 
-                <h2 className='text-5xl my-5'>Nhập điểm</h2>
+                    <h2 className='text-5xl my-5'>Nhập điểm</h2>
 
-                <form
-                    onSubmit={handleSubmit}
-                    className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
-                >
+                    <form
+                        onSubmit={handleSubmit}
+                        className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
+                    >
 
-                    {/* Màn hình lớn */}
-                    <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
+                        {/* Màn hình lớn */}
+                        <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
 
-                        {/* Thông tin lớp */}
-                        <div className='flex flex-col justify-evenly items-center h-[80%] w-[40%]'>
-                            <div className='text-3xl font-medium '>
-                                Chọn lớp
-                            </div>
+                            {/* Thông tin lớp */}
+                            <div className='flex flex-col justify-evenly items-center h-[80%] w-[40%]'>
+                                <div className='text-3xl font-medium '>
+                                    Chọn lớp
+                                </div>
 
-                            <select
+                                <select
 
-                                id="classDropdown"
-                                onChange={(event) => handleSelectChange(event.target.value)}
-                                // onClick={fetchClassInfo}
-                                className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
-                            >
-                                <option value="">Chọn lớp học</option>
-                                {classInfo.map((classItem) => (
-                                    <option
-                                        key={classItem.ID}
-                                        value={classItem.ID}
-                                    >
-                                        {courseNames[classItem.CourseId]} - {classItem.Name} - {classItem.Semester}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className='hidden md:flex flex-col items-center h-[25%] w-full'>
-                        {/* Chọn file */}
-                        <div className='flex flex-row justify-center items-center w-[80%] h-[50%]'>
-                            <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
-                                <div>Chọn file (.csv)</div>
-                                <input
-                                    type="file"
-
-                                    name='gradeFile'
-                                    accept='.csv'
-                                    // value={fileGrade}
-                                    onChange={handleFileChange}
-                                    className='hidden'
-                                />
-
-                            </label>
-
-                            {/* Hiện tên file */}
-                            <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
-                                {fileGrade ? (
-                                    <div className="text-md text-gray-700">{fileName}</div>
-                                ) : (
-                                    <div className="text-md text-gray-400">Upload file điểm</div>
-                                )}
+                                    id="classDropdown"
+                                    onChange={(event) => handleSelectChange(event.target.value)}
+                                    
+                                    className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
+                                >
+                                    <option disabled={isSelectedOption} >Chọn lớp học</option>
+                                    {classInfo.map((classItem) => (
+                                        <option
+                                            key={classItem.ID}
+                                            value={classItem.ID}
+                                        >
+                                            {courseNames[classItem.CourseId]} - {classItem.Name} - {classItem.Semester}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
-                        {error.gradeFile && (
-                            <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+
+                        <div className='hidden md:flex flex-col items-center h-[25%] w-full'>
+                            {/* Chọn file */}
+                            <div className='flex flex-row justify-center items-center w-[80%] h-[50%]'>
+                                <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
+                                    <div>Chọn file (.csv)</div>
+                                    <input
+                                        type="file"
+
+                                        name='gradeFile'
+                                        accept='.csv'
+                                        // value={fileGrade}
+                                        onChange={handleFileChange}
+                                        className='hidden'
+                                    />
+
+                                </label>
+
+                                {/* Hiện tên file */}
+                                <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+                                    {fileGrade ? (
+                                        <div className="text-md text-gray-700">{fileName}</div>
+                                    ) : (
+                                        <div className="text-md text-gray-400">Upload file điểm</div>
+                                    )}
+                                </div>
+                            </div>
+                            {error.gradeFile && (
+                                <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+                            )}
+                        </div>
+
+                        <div className='hidden md:flex flex-col items-center justify-center h-14 mt-2'>
+                            <button
+                                className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
+                                type='submit'>
+                                Cập nhật điểm
+                            </button>
+
+                        </div>
+
+
+                        {/* Màn hình nhỏ */}
+                        <div className='md:hidden flex flex-row justify-center m-5 h-[25%]'>
+                            {/* Thông tin lớp */}
+                            <div className='flex flex-col items-center h-[65%] w-[35%]'>
+
+                                <div className='text-3xl font-medium '>
+                                    Chọn lớp
+                                </div>
+
+                                <select
+                                    id="classDropdown"
+                                    onChange={(event) => handleSelectChange(event.target.value)}
+                                    onClick={fetchClassInfo}
+                                    className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
+                                >
+
+                                    {classInfo.map((classItem) => (
+                                        <option
+                                            className='w-full'
+                                            key={classItem.ID}
+                                            value={classItem.ID}
+                                        >
+                                            {classItem.Name} - {classItem.Name} - {classItem.Semester}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className='md:hidden flex flex-col items-center h-[25%] w-full'>
+                            {/* Chọn file */}
+                            <div className='flex items-center justify-center w-[80%] h-[50%]'>
+                                <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
+                                    <div>Chọn file (.csv)</div>
+                                    <input
+                                        type="file"
+                                        name='gradeFile'
+                                        accept='.csv'
+                                        // value={fileGrade}
+                                        onChange={handleFileChange}
+                                        className='hidden'
+                                    />
+
+                                </label>
+
+                                {/* Hiện tên file */}
+                                <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
+                                    {fileGrade ? (
+                                        <div className="text-md text-gray-700">{fileName}</div>
+                                    ) : (
+                                        <div className="text-md text-gray-400">Upload file điểm</div>
+                                    )}
+                                </div>
+                            </div>
+                            {error.gradeFile && (
+                                <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
+                            )}
+                        </div>
+
+                        <div className='md:hidden flex flex-col items-center justify-center h-14 mt-2'>
+                            <button
+                                className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
+                                type='submit'>
+                                Cập nhật điểm
+                            </button>
+
+                        </div>
+
+                        {popUp && (
+                            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <AddSuccess onClose={changeStatePopup} />
+                            </div>
                         )}
-                    </div>
 
-                    <div className='hidden md:flex flex-col items-center justify-center h-14 mt-2'>
-                        <button
-                            className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
-                            type='submit'>
-                            Cập nhật điểm
-                        </button>
+                    </form>
 
-                    </div>
-
-
-                    {/* Màn hình nhỏ */}
-                    <div className='md:hidden flex flex-row justify-center m-5 h-[25%]'>
-                        {/* Thông tin lớp */}
-                        <div className='flex flex-col items-center h-[65%] w-[35%]'>
-                            
-                            <div className='text-3xl font-medium '>
-                                Chọn lớp
-                            </div>
-                            
-                            <select
-                                id="classDropdown"
-                                onChange={(event) => handleSelectChange(event.target.value)}
-                                onClick={fetchClassInfo}
-                                className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
-                            >
-
-                                {classInfo.map((classItem) => (
-                                    <option
-                                        className='w-full'
-                                        key={classItem.ID}
-                                        value={classItem.ID}
-                                    >
-                                        {classItem.Name} - {classItem.Name} - {classItem.Semester}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className='md:hidden flex flex-col items-center h-[25%] w-full'>
-                        {/* Chọn file */}
-                        <div className='flex items-center justify-center w-[80%] h-[50%]'>
-                            <label className='flex items-center px-3 py-3 mr-3 bg-blue-500 text-md text-white rounded-xl overflow-hidden whitespace-nowrap text-ellipsis cursor-pointer hover:bg-blue-600 transition-colors duration-100'>
-                                <div>Chọn file (.csv)</div>
-                                <input
-                                    type="file"
-                                    name='gradeFile'
-                                    accept='.csv'
-                                    // value={fileGrade}
-                                    onChange={handleFileChange}
-                                    className='hidden'
-                                />
-
-                            </label>
-
-                            {/* Hiện tên file */}
-                            <div className='flex flex-col justify-center w-[50%] h-[75%] p-2 text-center text-md bg-white border border-gray-500 rounded-xl overflow-hidden text-ellipsis whitespace-nowrap'>
-                                {fileGrade ? (
-                                    <div className="text-md text-gray-700">{fileName}</div>
-                                ) : (
-                                    <div className="text-md text-gray-400">Upload file điểm</div>
-                                )}
-                            </div>
-                        </div>
-                        {error.gradeFile && (
-                            <div className="text-red-500 text-sm ml-36">{error.gradeFile}</div>
-                        )}
-                    </div>
-
-                    <div className='md:hidden flex flex-col items-center justify-center h-14 mt-2'>
-                        <button
-                            className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'
-                            type='submit'>
-                            Cập nhật điểm
-                        </button>
-
-                    </div>
-
-                    {popUp && (
-                        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <AddSuccess onClose={changeStatePopup} />
-                        </div>
-                    )}
-
-                </form>
+                </div>
 
             </div>
-
         </div>
-</div>
     );
 };
 
