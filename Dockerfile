@@ -1,5 +1,5 @@
 # Sử dụng Node.js LTS (Long-Term Support) trên Alpine Linux
-FROM node:lts-buster
+FROM node:19.5.0-alpine
 
 # Thiết lập thư mục làm việc trong container
 WORKDIR /app
