@@ -131,11 +131,11 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <div className="mt-40 flex flex-col items-center min-h-screen bg-gray-100">
       <div className="w-full flex flex-col items-center max-w-4xl mt-5 mb-5 rounded-lg border border-black p-4 bg-white">
-        <h1 className="text-2xl font-bold mb-4">Create a New Class</h1>
+        <h1 className="text-2xl font-bold mb-4">Tạo Một Lớp Học Mới</h1>
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
           {/* Semester Dropdown */}
           <label>
-            Semester:
+            Học Kỳ:
             <select
               name="semester"
               value={formData.semester}
@@ -155,7 +155,7 @@ const handleSubmit = async (e: React.FormEvent) => {
        
           {/* Teacher Dropdown */}
           <label>
-            Teacher:
+            Giảng Viên:
             <select
               name="teacher_id"
               value={formData.teacher_id}
@@ -174,7 +174,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           {/* Course Dropdown */}
           <label>
-            Course:
+            Khóa Học:
             <select
               name="course_id"
               value={formData.course_id}
@@ -193,7 +193,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           {/* Class Name Input */}
           <label>
-            Class Name:
+            Tên Lớp:
             <input
               type="text"
               name="name"
@@ -222,7 +222,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            Create Class
+            TẠO LỚP
           </button>
         </form>
       </div>
