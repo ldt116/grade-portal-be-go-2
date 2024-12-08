@@ -23,7 +23,7 @@ const Login: React.FC = () => {
     const idToken = response.credential;
     console.log("Google ID Token:", idToken);
 
-    if (!selectedEndpoint) {all
+    if (!selectedEndpoint) {
       setError("No endpoint selected.");
       return;
     }
