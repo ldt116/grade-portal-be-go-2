@@ -29,7 +29,7 @@ const handleDropdownItemClick = (path) => {
       </div>
 
       {/* Tra cứu điểm (chỉ hiển thị với role 'client') */}
-      {role === 'client' && (
+      {protectedRole === 'student' && (
         <div
           className="px-10 cursor-pointer hover:bg-[#c3c3c3] h-full leading-[3.25rem]"
           onClick={() => navigate('/gradeinfo')}
@@ -37,7 +37,14 @@ const handleDropdownItemClick = (path) => {
           Tra cứu điểm
         </div>
       )}
-
+        {protectedRole === 'teacher' && (
+        <div
+          className="px-10 cursor-pointer hover:bg-[#c3c3c3] h-full leading-[3.25rem]"
+          onClick={() => navigate('/teacher/gradeinfo')}
+        >
+          Tra cứu điểm
+        </div>
+      )}
       {/* Quản lý (chỉ hiển thị với protectedRole 'teacher') */}
       {protectedRole === 'teacher' && (
         <div
