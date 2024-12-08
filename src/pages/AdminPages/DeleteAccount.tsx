@@ -221,10 +221,7 @@ const DeleteMember: React.FC = () => {
     }
 
     return (
-        <div className='flex flex-col items-center min-h-screen bg-gray-100'>
-
-            <Header />
-            <Navbar />
+        <div className='mt-40 flex flex-col items-center min-h-screen bg-gray-100'>
 
             {/* Nhập thông tin */}
             <div className='w-full flex flex-col items-center justify-normal bg-white max-w-5xl mt-5 mb-5 rounded-lg h-[50vh] border border-black my-2'>
@@ -325,7 +322,6 @@ const DeleteMember: React.FC = () => {
 
             </div>
 
-            <Footer />
 
         </div>
 
