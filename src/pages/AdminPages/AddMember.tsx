@@ -1,352 +1,194 @@
-import React, { useState, useEffect } from 'react'
-import Navbar from '../../components/Navbar/Navbar';
-import AddSuccess from '../../components/PopUp/AddSuccess';
-import Header from '../../components/HeaderFooter/Header';
-import Footer from '../../components/HeaderFooter/Footer';
-import axios from 'axios';
-
-interface TeacherInfo {
-    ID: string,
-    Email: string,
-    Name: string,
-    Ms: string,
-    Faculty: string,
-    Role: string,
-    CreatedBy: string,
-    ExpiredAt: string,
-}
-
-interface StudentInfo {
-    ID: string,
-    Email: string,
-    Name: string,
-    Ms: string,
-    Faculty: string,
-    Role: string,
-    CreatedBy: string,
-    ExpiredAt: string,
-}
+import React, { useState } from "react";
+import axios from "axios";
+import Papa from "papaparse"; // Install this library using: npm install papaparse
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
 
 const AddMember: React.FC = () => {
+    useProtectedRoute('/account/add'); // Kiểm tra nếu người dùng có quyền truy cập
+  // State to manage form data
+  const [formData, setFormData] = useState({
+    email: "",
+    name: "",
+    faculty: "",
+    ms: "",
+  });
 
+  // State to manage status message
+  const [statusMessage, setStatusMessage] = useState("");
 
-    const [teacherList, setTeacherList] = useState<TeacherInfo[]>([]);
-    const [studentList, setStudentList] = useState<StudentInfo[]>([]);
+  // State to manage file input
+  const [file, setFile] = useState<File | null>(null);
 
-    const [formValue, setFormValue] = useState({
-        fullName: '',
-        email: '',
-        ms: '',
-        role: '',
-        faculty: ''
-    })
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
+  // Handle CSV file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
 
-        setFormValue({
-            ...formValue,
-            [name]: value,
-        });
+  // Parse CSV and send data
+  const handleFileUpload = async () => {
+    if (!file) {
+      setStatusMessage("Vui lòng chọn một tệp CSV.");
+      return;
     }
 
-    const [popUp, setPopUp] = useState(false);
+    const token = localStorage.getItem("BearerToken");
 
-    const changeStatePopup = () => {
-        setPopUp(!popUp);
-        setFormValue({
-            fullName: '',
-            email: '',
-            ms: '',
-            role: '',
-            faculty: ''
-        })
+    if (!token) {
+      setStatusMessage("Token không tồn tại. Vui lòng đăng nhập lại.");
+      return;
     }
 
-    useEffect(() => {
-        const fetchTeacher = async () => {
-            try {
-                const token = localStorage.getItem("BearerToken");
-                console.log("Check token:", token)
-                const teachers = await axios.get(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/teacher`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+    // Parse the CSV file
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const data = results.data; // Parsed JSON data
+          console.log("Parsed Data:", data);
 
-                const data = teachers.data;
-
-                // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
-                const formattedTeacher = data.foundedUser.map((teacherItem: any) => ({
-                    ID: teacherItem.ID,
-                    Email: teacherItem.Email,
-                    Name: teacherItem.Name,
-                    Ms: teacherItem.Ms,
-                    Faculty: teacherItem.Faculty,
-                    Role: teacherItem.Role,
-                    CreatedBy: teacherItem.CreatedBy,
-                    ExpiredAt: teacherItem.ExpiredAt,
-                }));
-
-                setTeacherList(formattedTeacher);
-
-            } catch (error) {
-                console.error("Failed to fetch teacher info:", error);
+          // Send parsed data to the API
+          const response = await axios.post(
+            "https://dacnpm.thaily.id.vn/admin/api/account/create",
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
             }
-        };
+          );
 
-        const fetchStudent = async () => {
-            try {
-                const token = localStorage.getItem("login");
-                const students = await axios.get(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/student`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                const data = students.data;
-
-                // Duyệt qua danh sách lớp và lưu các thuộc tính cần thiết
-                const formattedStudent = data.foundedUser.map((StudentItem: any) => ({
-                    ID: StudentItem.ID,
-                    Email: StudentItem.Email,
-                    Name: StudentItem.Name,
-                    Ms: StudentItem.Ms,
-                    Faculty: StudentItem.Faculty,
-                    Role: StudentItem.Role,
-                    CreatedBy: StudentItem.CreatedBy,
-                    ExpiredAt: StudentItem.ExpiredAt,
-                }));
-
-                setStudentList(formattedStudent);
-
-            } catch (error) {
-                console.error("Failed to fetch student info:", error);
-            }
-        };
-
-        fetchTeacher();
-        fetchStudent();
-
-    }, []);
-
-    // Check thông tin GV và SV
-
-    useEffect(() => {
-        console.log("Teacher list updated:", teacherList);
-    }, [teacherList]);
-
-    useEffect(() => {
-        console.log("Student list updated:", studentList);
-    }, [studentList]);
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-
-        if (formValue.email === '' || formValue.fullName === '' || formValue.ms === '' || formValue.role === '' || formValue.faculty === '') {
-            alert("Hãy điền đầy đủ thông tin");
-            return;
+          setStatusMessage("Tạo tài khoản thành công!");
+          console.log(response)
+          setFile(null); // Reset file input
+        window.location.reload(); // Reload the page
+        } catch (error) {
+          console.error("Error uploading CSV data:", error);
+          setStatusMessage("Đã xảy ra lỗi khi tạo tài khoản từ CSV.");
         }
+      },
+      error: (error) => {
+        console.error("CSV parsing error:", error);
+        setStatusMessage("Đã xảy ra lỗi khi phân tích tệp CSV.");
+      },
+    });
+  };
 
-        if (formValue.role !== 'admin' && formValue.role !== 'teacher' && formValue.role !== 'student') {
-            alert("Hãy nhập 1 trong 3 vai trò: admin, teacher hoặc student");
-            return;
-        }
+  // Handle form submission for single user
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("BearerToken");
 
-        const token = localStorage.getItem("BearerToken");
-        if (formValue.role === 'admin') {
-            try {
-                const adminInfo = {
-                    email: formValue.email,
-                    name: formValue.fullName,
-                    faculty: formValue.faculty,
-                    ms: formValue.ms
-                }
-                console.log("Check admin:", adminInfo);
-                const addScore = await axios.post(
-                    `https://dacnpm.thaily.id.vn/admin/api/create`,
-                    adminInfo,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-
-                    }
-                );
-                console.log("Đã thêm admin bằng POST");
-            }
-            catch (error) {
-                console.log("Khong them admin duoc:", error);
-                alert("Admin này đã tồn tại, hãy chọn email và mã số khác");
-                return;
-            }
-        }
-        else if (formValue.role === 'teacher' || formValue.role === 'student') {
-            try {
-                const checkDuplicateEmailTeacher = teacherList.find((teacher) => teacher.Email === formValue.email);
-                const checkDuplicateEmailStudent = studentList.find((student) => student.Email === formValue.email);
-
-                const checkDuplicateMSTeacher = teacherList.find((teacher) => teacher.Ms === formValue.ms);
-                const checkDuplicateMSStudent = studentList.find((student) => student.Ms === formValue.ms);
-
-                if(checkDuplicateEmailStudent || checkDuplicateMSStudent){
-                    alert("Sinh viên này đã tồn tại trong hệ thống");
-                    return;
-                }
-
-                if(checkDuplicateEmailTeacher || checkDuplicateMSTeacher){
-                    alert("Giảng viên này đã tồn tại trong hệ thống");
-                    return;
-                }
-
-
-                const clientInfo = [{
-                    ms: formValue.ms,
-                    name: formValue.fullName,
-                    email: formValue.email,
-                    faculty: formValue.faculty,
-                    role: formValue.role
-                }]
-                console.log("Check client:", clientInfo);
-                console.log(token);
-                const addScore = await axios.post(
-                    `https://dacnpm.thaily.id.vn/admin/api/account/create`,
-                    clientInfo,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-
-                    }
-                );
-                console.log("Đã thêm client bằng POST");
-            }
-            catch (error) {
-                console.log("Khong them client duoc:", error);
-            }
-        }
-        setPopUp(true);
+    if (!token) {
+      setStatusMessage("Token không tồn tại. Vui lòng đăng nhập lại.");
+      return;
     }
 
-    return (
-        <div className='flex flex-col items-center min-h-screen bg-gray-100'>
+    try {
+      const response = await axios.post(
+        "https://dacnpm.thaily.id.vn/admin/api/create",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-            <Header />
-            <Navbar />
+      setStatusMessage("Tạo admin thành công!");
+      setFormData({ email: "", name: "", faculty: "", ms: "" }); // Reset form
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      setStatusMessage("Đã xảy ra lỗi khi tạo admin.");
+    }
+  };
 
-            {/* Nhập thông tin */}
-            <div className='w-full flex flex-col items-center justify-normal max-w-5xl mt-5 mb-5 rounded-lg h-[85vh] border border-black my-2'>
-
-                <h2 className='text-5xl mt-5 mb-5 h-[10%]'>Thêm thành viên</h2>
-
-                <form
-                    className='w-full flex flex-col h-[90%] '
-                    onSubmit={handleSubmit}
-                >
-                    <div className='flex flex-col items-center justify-evenly h-[90%]'>
-                        {/* Họ và tên */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Họ và tên: </div>
-                                <input type="text"
-                                    name='fullName'
-                                    placeholder='Nhập họ và tên'
-                                    value={formValue.fullName}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
-
-                        {/* Email */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Email: </div>
-                                <input type="text"
-                                    placeholder='Nhập email (đuôi hcmut)'
-                                    name='email'
-                                    value={formValue.email}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
-
-                        {/* MS */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Mã số: </div>
-                                <input type="text"
-                                    placeholder='Nhập mã số'
-                                    name='ms'
-                                    value={formValue.ms}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
-
-
-                        {/* Vai trò */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Vai trò: </div>
-                                <input type="text"
-                                    placeholder='Nhập vai trò'
-                                    name='role'
-                                    value={formValue.role}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
-
-                        {/* Khoa */}
-                        <div className='flex flex-col items-center justify-start h-[100%] w-2/3'>
-                            <div className='flex flex-row items-center h-[80%] w-full'>
-                                <div className='mr-4 text-xl text-right w-[45%]'>Tên khoa: </div>
-                                <input type="text"
-                                    placeholder='Nhập tên lớp'
-                                    name='faculty'
-                                    value={formValue.faculty}
-                                    onChange={handleChange}
-                                    className='bg-white border border-black rounded-2xl h-11 w-[55%] p-4 placeholder:text-center text-left focus:outline-none' />
-                                <div className='w-[30%]'></div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div className='flex flex-col items-center justify-center h-[12%] mt-5 mb-5'>
-                        <button className='w-[200px] h-[100%] bg-[#0388B4] rounded-full text-white text-2xl'>Xác nhận</button>
-                    </div>
-
-                    {popUp && (
-                        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <AddSuccess onClose={changeStatePopup} />
-                        </div>
-                    )}
-
-                </form>
-
-
-            </div>
-
-            <Footer />
-
+  return (
+    <div className="mt-40 flex flex-col items-center min-h-screen bg-gray-100">
+      <div className="w-full flex flex-col items-center max-w-4xl mt-5 mb-5 rounded-lg border border-black p-4 bg-white">
+        <h1 className="text-2xl font-bold mb-5">Thêm Tài Khoản</h1>
+        <div className="w-full max-w flex flex-wrap gap-4">
+          <div className="flex-1">
+            <label className="block text-gray-700 font-bold mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-1 border rounded-lg"
+              placeholder="Nhập email"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-gray-700 font-bold mb-1">Họ và tên</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-1 border rounded-lg"
+              placeholder="Nhập họ và tên"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-gray-700 font-bold mb-1">Khoa</label>
+            <input
+              type="text"
+              name="faculty"
+              value={formData.faculty}
+              onChange={handleChange}
+              className="w-full px-4 py-1 border rounded-lg"
+              placeholder="Nhập tên khoa"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-gray-700 font-bold mb-1">Mã số</label>
+            <input
+              type="text"
+              name="ms"
+              value={formData.ms}
+              onChange={handleChange}
+              className="w-full px-4 py-1 border rounded-lg"
+              placeholder="Nhập mã số"
+            />
+          </div>
         </div>
-
-    );
+        <button
+          onClick={handleSubmit}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+        >
+          TẠO ADMIN
+        </button>
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-2">Tải lên danh sách tài khoản</h2>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="mb-4"
+          />
+          <button
+            onClick={handleFileUpload}
+            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+          >
+            TẠO TÀI KHOẢN GV/SV
+          </button>
+        </div>
+        {statusMessage && (
+          <p className="mt-4 text-center text-red-500">{statusMessage}</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default AddMember;

@@ -4,13 +4,13 @@
     "\\src",
     "\\src\\apis",
     "\\src\\components",
-    "\\src\\components\\GradeTable",
-    "\\src\\constants",
+    "\\src\\components\\GradeSearch",
+    "\\src\\components\\HallOfFame",
+    "\\src\\components\\Layout",
+    "\\src\\components\\Layout\\StudentLayout",
     "\\src\\pages",
-    "\\src\\pages\\LoginPages",
-    "\\src\\pages\\StudentPages",
-    "\\src\\routes"
+    "\\src\\pages\\LoginPages"
   ],
-  "SelectedNode": "\\src\\pages\\StudentPages\\HomePage.tsx",
+  "SelectedNode": "\\src\\components\\HallOfFame\\HallOfFame.tsx",
   "PreviewInSolutionExplorer": false
 }

@@ -1,11 +1,10 @@
-import Button from "../../components/Button/Button";
-import StudentGradeSearch from "../../components/GradeSearch/StudentGradeSearch";
+﻿import Button from "../../components/Button/Button";
+import TeacherGradeSearch from "../../components/GradeSearch/TeacherGradeSearch";
 import HallOfFame from "../../components/HallOfFame/HallOfFame";
-import StudentGradeTable from "../../components/GradeTable/StudentGradeTable";
 
 
 
-function GradeInfo() {
+function TeacherGradeInfo() {
    
   
   return (
@@ -13,7 +12,7 @@ function GradeInfo() {
       <div className="text-[5rem] py-4 px-20 text-center">Tra cứu điểm</div>
       <div className="flex gap-8">
         <div className="w-2/3">
-          <StudentGradeSearch/>
+          <TeacherGradeSearch/>
         </div>
         <div className="w-1/3">
           <HallOfFame />
@@ -28,4 +27,4 @@ function GradeInfo() {
   )
 }
 
-export default GradeInfo;
+export default TeacherGradeInfo;

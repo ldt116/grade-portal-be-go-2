@@ -3,6 +3,8 @@ import Navbar from '../../components/Navbar/Navbar';
 import Header from '../../components/HeaderFooter/Header';
 import Footer from '../../components/HeaderFooter/Footer';
 import axios from 'axios';
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
+
 
 interface TeacherInfo {
     ID: string,
@@ -27,7 +29,7 @@ interface StudentInfo {
 }
 
 const DeleteMember: React.FC = () => {
-
+     useProtectedRoute('/account/delete')
 
     const [teacherList, setTeacherList] = useState<TeacherInfo[]>([]);
     const [studentList, setStudentList] = useState<StudentInfo[]>([]);

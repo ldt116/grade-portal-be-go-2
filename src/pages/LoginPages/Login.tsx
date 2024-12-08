@@ -6,13 +6,13 @@ import {ADMIN_LOGIN, CLIENT_LOGIN} from "../../constants/api.js"
 
 
 const clientId = "86683415797-aq6n74j9gdkrd7pd3u6a2d55fh587cd3.apps.googleusercontent.com";
-
+  const BASE_URL_ADMIN = process.env.REACT_APP_BASE_URL_ADMIN;
+  const BASE_URL_CLIENT = process.env.REACT_APP_BASE_URL_CLIENT;
 const Login: React.FC = () => {
   const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null); // Endpoint API đã chọn
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Hook để điều hướng
-
   // Xử lý khi đăng nhập Google thành công
   const handleSuccess = async (response: CredentialResponse) => {
     if (!response.credential) {
@@ -35,8 +35,7 @@ const Login: React.FC = () => {
       const apiResponse = await fetch(selectedEndpoint, {
         method: "POST",
         headers: {
-          "idToken": '${idToken}',
-          "Content-Type": "application/json",
+         'Content-Type': 'application/json',
         },
         body: JSON.stringify({ idToken }),
       });
@@ -55,7 +54,7 @@ const Login: React.FC = () => {
           sessionStorage.setItem("role","client"); // Chuyển hướng đến /home nếu là Sinh viên/Giảng viên
         }
         else{
-            navigate("/admin/delMem");        
+            navigate("/home");        
             sessionStorage.setItem("role","admin");
 }
       } else {

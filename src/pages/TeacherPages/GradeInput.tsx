@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar';
 import AddSuccess from '../../components/PopUp/AddSuccess';
+<<<<<<< HEAD
 import Header from '../../components/HeaderFooter/Header';
 import Footer from '../../components/HeaderFooter/Footer';
 import axios from 'axios';
 import Papa from 'papaparse';
+=======
+import axios from 'axios';
+import Papa from 'papaparse';
+import useProtectedRoute from '../../components/useProtectedRoute'; // Đường dẫn tới hook vừa tạo
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
 
 interface ClassInfo {
     ID: string,
@@ -29,12 +35,20 @@ interface ScoreData {
 }
 
 const GradeInput: React.FC = () => {
+<<<<<<< HEAD
+=======
+    useProtectedRoute('/teacher/gradeinput')
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
 
     const [classInfo, setClassInfo] = useState<ClassInfo[]>([]);
 
     const [scores, setScores] = useState<ScoreData[]>([]);
 
     const [popUp, setPopUp] = useState(false);
+<<<<<<< HEAD
+=======
+    const [courseNames, setCourseNames] = useState<{ [key: string]: string }>({});
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
 
     const changeStatePopup = () => {
         setPopUp(!popUp);
@@ -115,7 +129,11 @@ const GradeInput: React.FC = () => {
 
     const fetchClassInfo = async () => {
         try {
+<<<<<<< HEAD
             const token = localStorage.getItem("login");
+=======
+            const token = localStorage.getItem("BearerToken");
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
             const classIdExists = await axios.get(
                 `https://dacnpm.thaily.id.vn/api/class/account`,
                 {
@@ -142,6 +160,35 @@ const GradeInput: React.FC = () => {
 
             // Cập nhật state với danh sách lớp đã format
             setClassInfo(formattedClasses);
+<<<<<<< HEAD
+=======
+
+            const courses = await Promise.all(
+                formattedClasses.map(async (classItem: any) => {
+                    if (classItem.CourseId) {
+                        const courseResponse = await axios.get(
+                            `https://dacnpm.thaily.id.vn/api/course/${classItem.CourseId}`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        console.log(courseResponse.data.course.Name);
+                        return { courseId: classItem.CourseId, courseName: courseResponse.data.course.Name };
+                    }
+                    return null;
+                })
+            );
+
+            const courseNameMap = courses.reduce((acc: { [key: string]: string }, course: any) => {
+                if (course) acc[course.courseId] = course.courseName;
+                return acc;
+            }, {});
+
+            setCourseNames(courseNameMap);
+            
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
         } catch (error) {
             console.error("Failed to fetch class info:", error);
         }
@@ -152,10 +199,19 @@ const GradeInput: React.FC = () => {
 
         if (validateForm()) {
             try {
+<<<<<<< HEAD
                 const token = localStorage.getItem("login");
 
                 console.log("Check var:", selectedClass?.ID)
 
+=======
+                const token = localStorage.getItem("BearerToken");
+
+                console.log("Check var:", selectedClass?.ID)
+
+                
+
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                 const gradeInfo = {
                     semester: selectedClass?.Semester,
                     course_id: selectedClass?.CourseId,
@@ -176,7 +232,10 @@ const GradeInput: React.FC = () => {
                     createdBy: selectedClass?.CreatedBy,
                     updatedBy: selectedClass?.UpdatedBy
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                 const checkExistedScore = await axios.get(
                     `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
                     {
@@ -186,7 +245,11 @@ const GradeInput: React.FC = () => {
                     }
                 );
 
+<<<<<<< HEAD
                 if (checkExistedScore.data.resultScore.SCORE) {
+=======
+                if (checkExistedScore.data.code==='success') {
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                     const modifyScore = await axios.patch(
                         `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
                         gradeInfo,
@@ -199,9 +262,52 @@ const GradeInput: React.FC = () => {
                     );
                     console.log("Đã cập nhật bằng PATCH", gradeInfo);
                 }
+<<<<<<< HEAD
                 else {
                     const addScore = await axios.post(
                         `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+=======
+
+            }
+            catch (error) {
+                const gradeInfo = {
+                    semester: selectedClass?.Semester,
+                    course_id: selectedClass?.CourseId,
+                    class_id: selectedClass?.ID,
+                    // class_id: '672b87af226ae67ef9aaa047',
+
+                    score: scores.map((student) => ({
+                        mssv: student.mssv,
+                        data: {
+                            BT: student.data.BT,
+                            TN: student.data.TN,
+                            BTL: student.data.BTL,
+                            GK: student.data.GK,
+                            CK: student.data.CK,
+                        }
+                    })),
+                    expiredAt: "2024-12-31T23:59:59Z", // Hạn chót, lấy từ form hoặc cố định
+                    createdBy: selectedClass?.CreatedBy,
+                    updatedBy: selectedClass?.UpdatedBy
+                }
+                const token = localStorage.getItem("BearerToken");
+
+                const addScore = await axios.post(
+                        `https://dacnpm.thaily.id.vn/api/resultScore/create`,
+                        {
+                            score: [],
+                            class_id: `${selectedClass?.ID}`,
+                         },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+
+                        }
+                    );
+                    const modifyScore = await axios.patch(
+                        `https://dacnpm.thaily.id.vn/api/resultScore/${selectedClass?.ID}`,
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                         gradeInfo,
                         {
                             headers: {
@@ -211,11 +317,14 @@ const GradeInput: React.FC = () => {
                         }
                     );
                     console.log("Đã thêm điểm bằng POST");
+<<<<<<< HEAD
                 }
 
             }
             catch (error) {
                 console.error("Đã có lỗi khi gửi dữ liệu: ", error);
+=======
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
             }
         } else {
             console.log("Form không hợp lệ");
@@ -230,6 +339,7 @@ const GradeInput: React.FC = () => {
 
 
     return (
+<div className="mt-40">
         <div className='flex flex-col items-center min-h-screen bg-gray-100'>
 
             <Header />
@@ -243,7 +353,10 @@ const GradeInput: React.FC = () => {
                     onSubmit={handleSubmit}
                     className='h-[90%] w-[80%] border bg-gray-200 border-t-4 border-t-blue-500'
                 >
+<<<<<<< HEAD
                     <div className='flex flex-row justify-center items-center w-[150px] h-[7vh] bg-blue-500 rounded-xl mt-4 ml-4 mb-10 text-white text-xl overflow-hidden whitespace-nowrap text-ellipsis '>Cập nhật điểm</div>
+=======
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
 
                     {/* Màn hình lớn */}
                     <div className='hidden md:flex flex-row justify-center m-5 h-[25%]'>
@@ -261,13 +374,21 @@ const GradeInput: React.FC = () => {
                                 // onClick={fetchClassInfo}
                                 className='bg-white rounded-2xl h-[50px] w-full text-center border border-gray-400 mt-5'
                             >
+<<<<<<< HEAD
 
+=======
+                                <option value="">Chọn lớp học</option>
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                                 {classInfo.map((classItem) => (
                                     <option
                                         key={classItem.ID}
                                         value={classItem.ID}
                                     >
+<<<<<<< HEAD
                                         {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+=======
+                                        {courseNames[classItem.CourseId]} - {classItem.Name} - {classItem.Semester}
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                                     </option>
                                 ))}
                             </select>
@@ -281,6 +402,10 @@ const GradeInput: React.FC = () => {
                                 <div>Chọn file (.csv)</div>
                                 <input
                                     type="file"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                                     name='gradeFile'
                                     accept='.csv'
                                     // value={fileGrade}
@@ -336,7 +461,11 @@ const GradeInput: React.FC = () => {
                                         key={classItem.ID}
                                         value={classItem.ID}
                                     >
+<<<<<<< HEAD
                                         {classItem.CourseId} - {classItem.Name} - {classItem.Semester}
+=======
+                                        {classItem.Name} - {classItem.Name} - {classItem.Semester}
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
                                     </option>
                                 ))}
                             </select>
@@ -392,14 +521,16 @@ const GradeInput: React.FC = () => {
 
             </div>
 
+<<<<<<< HEAD
             {/* <footer className='h-[15vh] w-full bg-gray-500'>
 
             </footer> */}
             <Footer />
+=======
+>>>>>>> 21ac512e3764d66cc6593bacaafa6400cb6321ab
         </div>
-
+</div>
     );
 };
 
 export default GradeInput;
-
