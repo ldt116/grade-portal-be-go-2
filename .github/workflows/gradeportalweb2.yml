@@ -30,6 +30,7 @@ jobs:
           password: dckr_pat_EPIXkQPnfrvzDJNXZbWE0sGkxhE
       - name: Build and push Docker Image
         run: |
+          echo "dckr_pat_EPIXkQPnfrvzDJNXZbWE0sGkxhE" | docker login registry.example.com -u dangnguyen143 --password-stdin
           docker build -t dangnguyen143/grade-portal-web-2 .
           docker push dangnguyen143/grade-portal-web-2 
       - name: Setup Node
