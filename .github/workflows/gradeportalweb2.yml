@@ -26,9 +26,9 @@ jobs:
 
       - name: Build and push Docker Image
         run: |
-          echo "${{ secrets.USER_ACCESS_TOKEN }}" | docker login -u ${{secrets.USERNAME}} --password-stdin
-          docker build -t dangnguyen143/grade-portal-web-2 .
-          docker push dangnguyen143/grade-portal-web-2
+          echo "${{ secrets.USER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.USER_NAME }}" --password-stdin
+          docker build -t ${{ secrets.USER_NAME }}/grade-portal-web-2 .
+          docker push ${{ secrets.USER_NAME }}/grade-portal-web-2
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -41,5 +41,5 @@ jobs:
         run: |
           docker stop grade-portal-web-2 || true 
           docker rm grade-portal-web-2 || true
-          docker pull ${{secrets.USERNAME}}/grade-portal-web-2:latest
-          docker run -d -p 3000:3000 --name grade-portal-web-2 ${{secrets.USERNAME}}/grade-portal-web-2:latest
+          docker pull ${{ secrets.USER_NAME }}/grade-portal-web-2:latest
+          docker run -d -p 3000:3000 --name grade-portal-web-2 ${{ secrets.USER_NAME }}/grade-portal-web-2:latest
