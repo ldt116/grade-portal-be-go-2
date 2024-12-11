@@ -1,12 +1,45 @@
 name: GradePortalWeb2
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting the default branchs
   push:
-    branches: ["DEV"]
+    branches: ["Dat196"]
+  workflow_dispatch:
 jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Docker
+        run: |
+            if ! command -v docker &> /dev/null; then
+              echo "Docker not found. Installing Docker..."
+              sudo apt-get update
+              sudo apt-get install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker $USER
+            else
+              echo "Docker already installed"
+            fi
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Build and push Docker Image
+        run: |
+          echo "${{ secrets.USER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.USER_NAME }}" --password-stdin
+          docker build -t ${{ secrets.USER_NAME }}/grade-portal-web-2 .
+          docker push ${{ secrets.USER_NAME }}/grade-portal-web-2
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"         
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Docker image
+        run: |
+          docker stop grade-portal-web-2 || true 
+          docker rm grade-portal-web-2 || true
+          docker pull ${{ secrets.USER_NAME }}/grade-portal-web-2:latest
+          docker run -d -p 3000:3000 --name grade-portal-web-2 ${{ secrets.USER_NAME }}/grade-portal-web-2:latest

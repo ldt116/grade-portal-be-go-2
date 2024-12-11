@@ -1,7 +1,6 @@
-version: "3.8"
 services:
   web:
-    image: pdtriet/coin_price
+    image: dangnguyen143/grade-portal-web-2
     ports:
       - "3000:3000"
     restart: unless-stopped
