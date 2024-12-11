@@ -3,8 +3,6 @@ services:
     image: dangnguyen143/grade-portal-web-2
     ports:
       - "24180:8080"
-    env_file:
-      - .env
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
