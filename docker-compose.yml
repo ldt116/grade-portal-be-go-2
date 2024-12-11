@@ -1,9 +1,10 @@
-version: "3.8"
 services:
-  web:
+  app:
     image: dangnguyen143/grade-portal-web-2
     ports:
-      - "3000:3000"
+      - "24180:8080"
+    env_file:
+      - .env
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
