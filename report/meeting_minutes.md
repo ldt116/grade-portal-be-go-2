@@ -150,6 +150,8 @@
 1. Báo cáo kết quả tuần trước.
 - Design chưa được thiết kế phù hợp, cần sửa lại.
 2. Tiếp tục gọi API từ BE và chỉnh sửa lại design giao diện (admin).
+- Đạt, Khoa, Khiêm, Khải, Danh: Teacher + Admin
+- Đăng, Tú: Student
 - Chia API như phần code giao diện.
 
 **Đánh giá tiến độ từng thành viên**
@@ -173,8 +175,10 @@
 1. Báo cáo kết quả tuần trước.
 - Chưa sửa xong design cho admin.
 - Login gọi được API nhưng vẫn lỗi CORS.
-2. Tiếp tục gọi API từ BE và chỉnh sửa lại design giao diện.
-- Chia API như phần code giao diện.
+- Đạt đại diện commit code từ nhóm Teacher + Admin.
+2. Tiếp tục gọi API từ BE.
+- Đạt, Khoa, Khiêm, Khải, Danh: Teacher + Admin
+- Đăng, Tú: Student
 
 **Đánh giá tiến độ từng thành viên**
 | MSSV    | Tên SV                     | Vai trò  |        |
@@ -197,6 +201,7 @@
 1. Báo cáo kết quả tuần trước.
 - Sửa xong Login.
 - Sửa xong Design.
+- Đạt đại diện commit code từ nhóm Teacher + Admin.
 2. Tiếp tục gọi API từ BE và chỉnh sửa lại design giao diện.
 - Chia API như phần code giao diện.
 3. Đóng gói docker image.
