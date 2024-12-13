@@ -2,7 +2,7 @@ services:
   app:
     image: dangnguyen143/grade-portal-web-2
     ports:
-      - "24180:8080"
+      - "3000:3000"
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
