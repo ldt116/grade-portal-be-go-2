@@ -13,7 +13,7 @@ Một hệ thống giúp sinh viên tra cứu điểm của mình một cách d�
 | ------- | -------------------------- | ------- |
 | 2210737 | Nguyễn Huỳnh Hải Đăng      | PO      |
 | 2213857 | Võ Ngọc Tú                 | Dev     |
-| 2210964 | Nguyễn Quốc Đạt            | Dev     |
+| 2210694 | Nguyễn Quốc Đạt            | Dev     |
 | 2211572 | Nguyễn Gia Khiêm           | Dev     |
 | 2210456 | Nguyễn Hoàng Danh          | Dev     |
 | 2211664 | Võ Trần Minh Khoa          | Dev     |
