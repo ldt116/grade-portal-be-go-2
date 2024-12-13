@@ -27,5 +27,5 @@ npm install
 
 
 ## Báo cáo môn học
-
+[Report kết quả sơ bộ](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/FinalReport.md)
 
