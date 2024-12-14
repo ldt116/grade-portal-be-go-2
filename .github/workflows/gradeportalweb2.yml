@@ -9,6 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo ${{ secrets.API_KEY }} >> .env
+          cat .env
       - name: Set up Docker
         run: |
             if ! command -v docker &> /dev/null; then
