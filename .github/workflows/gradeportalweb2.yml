@@ -1,4 +1,4 @@
-name: GradePortalWeb2
+name:  GradePortalWeb2
 on:
   # Runs on pushes targeting the default branchs
   push:
