@@ -2,15 +2,16 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\apis",
     "\\src\\components",
     "\\src\\components\\GradeSearch",
-    "\\src\\components\\HallOfFame",
+    "\\src\\components\\GradeTable",
     "\\src\\components\\Layout",
     "\\src\\components\\Layout\\StudentLayout",
+    "\\src\\constants",
     "\\src\\pages",
-    "\\src\\pages\\LoginPages"
+    "\\src\\pages\\LoginPages",
+    "\\src\\routes"
   ],
-  "SelectedNode": "\\src\\components\\HallOfFame\\HallOfFame.tsx",
+  "SelectedNode": "\\.github\\workflows\\gradeportalweb2.yml",
   "PreviewInSolutionExplorer": false
 }

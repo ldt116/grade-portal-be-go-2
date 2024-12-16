@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Button from "../Button/Button";
-import { CLIENT_API_URL, ADMIN_API_URL } from '../../constants/api.js';
 import {useNavigate} from 'react-router-dom'
 import StudentGradeTable from '../GradeTable/StudentGradeTable'
 
@@ -38,7 +37,8 @@ interface CourseResponse {
 
 const TOKEN_KEY = 'BearerToken';
 const CLASS_ID_KEY = 'SelectedClassID'; // Khóa để lưu ID lớp học
-
+const CLIENT_API_URL = process.env.REACT_APP_BASE_URL_CLIENT!;
+const ADMIN_API_URL = process.env.REACT_APP_BASE_URL_ADMIN!;
 function StudentGradeSearch() {
   const navigate = useNavigate();
   const [classList, setClassList] = useState<ClassItem[]>([]);
