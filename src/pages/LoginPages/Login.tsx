@@ -11,7 +11,7 @@ const clientId = process.env.CLIENT_ID!;
   const ADMIN_LOGIN = process.env.REACT_APP_ADMIN_LOGIN!;
   const CLIENT_LOGIN =  process.env.REACT_APP_CLIENT_LOGIN!;
 const Login: React.FC = () => {
-  const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null); // Endpoint API đã chọn
+  const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null); // Endpoint API đã chọna
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Hook để điều hướng
