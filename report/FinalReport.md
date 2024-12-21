@@ -17,10 +17,10 @@ Mô tả đề tài: Hiện thực giao diện frontend web cho ứng dụng tra
 - Backend sử dụng: [grade-portal-be-go-1](https://github.com/dath-241/grade-portal-be-go-1)
 
 ### Phân chia công việc:
-- Meeting Minutes: [Meeting Minutes](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/meeting_minutes.md)
+- [Meeting Minutes](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/meeting_minutes.md)
 
 ### Software Requirements Specification và Software Design Document:
-- Báo cáo đồ án tổng hợp: [Báo Cáo]()
+- [Báo cáo đồ án tổng hợp - hướng Công nghệ phần mềm]()
 
 ### API Specification:
 - [API Spec](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/API.md)
