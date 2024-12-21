@@ -20,7 +20,7 @@ Mô tả đề tài: Hiện thực giao diện frontend web cho ứng dụng tra
 - [Meeting Minutes](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/meeting_minutes.md)
 
 ### Software Requirements Specification và Software Design Document:
-- [Báo cáo đồ án tổng hợp - hướng Công nghệ phần mềm]()
+- [Báo cáo đồ án tổng hợp - hướng Công nghệ phần mềm](https://github.com/dath-241/grade-portal-web-2/blob/report/report/SRS_and_SDD.pdf)
 
 ### API Specification:
 - [API Spec](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/API.md)
