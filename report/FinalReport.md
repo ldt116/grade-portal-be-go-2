@@ -16,6 +16,12 @@
 Mô tả đề tài: Hiện thực giao diện frontend web cho ứng dụng tra cứu và quản lý điểm cho sinh viên/ giảng viên.
 - Backend sử dụng: [grade-portal-be-go-1](https://github.com/dath-241/grade-portal-be-go-1)
 
+### Software Requirements Specification và Software Design Document:
+- Báo cáo đồ án tổng hợp: [Báo Cáo]()
+
+### API Specification:
+- [API Spec](https://github.com/dath-241/grade-portal-web-2/blob/Final/report/API.md)
+
 ### Tính năng đã hoàn thành:
 - Trang tra cứu điểm cho sinh viên/ giảng viên.
 - Trang cập nhật bảng điểm cho giảng viên.
