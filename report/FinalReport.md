@@ -34,6 +34,7 @@ Mô tả đề tài: Hiện thực giao diện frontend web cho ứng dụng tra
 - Chức năng hall of fame để xem bảng xếp hạng.
 ### Tính năng chưa hoàn thành:
 - Tự động cập nhật bảng điểm.
+- Chức năng gửi phản hồi.
 
 ### Hướng dẫn cài đặt:
 #### Chạy bằng DockerFile:
