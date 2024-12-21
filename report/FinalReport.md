@@ -33,3 +33,7 @@ Mô tả đề tài: Hiện thực giao diện frontend web cho ứng dụng tra
 ```basg
 docker-compose up
 ```
+
+### Deployment:
+#### Ứng dụng được deploy tại domain:
+[Grade-Portal-Web-2](https://grade2.thuanle.me)
