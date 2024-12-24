@@ -2,7 +2,7 @@ name:  GradePortalWeb2
 on:
   # Runs on pushes targeting the default branchs
   push:
-    branches: ["Final"]
+    branches: ["main"]
   workflow_dispatch:
 jobs:
   # Build job
