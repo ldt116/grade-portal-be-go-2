@@ -3,15 +3,13 @@
     "",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\GradeSearch",
     "\\src\\components\\GradeTable",
     "\\src\\components\\Layout",
     "\\src\\components\\Layout\\StudentLayout",
-    "\\src\\constants",
     "\\src\\pages",
+    "\\src\\pages\\AdminPages",
     "\\src\\pages\\LoginPages",
     "\\src\\routes"
   ],
-  "SelectedNode": "\\.github\\workflows\\gradeportalweb2.yml",
   "PreviewInSolutionExplorer": false
 }

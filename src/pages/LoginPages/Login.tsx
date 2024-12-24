@@ -5,7 +5,7 @@ import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oau
 
 
 
-const clientId = process.env.CLIENT_ID!;
+const clientId = process.env.REACT_APP_CLIENT_ID!;
   const BASE_URL_ADMIN = process.env.REACT_APP_BASE_URL_ADMIN;
   const BASE_URL_CLIENT = process.env.REACT_APP_BASE_URL_CLIENT;
   const ADMIN_LOGIN = process.env.REACT_APP_ADMIN_LOGIN!;
