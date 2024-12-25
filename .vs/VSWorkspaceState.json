@@ -3,13 +3,14 @@
     "",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\GradeTable",
-    "\\src\\components\\Layout",
-    "\\src\\components\\Layout\\StudentLayout",
+    "\\src\\components\\GradeSearch",
+    "\\src\\components\\HallOfFame",
     "\\src\\pages",
-    "\\src\\pages\\AdminPages",
     "\\src\\pages\\LoginPages",
+    "\\src\\pages\\StudentPages",
+    "\\src\\pages\\TeacherPages",
     "\\src\\routes"
   ],
+  "SelectedNode": "\\src\\pages\\TeacherPages\\TeacherGradeInfo.tsx",
   "PreviewInSolutionExplorer": false
 }
